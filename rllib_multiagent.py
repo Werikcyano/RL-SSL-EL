@@ -95,7 +95,7 @@ class SelfPlayUpdateCallback(DefaultCallbacks):
 
 
 if __name__ == "__main__":
-    ray.init(num_cpus=6, num_gpus=1)
+    ray.init()
 
     with open("config.yaml") as f:
         # use safe_load instead load
@@ -142,15 +142,15 @@ if __name__ == "__main__":
         name="PPO_selfplay_rec",
         config=configs,
         stop={
-            # "timesteps_total": 16000000,
+            "timesteps_total": int(file_configs["timesteps_total"]),
             # "time_total_s": 7200, #2h
-            "time_total_s": 60*60, #2h
+            # "time_total_s": 60*60, #1h
         },
-        checkpoint_freq=5,
+        checkpoint_freq=int(file_configs["checkpoint_freq"]),
         checkpoint_at_end=True,
         local_dir=os.path.abspath("volume"),
         #resume=True,
-        #restore="/home/luisaugusto/ray_results/PPO_selfplay_rec/PPO_Soccer_2903d_00000_0_2024-10-22_09-42-55/checkpoint_000000",
+        restore=file_configs["checkpoint_restore"],
     )
 
     # Gets best trial based on max accuracy across all training iterations.
@@ -163,54 +163,3 @@ if __name__ == "__main__":
     print(best_checkpoint)
     print("Done training")
 
-
-
-    # alg = config.build()
-    # if args.checkpoint_task > -1:
-    #     alg.restore(f"volume/last_checkpoint_gotoball_task{args.checkpoint_task}/" if not args.best else f"volume/best_checkpoint_gotoball_task{args.checkpoint_task}/")
-    
-    # writer = SummaryWriter(log_dir=f'volume/log_tensor/gotoball_task{args.task}/')
-
-    # with open(f'volume/last_step_checkpoint_task{args.task}.txt', 'r') as file:
-    #     last_epoch, _ = file.readline().split(';')
-    #     last_epoch = int(last_epoch)
-    
-    # with open(f'volume/best_step_checkpoint_task{args.task}.txt', 'r') as file:
-    #     _, best = file.readline().split(';')
-    #     best = float(best)
-
-    # with tqdm.tqdm(total=100000, initial=last_epoch) as pbar:
-
-    #     for epoch in range(last_epoch, 100000):
-    #         try:
-    #             alg.train()
-    #             if epoch % 10 == 0:
-    #                 results = alg.evaluate()['evaluation']
-    #                 writer.add_scalar('episode_reward_max', results['episode_reward_max'], epoch)
-    #                 writer.add_scalar('episode_reward_min', results['episode_reward_min'], epoch)
-    #                 writer.add_scalar('episode_reward_mean', results['episode_reward_mean'], epoch)
-    #                 writer.add_scalar('episode_len_mean', results['episode_len_mean'], epoch)
-
-    #                 if results['episode_reward_mean'] > best:  
-    #                     best = results['episode_reward_mean']
-    #                     alg.save(f'volume/best_checkpoint_gotoball_task{args.task}/')
-    #                     with open(f'volume/best_step_checkpoint_task{args.task}.txt', 'w') as file:
-    #                         file.write(f'{epoch};{best}')
-
-    #                 with open(f'volume/last_step_checkpoint_task{args.task}.txt', 'w') as file:
-    #                     file.write(f"{epoch};{results['episode_reward_mean']}")
-
-    #             if epoch % 100 == 0:  
-    #                 alg.save(f'volume/last_checkpoint_gotoball_task{args.task}/')
-                
-    #         except Exception as e:
-    #             print(e)
-    #             with open(f'volume/last_step_checkpoint_task{args.task}.txt', 'w') as file:
-    #                 file.write(f'{epoch};{best}')
-    #             continue
-            
-    #         pbar.update(1)
-
-
-    # print(results)
-    # ray.shutdown()

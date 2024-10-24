@@ -1,11 +1,13 @@
 score_average_over: 100
+timesteps_total: 16000000 # Controla numero maximo de timesteps
+checkpoint_freq: 100 # Salvar checkpoint a cada 100 timesteps
+checkpoint_restore: null # Caminho para restaurar checkpoint
 rllib:
-  num_cpus: 6
+  num_cpus: 6  # Depende do num_workers, tem que ser igual ou maior
   num_gpus: 1
-  num_workers: 5
-  num_envs_per_worker: 2
-  # total envs is 32 across all workers
-  # log_level: "INFO"
+  num_workers: 5  # Número de ambientes em paralelo, quanto maior, mais rápido
+  num_envs_per_worker: 2 # Número de ambientes por worker, quanto maior, mais rápido
+  #num_gpus_per_worker: 0.2 # fração de GPU usado por cada worker (< 1/num_workers), pode melhorar a performance, mas tem que investigar mais
   framework: "torch"
   disable_env_checking: true
 PPO:
