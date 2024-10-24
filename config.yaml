@@ -1,6 +1,6 @@
 score_average_over: 100
 timesteps_total: 16000000 # Controla numero maximo de timesteps
-checkpoint_freq: 100 # Salvar checkpoint a cada 100 timesteps
+checkpoint_freq: 100 # Salvar checkpoint a cada 100 iterações 
 checkpoint_restore: null # Caminho para restaurar checkpoint
 rllib:
   num_cpus: 6  # Depende do num_workers, tem que ser igual ou maior
