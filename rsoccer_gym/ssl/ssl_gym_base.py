@@ -11,7 +11,7 @@ from typing import Dict, List, Optional
 import gymnasium as gym
 import numpy as np
 from rsoccer_gym.Entities import Frame, Robot, Field
-from rsoccer_gym.Simulators.rsim import RSimSSL
+from rsoccer_gym.Simulators.rsim import RSimSSLEL
 
 
 class SSLBaseEnv(gym.Env):
@@ -25,7 +25,7 @@ class SSLBaseEnv(gym.Env):
         super().__init__()
         # Initialize Simulator
         self.time_step = time_step
-        self.rsim = RSimSSL(field_type=field_type,
+        self.rsim = RSimSSLEL(field_type=field_type,
                             n_robots_blue=n_robots_blue,
                             n_robots_yellow=n_robots_yellow,
                             time_step_ms=int(self.time_step*1000))

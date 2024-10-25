@@ -4,7 +4,6 @@ wheel==0.38.0
 gym==0.21.0
 pyglet==1.5.27
 protobuf==4.25.0
-rc-robosim==1.2.0
 numpy==1.24.4
 gymnasium==0.28.1
 tensorboard==2.14.0

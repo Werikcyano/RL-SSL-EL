@@ -175,3 +175,56 @@ class RSimSSL(RSim):
             blue_robots_pos,
             yellow_robots_pos,
         )
+
+
+class RSimSSLEL(RSim):
+    def send_commands(self, commands):
+        sim_cmds = np.zeros(
+            (self.n_robots_blue + self.n_robots_yellow, 8), dtype=np.float64)
+
+        for cmd in commands:
+            if cmd.yellow:
+                rbt_id = self.n_robots_blue + cmd.id
+            else:
+                rbt_id = cmd.id
+            if cmd.wheel_speed:
+                sim_cmds[rbt_id][0] = cmd.wheel_speed
+                sim_cmds[rbt_id][1] = cmd.v_wheel0
+                sim_cmds[rbt_id][2] = cmd.v_wheel1
+                sim_cmds[rbt_id][3] = cmd.v_wheel2
+                sim_cmds[rbt_id][4] = cmd.v_wheel3
+                sim_cmds[rbt_id][5] = cmd.kick_v_x
+                sim_cmds[rbt_id][6] = cmd.kick_v_z
+                sim_cmds[rbt_id][7] = cmd.dribbler
+            else:
+                sim_cmds[rbt_id][0] = cmd.wheel_speed
+                sim_cmds[rbt_id][1] = cmd.v_x
+                sim_cmds[rbt_id][2] = cmd.v_y
+                sim_cmds[rbt_id][3] = cmd.v_theta
+                sim_cmds[rbt_id][5] = cmd.kick_v_x
+                sim_cmds[rbt_id][6] = cmd.kick_v_z
+                sim_cmds[rbt_id][7] = cmd.dribbler
+            
+        self.simulator.step(sim_cmds)
+
+    def get_frame(self) -> FrameSSL:
+        state = self.simulator.get_state()
+        # Update frame with new state
+        frame = FrameSSL()
+        frame.parse(state, self.n_robots_blue, self.n_robots_yellow)
+
+        return frame
+    
+    def _init_simulator(self, field_type, n_robots_blue, n_robots_yellow,
+                        ball_pos, blue_robots_pos, yellow_robots_pos,
+                        time_step_ms):
+
+        return robosim.SSLEL(
+            field_type,
+            n_robots_blue,
+            n_robots_yellow,
+            time_step_ms,
+            ball_pos,
+            blue_robots_pos,
+            yellow_robots_pos,
+        )
