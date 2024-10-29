@@ -1,29 +1,44 @@
-Este repostório utiliza a biblioteca [rsoccer](https://github.com/robocin/rSoccer) para aplicar algortimos de Aprendizado por Reforço no ambinete Small Size League (SSL).
+Este repostório utiliza a biblioteca [rsoccer](https://github.com/robocin/rSoccer) para aplicar algortimos de Reinforcement Learning (RL) no ambinete Small Size League - EntryLevel (SSL). 
 
-# Configurando o ambiente
+# Informações do ambiente
+A implementação feita usa o conceito de self-play para que robôs aprendam a jogar, inspirado no trabalho [*Multiagent Reinforcement Learning for Strategic Decision Making and Control in Robotic Soccer Through Self-Play*](https://ieeexplore.ieee.org/document/9817118) no ambiente Very Small Size Soccer (VSSS).  O ambiente foi contruído pensando em um jogo 3x3.
 
-Clone o reposítorio com o comando:
+## Episódio
+Um episódio é finalizado assim que um gol é marcado ou atinja um tempo limite.
 
-    git clone https://github.com/LuisAugusto0205/pequi_ssl.git
+## Espaço de ações
+Um robô pode possui 4 ações continuas: alterar velocidade no eixo x, alterar velocidade no eixo y, alterar velocidade ângular, chutar a bola.
 
-Mude para branch rllib:
+## Espaço de observaçoes
+Um robô a cada iteração com o ambiente coleta observações sobre ele. Essas informações coletadas são compostas pelas coordenadas dos robôs e da bola, distância e ângulos entre os aliados e adversários e tempo restante da partida. Assim, cada robô tem como obsevação um vetor de 77 valores.
 
-    git checkout rllib
+## Recompensa
+As recompensas são calculadas com base em 4 aspectos, 2 deles sendo compartilhados pelo time e os outros 2 individuais. Os compartilhados são velocidade da bola (r_speed) e distancia até a bola do robô aliado mais próximo da bola (r_dist). As inviduais medem o quão ofensiva e defensiva a posição do robô é no momento, a ofensiva (r_off) é o ângulo entre robô, bola e o gol do adversário, a defensiva (r_def) é o angulo entre gol aliado, o robô e a bola. No fim, a composiçào da recompensa final é: 
 
-Construa a imagem:
+- 70% da r_speed
+- 10% da r_dist
+- 10% da r_off
+- 10% da r_def
 
-    docker build -t rsoccer .
+# Rodando o código
 
-Rode o container com volume:
+**Clone o reposítorio com o comando:**
 
-    docker run --gpus all --name rsoccer -v $(pwd)/volume:/app/volume -it rsoccer python rllib_multiagent.py --task 1 --checkpoint_task 1
+    git clone https://<seu-username>:<seu-token>@github.com/Pequi-Mecanico-SSL/RL.git
 
-A variável `task` indica qual task será executada, podendo ser: \
-    - 1: Posição do robô fixa e bola fixa \
-    - 2: Posição do robô aleatória e bola fixa. \
-    - 3: Posição do robê aleatória e bola em posição aleatória:
+*Obs: Caso nào tenha, gere o seu token em: *Settings > Developer settings > Personal access tokens*.
 
-O `checkpoint_task` indica o checkpoint de qual task deve ser carrega para iniciar o aprendizado por reforço. 
+**Construa a imagem:**
+
+    Docker build -t ssl-el .
+
+**Rode o container com volume:**
+
+    Docker run --gpus all --name ssl-el -it ssl-el
 
 Caso não esteja reconhecendo a gpu, tente instalar o [nvidia container toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html#installing-with-apt) ou mudar a versão do cuda no dockerfile
+    
+# Personalizando hiperparâmetros
+
+Para alterar os hiperparametros do algortimo, configurações de ambiente ou de treinamento, modifique o arquivo config.yaml. Depois, salve e contrua a imagem novamente.
 
