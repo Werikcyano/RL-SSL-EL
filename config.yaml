@@ -13,8 +13,8 @@ rllib:
 PPO:
   batch_mode: "truncate_episodes"
   rollout_fragment_length: "auto"
-  train_batch_size: 20544 #workers*envs*fragment
-  sgd_minibatch_size: 6848 #batch/3
+  train_batch_size: 19260 #workers*envs*fragment
+  sgd_minibatch_size: 6420 #batch/3
   gamma: 0.99
   lambda: 0.95
   entropy_coeff: 0.0
