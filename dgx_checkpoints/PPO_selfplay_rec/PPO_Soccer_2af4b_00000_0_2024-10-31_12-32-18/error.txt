@@ -1,0 +1,5 @@
+Failure # 1 (occurred at 2024-10-31_12-32-35)
+[36mray::PPO.restore()[39m (pid=51814, ip=172.17.0.43, actor_id=e7b69229833b4aaddc131d0801000000, repr=PPO)
+  File "/usr/local/lib/python3.10/site-packages/ray/tune/trainable/trainable.py", line 546, in restore
+    raise ValueError(
+ValueError: Could not recover from checkpoint as it does not exist on storage anymore. Got storage fs type `local` and path: /ws/root/ray_results/PPO_selfplay_rec/PPO_Soccer_c6a18_00000_0_2024-10-31_03-39-47
