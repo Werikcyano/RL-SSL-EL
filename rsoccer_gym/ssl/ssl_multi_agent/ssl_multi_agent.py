@@ -495,7 +495,7 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
             for i in range(self.n_robots_yellow):
                 infos[f'yellow_{i}']["score"] = self.score.copy()
         
-        return self.observations.copy(), reward, done, done, infos
+        return self.observations.copy(), reward, done, {"__all__": False}, infos
         
 if __name__ == "__main__":
     print(SSLMultiAgentEnv.mro())
