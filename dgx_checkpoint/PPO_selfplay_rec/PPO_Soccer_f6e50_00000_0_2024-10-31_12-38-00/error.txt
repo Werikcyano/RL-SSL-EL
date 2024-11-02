@@ -1,0 +1,49 @@
+Failure # 1 (occurred at 2024-10-31_20-06-50)
+[36mray::PPO.train()[39m (pid=55937, ip=172.17.0.43, actor_id=1bf9e8460f0155798cb12aa901000000, repr=PPO)
+  File "/usr/local/lib/python3.10/site-packages/ray/tune/trainable/trainable.py", line 334, in train
+    raise skipped from exception_cause(skipped)
+  File "/usr/local/lib/python3.10/site-packages/ray/tune/trainable/trainable.py", line 331, in train
+    result = self.step()
+  File "/usr/local/lib/python3.10/site-packages/ray/rllib/algorithms/algorithm.py", line 849, in step
+    results, train_iter_ctx = self._run_one_training_iteration()
+  File "/usr/local/lib/python3.10/site-packages/ray/rllib/algorithms/algorithm.py", line 3194, in _run_one_training_iteration
+    results = self.training_step()
+  File "/usr/local/lib/python3.10/site-packages/ray/rllib/algorithms/ppo/ppo.py", line 410, in training_step
+    return self._training_step_old_and_hybrid_api_stacks()
+  File "/usr/local/lib/python3.10/site-packages/ray/rllib/algorithms/ppo/ppo.py", line 495, in _training_step_old_and_hybrid_api_stacks
+    train_batch = synchronous_parallel_sample(
+  File "/usr/local/lib/python3.10/site-packages/ray/rllib/execution/rollout_ops.py", line 88, in synchronous_parallel_sample
+    sampled_data = worker_set.foreach_worker(
+  File "/usr/local/lib/python3.10/site-packages/ray/rllib/evaluation/worker_set.py", line 771, in foreach_worker
+    handle_remote_call_result_errors(remote_results, self._ignore_worker_failures)
+  File "/usr/local/lib/python3.10/site-packages/ray/rllib/evaluation/worker_set.py", line 78, in handle_remote_call_result_errors
+    raise r.get()
+ray.exceptions.RayTaskError(TypeError): [36mray::RolloutWorker.apply()[39m (pid=56258, ip=172.17.0.43, actor_id=51a4380b80623d5a1c1b617d01000000, repr=<ray.rllib.evaluation.rollout_worker.RolloutWorker object at 0x7fbaef4f2c50>)
+  File "/usr/local/lib/python3.10/site-packages/ray/rllib/utils/actor_manager.py", line 189, in apply
+    raise e
+  File "/usr/local/lib/python3.10/site-packages/ray/rllib/utils/actor_manager.py", line 178, in apply
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/site-packages/ray/rllib/execution/rollout_ops.py", line 89, in <lambda>
+    lambda w: w.sample(), local_worker=False, healthy_only=True
+  File "/usr/local/lib/python3.10/site-packages/ray/rllib/evaluation/rollout_worker.py", line 694, in sample
+    batches = [self.input_reader.next()]
+  File "/usr/local/lib/python3.10/site-packages/ray/rllib/evaluation/sampler.py", line 91, in next
+    batches = [self.get_data()]
+  File "/usr/local/lib/python3.10/site-packages/ray/rllib/evaluation/sampler.py", line 273, in get_data
+    item = next(self._env_runner)
+  File "/usr/local/lib/python3.10/site-packages/ray/rllib/evaluation/env_runner_v2.py", line 348, in run
+    outputs = self.step()
+  File "/usr/local/lib/python3.10/site-packages/ray/rllib/evaluation/env_runner_v2.py", line 404, in step
+    self._base_env.send_actions(actions_to_send)
+  File "/usr/local/lib/python3.10/site-packages/ray/rllib/env/multi_agent_env.py", line 647, in send_actions
+    raise e
+  File "/usr/local/lib/python3.10/site-packages/ray/rllib/env/multi_agent_env.py", line 636, in send_actions
+    obs, rewards, terminateds, truncateds, infos = env.step(agent_dict)
+  File "/ws/rsoccer_gym/ssl/ssl_multi_agent/ssl_multi_agent.py", line 479, in step
+    self._frame_to_observations()
+  File "/ws/rsoccer_gym/ssl/ssl_multi_agent/ssl_multi_agent.py", line 368, in _frame_to_observations
+    robot_obs = self.robot_observation(robot, allys, advs, robot_action, allys_actions)
+  File "/ws/rsoccer_gym/ssl/ssl_multi_agent/ssl_multi_agent.py", line 461, in robot_observation
+    robot_obs = np.concatenate([positions, orientations, dists, angles, last_actions, time_left], dtype=np.float64)
+  File "<__array_function__ internals>", line 200, in concatenate
+TypeError: Cannot cast array data from dtype('O') to dtype('float64') according to the rule 'same_kind'
