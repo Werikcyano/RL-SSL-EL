@@ -25,11 +25,15 @@ RUN apt-get update && \
 
 # Copie o arquivo requirements.txt para o contêiner
 COPY requirements.txt .
-COPY dgx_checkpoints/PPO_selfplay_rec /root/ray_results/PPO_selfplay_rec
 
 # Instale as dependências do Python listadas em requirements.txt
+RUN pip install --no-cache-dir setuptools==65.5.0 pip==21 wheel==0.38.0
 RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install torch --index-url https://download.pytorch.org/whl/cu118
+
+RUN mkdir /root/ray_results
+RUN mkdir /root/ray_results/PPO_selfplay_rec
+COPY dgx_checkpoints/PPO_selfplay_rec /root/ray_results/PPO_selfplay_rec
 
 # Instalar rSim
 RUN pip install git+https://github.com/Pequi-Mecanico-SSL/rSim.git
@@ -42,7 +46,7 @@ COPY rllib_multiagent.py .
 COPY action_dists.py .
 COPY custom_torch_model.py .
 COPY config.yaml .
-COPY run_render.py .
+COPY render_episode.py .
 
 RUN mkdir /ws/volume
 RUN mkdir /ws/scripts
