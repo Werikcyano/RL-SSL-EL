@@ -58,7 +58,7 @@ configs["model"] = {
 configs["env"] = "Soccer"
 
 agent = PPOConfig.from_dict(configs).build()
-agent.restore('backup_checkpoints/PPO_Soccer_f5487_00000_0_2024-10-23_09-47-27/checkpoint_000000')
+agent.restore('dgx_checkpoints/PPO_selfplay_rec/PPO_Soccer_c6a18_00000_0_2024-10-31_03-39-47/checkpoint-1')
 
 env = SSLMultiAgentEnv(**configs["env_config"])
 obs, *_ = env.reset()
