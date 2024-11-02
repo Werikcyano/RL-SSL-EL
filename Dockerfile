@@ -17,16 +17,21 @@ RUN apt-get update && \
     cmake \
     ninja-build \
     libode-dev \
+    python3-opengl \
+    python3-pyqt5 \
+    python3-pyqtgraph \
+    mesa-utils \
     && rm -rf /var/lib/apt/lists/*
 
 # Copie o arquivo requirements.txt para o contêiner
 COPY requirements.txt .
+COPY dgx_checkpoints/PPO_selfplay_rec /root/ray_results/PPO_selfplay_rec
 
 # Instale as dependências do Python listadas em requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install torch --index-url https://download.pytorch.org/whl/cu118
 
-# Install rSim
+# Instalar rSim
 RUN pip install git+https://github.com/Pequi-Mecanico-SSL/rSim.git
 
 # Copy the rSoccer directory
@@ -37,6 +42,7 @@ COPY rllib_multiagent.py .
 COPY action_dists.py .
 COPY custom_torch_model.py .
 COPY config.yaml .
+COPY run_render.py .
 
 RUN mkdir /ws/volume
 RUN mkdir /ws/scripts

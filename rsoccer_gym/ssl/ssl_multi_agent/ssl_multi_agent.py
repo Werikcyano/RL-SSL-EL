@@ -126,18 +126,19 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
                 goal_ally = Goal(x=-0.2-self.field.length/2, y=0)
 
                 r_speed = self.__ball_grad_rw(ball, last_ball, goal_adv)
-                r_dist = max(self.__ball_dist_robot_rw(ball, blue_robot), r_dist)
+                r_dist = max(-self._get_dist_between(ball, blue_robot), r_dist)
                 r_off = self._get_3dots_angle_between(blue_robot, ball, goal_adv)[2] - 1
                 r_def = self._get_3dots_angle_between(goal_ally, blue_robot, ball)[2] - 1
 
                 blue_rw[idx] = 0.7*r_speed + 0.1*r_off + 0.1*r_def
+                # print(f"\nblue: {idx}")
+                # print(f'\tr_speed: {r_speed:.5f}\tr_dist: {r_dist:.5f}\tr_off: {r_off:.5f}\tr_def: {r_def:.5f}\ttotal: {0.7*r_speed + 0.1*r_off + 0.1*r_def + 0.1*r_dist:.5f}\t')
 
             blue_rw += 0.1*r_dist*np.ones(self.n_robots_blue)
             blue_rw_dict = {f'blue_{id}':rw for id, rw in enumerate(blue_rw)}
-        #print(f'\rr_speed: {r_speed:.2f}\tr_dist: {r_dist:.2f}\tr_off: {r_off:.2f}\tr_def: {r_def:.2f}\ttotal: {0.7*r_speed + 0.1*r_off + 0.1*r_def + 0.1*r_dist:.2f}\t')
 
         if self.n_robots_yellow > 0:
-            yellow_rw = np.zeros(max(self.n_robots_yellow, 1))
+            yellow_rw = np.zeros(self.n_robots_yellow)
             r_dist = -2.5
             for idx in range(self.n_robots_yellow):
                 yellow_robot = self.frame.robots_yellow[idx]
@@ -145,13 +146,16 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
                 goal_ally = Goal(x=0.2+self.field.length/2, y=0)
 
                 r_speed = self.__ball_grad_rw(ball, last_ball, goal_adv)
-                r_dist = max(self.__ball_dist_robot_rw(ball, yellow_robot), r_dist)
+                r_dist = max(-self._get_dist_between(ball, yellow_robot), r_dist)
                 r_off = self._get_3dots_angle_between(yellow_robot, ball, goal_adv)[2] - 1
                 r_def = self._get_3dots_angle_between(goal_ally, yellow_robot, ball)[2] - 1
                 yellow_rw[idx] = 0.7*r_speed + 0.1*r_off + 0.1*r_def
+                # print(f"\nyellow: {idx}")
+                # print(f'\tr_speed: {r_speed:.5f}\tr_dist: {r_dist:.5f}\tr_off: {r_off:.5f}\tr_def: {r_def:.5f}\ttotal: {0.7*r_speed + 0.1*r_off + 0.1*r_def + 0.1*r_dist:.5f}\t')
 
-            yellow_rw += 0.1*r_dist*self.n_robots_yellow
+            yellow_rw += 0.1*r_dist*np.ones(self.n_robots_blue)
             yellow_rw_dict = {f'yellow_{id}':rw for id, rw in enumerate(yellow_rw)}
+
 
         half_len = self.field.length/2 
         #half_wid = self.field.width/2
@@ -213,7 +217,8 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
         ball_dist = np.linalg.norm(robot_pos - ball_pos)
         
         #return -ball_dist
-        return -np.clip(ball_dist, 0, 1)
+        max_dist = np.linalg.norm([self.field.length, self.field.width])
+        return -np.clip(ball_dist/max_dist, 0, 1)
     
     def __ball_grad_rw(self, ball, last_ball, goal):
         assert(self.last_frame is not None)
