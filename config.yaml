@@ -1,7 +1,7 @@
 score_average_over: 100
 timesteps_total: 32000000 # Controla numero maximo de timesteps
 checkpoint_freq: 20 # Salvar checkpoint a cada 100 iterações 
-checkpoint_restore: "/root/ray_results/PPO_selfplay_rec/PPO_Soccer_8ff88_00000_0_2024-11-02_03-00-05/checkpoint-1" # Caminho para restaurar checkpoint
+checkpoint_restore: "/root/ray_results/PPO_selfplay_rec/PPO_Soccer_8ff88_00000_0_2024-11-02_03-00-05/checkpoint-6" # Caminho para restaurar checkpoint
 rllib:
   num_cpus: 6  # Depende do num_workers, tem que ser igual ou maior
   num_gpus: 1

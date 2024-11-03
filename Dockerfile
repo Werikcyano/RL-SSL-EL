@@ -31,12 +31,13 @@ RUN pip install --no-cache-dir setuptools==65.5.0 pip==21 wheel==0.38.0
 RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install torch --index-url https://download.pytorch.org/whl/cu118
 
-RUN mkdir /root/ray_results
-RUN mkdir /root/ray_results/PPO_selfplay_rec
-COPY dgx_checkpoints/PPO_selfplay_rec /root/ray_results/PPO_selfplay_rec
-
 # Instalar rSim
 RUN pip install git+https://github.com/Pequi-Mecanico-SSL/rSim.git
+
+RUN mkdir /root/ray_results
+RUN mkdir /root/ray_results/PPO_selfplay_rec
+RUN mkdir /root/ray_results/PPO_selfplay_rec/PPO_Soccer_8ff88_00000_0_2024-11-02_03-00-05
+COPY dgx_checkpoints/PPO_selfplay_rec/PPO_Soccer_8ff88_00000_0_2024-11-02_03-00-05 /root/ray_results/PPO_selfplay_rec/PPO_Soccer_8ff88_00000_0_2024-11-02_03-00-05
 
 # Copy the rSoccer directory
 RUN mkdir /rsoccer_gym

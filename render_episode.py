@@ -61,7 +61,7 @@ configs["model"] = {
 configs["env"] = "Soccer"
 
 agent = PPOConfig.from_dict(configs).build()
-agent.restore('/root/ray_results/PPO_selfplay_rec/PPO_Soccer_8ff88_00000_0_2024-11-02_03-00-05/checkpoint-1')
+agent.restore('/root/ray_results/PPO_selfplay_rec/PPO_Soccer_8ff88_00000_0_2024-11-02_03-00-05/checkpoint-6')
 
 env = SSLMultiAgentEnv(**configs["env_config"])
 obs, *_ = env.reset()
@@ -74,3 +74,4 @@ while True:
     print(reward)
     if done['__all__']:
         obs, *_ = env.reset()
+    # time.sleep(1000)

@@ -362,6 +362,8 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
 
     def _frame_to_observations(self):
 
+        print("=====================================OBSERVATION===================================================")
+        f = lambda x: " ".join([f"{i:.2f}" for i in x])
         for i in range(self.n_robots_blue):
 
             robot = self.frame.robots_blue[i] 
@@ -374,6 +376,9 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
             self.observations[f'blue_{i}'] = np.delete(self.observations[f'blue_{i}'], range(len(robot_obs)))
             self.observations[f'blue_{i}'] = np.concatenate([self.observations[f'blue_{i}'], robot_obs], axis=0, dtype=np.float64)
 
+            print(f"blue_{i}")
+            print(f"\t pos: {f(robot_obs[:14])} \n\t ori: {f(robot_obs[14:32])} \n\t dist: {f(robot_obs[32:40])} \n\t ang: {f(robot_obs[40:64])} \n\t last_act: {f(robot_obs[64:76])} \n\t time_left: {robot_obs[76]}")
+
         for i in range(self.n_robots_yellow):
             robot = self.frame.robots_yellow[i]
             robot_action = self.last_actions[f'yellow_{i}']
@@ -384,6 +389,9 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
             robot_obs = self.robot_observation(robot, allys, advs, robot_action, allys_actions)
             self.observations[f'yellow_{i}'] = np.delete(self.observations[f'yellow_{i}'], range(len(robot_obs)))
             self.observations[f'yellow_{i}'] = np.concatenate([self.observations[f'yellow_{i}'], robot_obs], axis=0, dtype=np.float64)
+
+            print(f"yellow_{i}")
+            print(f"\t pos: {f(robot_obs[:14])} \n\t ori: {f(robot_obs[14:32])} \n\t dist: {f(robot_obs[32:40])} \n\t ang: {f(robot_obs[40:64])} \n\t last_act: {f(robot_obs[64:76])} \n\t time_left: {robot_obs[76]}")
     
     def robot_observation(self, robot, allys, adversaries, robot_action, allys_actions):
 
@@ -462,6 +470,8 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
         dists = np.concatenate(dists)
         angles = np.concatenate(angles)
         time_left = [(self.max_ep_length - self.steps)/self.max_ep_length]
+
+        #print(f"len_pos: {len(positions)} \t len_ori: {len(orientations)} \t len_dist: {len(dists)} \t len_ang: {len(angles)} \t len_last_act: {len(last_actions)} \t len_time_left: {len(time_left)}")
 
         robot_obs = np.concatenate([positions, orientations, dists, angles, last_actions, time_left], dtype=np.float64)
         return robot_obs
