@@ -36,8 +36,7 @@ RUN pip install git+https://github.com/Pequi-Mecanico-SSL/rSim.git
 
 RUN mkdir /root/ray_results
 RUN mkdir /root/ray_results/PPO_selfplay_rec
-RUN mkdir /root/ray_results/PPO_selfplay_rec/PPO_Soccer_8ff88_00000_0_2024-11-02_03-00-05
-COPY dgx_checkpoints/PPO_selfplay_rec/PPO_Soccer_8ff88_00000_0_2024-11-02_03-00-05 /root/ray_results/PPO_selfplay_rec/PPO_Soccer_8ff88_00000_0_2024-11-02_03-00-05
+COPY dgx_checkpoints/PPO_selfplay_rec /root/ray_results/PPO_selfplay_rec
 
 # Copy the rSoccer directory
 RUN mkdir /rsoccer_gym
