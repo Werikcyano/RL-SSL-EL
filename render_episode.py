@@ -9,10 +9,12 @@ from ray.rllib.models import ModelCatalog
 from custom_torch_model import CustomFCNet
 from action_dists import TorchBetaTest
 from rsoccer_gym.ssl.ssl_multi_agent.ssl_multi_agent import SSLMultiAgentEnv
+import time
 
 ray.init()
 
 def create_rllib_env(config):
+    #breakpoint()
     return SSLMultiAgentEnv(**config)
 
 def policy_mapping_fn(agent_id, episode, worker, **kwargs):
@@ -31,6 +33,7 @@ configs = {**file_configs["rllib"], **file_configs["PPO"]}
 
 configs["env_config"] = file_configs["env"]
 
+tune.registry._unregister_all()
 tune.registry.register_env("Soccer", create_rllib_env)
 temp_env = create_rllib_env(configs["env_config"])
 obs_space = temp_env.observation_space["blue_0"]
@@ -58,14 +61,16 @@ configs["model"] = {
 configs["env"] = "Soccer"
 
 agent = PPOConfig.from_dict(configs).build()
-agent.restore('dgx_checkpoints/PPO_selfplay_rec/PPO_Soccer_c6a18_00000_0_2024-10-31_03-39-47/checkpoint-1')
+agent.restore('/root/ray_results/PPO_selfplay_rec/PPO_Soccer_8ff88_00000_0_2024-11-02_03-00-05/checkpoint-1')
 
 env = SSLMultiAgentEnv(**configs["env_config"])
 obs, *_ = env.reset()
 
 done= {'__all__': False}
-while not done['__all__']:
+while True:
     a = agent.compute_actions(obs, policy_id='policy_blue', full_fetch=False)
     obs, reward, done, truncated, info = env.step(a)
     env.render()
     print(reward)
+    if done['__all__']:
+        obs, *_ = env.reset()
