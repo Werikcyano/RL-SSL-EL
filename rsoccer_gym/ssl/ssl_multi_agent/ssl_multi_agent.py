@@ -105,6 +105,7 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
         
         return v_x, v_y, v_theta
 
+
     def _calculate_reward_done(self):
 
         # done = {f'blue_{i}':False for i in range(self.n_robots_blue)}
@@ -129,12 +130,14 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
                 r_dist = max(-self._get_dist_between(ball, blue_robot), r_dist)
                 r_off = self._get_3dots_angle_between(blue_robot, ball, goal_adv)[2] - 1
                 r_def = self._get_3dots_angle_between(goal_ally, blue_robot, ball)[2] - 1
+                r_vel_theta = -abs(self.last_actions[f'blue_{idx}'][2])
 
-                blue_rw[idx] = 0.7*r_speed + 0.1*r_off + 0.1*r_def
+                blue_rw[idx] = 0.3*r_speed + 0.5*r_off + 0.5*r_def + 0.2*r_vel_theta
                 # print(f"\nblue: {idx}")
-                # print(f'\tr_speed: {r_speed:.5f}\tr_dist: {r_dist:.5f}\tr_off: {r_off:.5f}\tr_def: {r_def:.5f}\ttotal: {0.7*r_speed + 0.1*r_off + 0.1*r_def + 0.1*r_dist:.5f}\t')
+                # print(f'\tr_speed: {r_speed:.5f}\tr_dist: {r_dist:.5f}\tr_off: {r_off:.5f}\tr_def: {r_def:.5f}\tlast_w: {r_vel_theta:.5f}\ttotal: {0.3*r_speed + 0.05*r_off + 0.05*r_def + 0.4*r_dist + 0.2*r_vel_theta:.5f}\t')
+                # self.__energy_pen(blue_robot)
 
-            blue_rw += 0.1*r_dist*np.ones(self.n_robots_blue)
+            blue_rw += 0.4*r_dist*np.ones(self.n_robots_blue)
             blue_rw_dict = {f'blue_{id}':rw for id, rw in enumerate(blue_rw)}
 
         if self.n_robots_yellow > 0:
@@ -149,11 +152,14 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
                 r_dist = max(-self._get_dist_between(ball, yellow_robot), r_dist)
                 r_off = self._get_3dots_angle_between(yellow_robot, ball, goal_adv)[2] - 1
                 r_def = self._get_3dots_angle_between(goal_ally, yellow_robot, ball)[2] - 1
-                yellow_rw[idx] = 0.7*r_speed + 0.1*r_off + 0.1*r_def
+                r_vel_theta = -abs(self.last_actions[f'yellow_{idx}'][2])
+            
+                yellow_rw[idx] = 0.3*r_speed + 0.05*r_off + 0.05*r_def + 0.2*r_vel_theta
                 # print(f"\nyellow: {idx}")
-                # print(f'\tr_speed: {r_speed:.5f}\tr_dist: {r_dist:.5f}\tr_off: {r_off:.5f}\tr_def: {r_def:.5f}\ttotal: {0.7*r_speed + 0.1*r_off + 0.1*r_def + 0.1*r_dist:.5f}\t')
+                # print(f'\tr_speed: {r_speed:.5f}\tr_dist: {r_dist:.5f}\tr_off: {r_off:.5f}\tr_def: {r_def:.5f}\tlast_w: {r_vel_theta:.5f}\ttotal: {0.3*r_speed + 0.05*r_off + 0.05*r_def + 0.4*r_dist + 0.2*r_vel_theta:.5f}\t')
+                # self.__energy_pen(blue_robot)
 
-            yellow_rw += 0.1*r_dist*np.ones(self.n_robots_blue)
+            yellow_rw += 0.4*r_dist*np.ones(self.n_robots_blue)
             yellow_rw_dict = {f'yellow_{id}':rw for id, rw in enumerate(yellow_rw)}
 
 
@@ -242,7 +248,7 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
         #     print(self.frame.robots_yellow)
         #     print("===============================")
         
-        return np.clip(ball_speed_rw/self.kick_speed_x, 0, 1)
+        return np.clip(ball_speed_rw/self.kick_speed_x, -1, 1)
 
     def reset(self, seed=42, options={}):
         self.steps = 0
@@ -362,7 +368,7 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
 
     def _frame_to_observations(self):
 
-        print("=====================================OBSERVATION===================================================")
+        # print("=====================================OBSERVATION===================================================")
         f = lambda x: " ".join([f"{i:.2f}" for i in x])
         for i in range(self.n_robots_blue):
 
@@ -376,8 +382,8 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
             self.observations[f'blue_{i}'] = np.delete(self.observations[f'blue_{i}'], range(len(robot_obs)))
             self.observations[f'blue_{i}'] = np.concatenate([self.observations[f'blue_{i}'], robot_obs], axis=0, dtype=np.float64)
 
-            print(f"blue_{i}")
-            print(f"\t pos: {f(robot_obs[:14])} \n\t ori: {f(robot_obs[14:32])} \n\t dist: {f(robot_obs[32:40])} \n\t ang: {f(robot_obs[40:64])} \n\t last_act: {f(robot_obs[64:76])} \n\t time_left: {robot_obs[76]}")
+            # print(f"blue_{i}")
+            # print(f"\t pos: {f(robot_obs[:14])} \n\t ori: {f(robot_obs[14:32])} \n\t dist: {f(robot_obs[32:40])} \n\t ang: {f(robot_obs[40:64])} \n\t last_act: {f(robot_obs[64:76])} \n\t time_left: {robot_obs[76]}")
 
         for i in range(self.n_robots_yellow):
             robot = self.frame.robots_yellow[i]
@@ -390,8 +396,8 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
             self.observations[f'yellow_{i}'] = np.delete(self.observations[f'yellow_{i}'], range(len(robot_obs)))
             self.observations[f'yellow_{i}'] = np.concatenate([self.observations[f'yellow_{i}'], robot_obs], axis=0, dtype=np.float64)
 
-            print(f"yellow_{i}")
-            print(f"\t pos: {f(robot_obs[:14])} \n\t ori: {f(robot_obs[14:32])} \n\t dist: {f(robot_obs[32:40])} \n\t ang: {f(robot_obs[40:64])} \n\t last_act: {f(robot_obs[64:76])} \n\t time_left: {robot_obs[76]}")
+            #print(f"yellow_{i}")
+            #print(f"\t pos: {f(robot_obs[:14])} \n\t ori: {f(robot_obs[14:32])} \n\t dist: {f(robot_obs[32:40])} \n\t ang: {f(robot_obs[40:64])} \n\t last_act: {f(robot_obs[64:76])} \n\t time_left: {robot_obs[76]}")
     
     def robot_observation(self, robot, allys, adversaries, robot_action, allys_actions):
 

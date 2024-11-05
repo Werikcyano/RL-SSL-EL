@@ -4,7 +4,7 @@ import ray
 from ray import air, tune
 from ray.rllib.algorithms.ppo import PPOConfig
 from ray.rllib.models import ModelCatalog
-
+import os
 
 from custom_torch_model import CustomFCNet
 from action_dists import TorchBetaTest
@@ -61,11 +61,8 @@ configs["model"] = {
 configs["env"] = "Soccer"
 
 agent = PPOConfig.from_dict(configs).build()
-<<<<<<< HEAD
-agent.restore('/root/ray_results/PPO_selfplay_rec/PPO_Soccer_8ff88_00000_0_2024-11-02_03-00-05/checkpoint-6')
-=======
-agent.restore('/root/ray_results/PPO_selfplay_rec/PPO_Soccer_8ff88_00000_0_2024-11-02_03-00-05/checkpoint-4')
->>>>>>> 48836a4 (save changes)
+#print(os.listdir('root/ray_results/PPO_selfplay_rec/PPO_Soccer_d9221_00000_0_2024-11-02_13-46-23'))
+agent.restore('/root/ray_results/PPO_selfplay_rec/PPO_Soccer_9c1f6_00000_0_2024-11-03_13-07-42/checkpoint_000004')
 
 env = SSLMultiAgentEnv(**configs["env_config"])
 obs, *_ = env.reset()
@@ -75,7 +72,9 @@ while True:
     a = agent.compute_actions(obs, policy_id='policy_blue', full_fetch=False)
     obs, reward, done, truncated, info = env.step(a)
     env.render()
-    print(reward)
+    # print(reward)
+
     if done['__all__']:
+
         obs, *_ = env.reset()
-    # time.sleep(1000)
+    time.sleep(0.1)
