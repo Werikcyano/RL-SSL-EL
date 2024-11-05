@@ -34,7 +34,13 @@ As recompensas são calculadas com base em 4 aspectos, 2 deles sendo compartilha
 
 **Rode o container com volume:**
 
-    Docker run --gpus all --name ssl-el -it ssl-el
+    docker run --gpus all --name pequi-ssl -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -it pequi-ssl
+
+**Para renderizar um episódio**
+    python render_episode.py
+
+**Para treinar o modelo**
+    python rllib_multiagent.py
 
 Caso não esteja reconhecendo a gpu, tente instalar o [nvidia container toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html#installing-with-apt) ou mudar a versão do cuda no dockerfile
     
