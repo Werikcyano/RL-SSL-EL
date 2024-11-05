@@ -68,13 +68,6 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
             **{f'yellow_{i}': np.zeros(self.stack_observation * self.obs_size, dtype=np.float64) for i in range(self.n_robots_yellow)}
         }
 
-
-        self.r_speed = {agent: 0 for agent in self._agent_ids}
-        self.r_off = {agent: 0 for agent in self._agent_ids}
-        self.r_def = {agent: 0 for agent in self._agent_ids}
-        self.r_dist = {agent: 0 for agent in self._agent_ids}
-        self.r_vel_theta = {agent: 0 for agent in self._agent_ids}
-
     def _get_commands(self, actions):
         commands = []
         for i in range(self.n_robots_blue):
@@ -124,13 +117,11 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
         Goal = namedtuple('goal', ['x', 'y'])
         blue_rw_dict = {}
         yellow_rw_dict = {}
-        info = {}
 
         if self.n_robots_blue > 0:
             blue_rw = np.zeros(self.n_robots_blue)
             r_dist = -2.5
             for idx in range(self.n_robots_blue):
-                info[f'blue_{idx}'] = {}
                 blue_robot = self.frame.robots_blue[idx]
                 goal_adv = Goal(x=0.2+self.field.length/2, y=0)
                 goal_ally = Goal(x=-0.2-self.field.length/2, y=0)
@@ -142,10 +133,6 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
                 r_vel_theta = -abs(self.last_actions[f'blue_{idx}'][2])
 
                 blue_rw[idx] = 0.3*r_speed + 0.5*r_off + 0.5*r_def + 0.2*r_vel_theta
-                info[f'blue_{idx}']['r_speed'] = r_speed
-                info[f'blue_{idx}']['r_off'] = r_off    
-                info[f'blue_{idx}']['r_def'] = r_def
-                info[f'blue_{idx}']['r_vel_theta'] = r_vel_theta
 
                 # if idx == 0:
                 #     print(f"\nblue: {idx}")
@@ -153,14 +140,11 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
 
             blue_rw += 0.4*r_dist*np.ones(self.n_robots_blue)
             blue_rw_dict = {f'blue_{id}':rw for id, rw in enumerate(blue_rw)}
-            for i in range(self.n_robots_blue):
-                info[f'blue_{i}']['r_dist'] = r_dist
 
         if self.n_robots_yellow > 0:
             yellow_rw = np.zeros(self.n_robots_yellow)
             r_dist = -2.5
             for idx in range(self.n_robots_yellow):
-                info[f'yellow_{idx}'] = {}
                 yellow_robot = self.frame.robots_yellow[idx]
                 goal_adv = Goal(x=-0.2-self.field.length/2, y=0)
                 goal_ally = Goal(x=0.2+self.field.length/2, y=0)
@@ -172,17 +156,11 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
                 r_vel_theta = -abs(self.last_actions[f'yellow_{idx}'][2])
             
                 yellow_rw[idx] = 0.3*r_speed + 0.05*r_off + 0.05*r_def + 0.2*r_vel_theta
-                info[f'yellow_{idx}']['r_speed'] = r_speed
-                info[f'yellow_{idx}']['r_off'] = r_off
-                info[f'yellow_{idx}']['r_def'] = r_def
-                info[f'yellow_{idx}']['r_vel_theta'] = r_vel_theta
                 # print(f"\nyellow: {idx}")
                 # print(f'\tr_speed: {r_speed:.5f}\tr_dist: {r_dist:.5f}\tr_off: {r_off:.5f}\t\tr_def: {r_def:.5f}\tlast_w: {r_vel_theta:.5f}\ttotal: {0.3*r_speed + 0.05*r_off + 0.05*r_def + 0.4*r_dist + 0.2*r_vel_theta:.5f}\t')
 
             yellow_rw += 0.4*r_dist*np.ones(self.n_robots_blue)
             yellow_rw_dict = {f'yellow_{id}':rw for id, rw in enumerate(yellow_rw)}
-            for i in range(self.n_robots_yellow):
-                info[f'yellow_{i}']['r_dist'] = r_dist
 
 
         half_len = self.field.length/2 
@@ -209,7 +187,7 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
 
         reward = {**blue_rw_dict, **yellow_rw_dict}
         
-        return reward, done, info
+        return reward, done
     
         
     def __ball_dist_rw(self, ball, last_ball, robot, last_robot):
@@ -536,7 +514,7 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
 
         # Calculate environment observation, reward and done condition
         self._frame_to_observations()
-        reward, done, info = self._calculate_reward_done()
+        reward, done = self._calculate_reward_done()
 
         if self.steps >= self.max_ep_length:
             # done = {f'blue_{i}':True for i in range(self.n_robots_blue)}
@@ -546,40 +524,14 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
         infos = {
             **{f'blue_{i}': {} for i in range(self.n_robots_blue)},
             **{f'yellow_{i}': {} for i in range(self.n_robots_yellow)}
-        }
-
-        for i in range(self.n_robots_blue):
-            self.r_speed[f"blue_{i}"] += info[f'blue_{i}']['r_speed']
-            self.r_off[f"blue_{i}"] += info[f'blue_{i}']['r_off']
-            self.r_def[f"blue_{i}"] += info[f'blue_{i}']['r_def']
-            self.r_dist[f"blue_{i}"] += info[f'blue_{i}']['r_dist']
-            self.r_vel_theta[f"blue_{i}"] += info[f'blue_{i}']['r_vel_theta']
-        
-        for i in range(self.n_robots_yellow):
-            self.r_speed[f"yellow_{i}"] += info[f'yellow_{i}']['r_speed']
-            self.r_off[f"yellow_{i}"] += info[f'yellow_{i}']['r_off']
-            self.r_def[f"yellow_{i}"] += info[f'yellow_{i}']['r_def']
-            self.r_dist[f"yellow_{i}"] += info[f'yellow_{i}']['r_dist']
-            self.r_vel_theta[f"yellow_{i}"] += info[f'yellow_{i}']['r_vel_theta']
-
-        
+        }  
 
         if done.get("__all__", False):
             for i in range(self.n_robots_blue):
-                infos[f'blue_{i}']["score"] = self.score.copy()
-                infos[f'blue_{i}']['r_speed'] = self.r_speed[f"blue_{i}"]/self.steps      
-                infos[f'blue_{i}']['r_off'] = self.r_off[f"blue_{i}"]/self.steps 
-                infos[f'blue_{i}']['r_def'] = self.r_def[f"blue_{i}"]/self.steps
-                infos[f'blue_{i}']['r_dist'] = self.r_dist[f"blue_{i}"]/self.steps
-                infos[f'blue_{i}']['r_vel_theta'] = self.r_vel_theta[f"blue_{i}"]/self.steps         
+                infos[f'blue_{i}']["score"] = self.score.copy()    
 
             for i in range(self.n_robots_yellow):
                 infos[f'yellow_{i}']["score"] = self.score.copy()
-                infos[f'yellow_{i}']['r_speed'] = self.r_speed[f"yellow_{i}"]/self.steps
-                infos[f'yellow_{i}']['r_off'] = self.r_off[f"yellow_{i}"]/self.steps
-                infos[f'yellow_{i}']['r_def'] = self.r_def[f"yellow_{i}"]/self.steps
-                infos[f'yellow_{i}']['r_dist'] = self.r_dist[f"yellow_{i}"]/self.steps
-                infos[f'yellow_{i}']['r_vel_theta'] = self.r_vel_theta[f"yellow_{i}"]/self.steps
         
         return self.observations.copy(), reward, done, {"__all__": False}, infos
         
