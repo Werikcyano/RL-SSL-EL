@@ -53,6 +53,62 @@ class ScoreCounter:
     def get_score(self):
         return np.array(self.last100).mean()
 
+
+@ray.remote
+class RewardCounter:
+    def __init__(self, maxlen):
+        self.r_dist = {
+            **{f"blue_{i}": deque(maxlen=maxlen) for i in range(3)},
+            **{f"yellow_{i}": deque(maxlen=maxlen) for i in range(3)},
+        }
+        self.r_speed = {
+            **{f"blue_{i}": deque(maxlen=maxlen) for i in range(3)},
+            **{f"yellow_{i}": deque(maxlen=maxlen) for i in range(3)},
+        }   
+        self.r_off = {
+            **{f"blue_{i}": deque(maxlen=maxlen) for i in range(3)},
+            **{f"yellow_{i}": deque(maxlen=maxlen) for i in range(3)},
+        }   
+        self.r_def = {
+            **{f"blue_{i}": deque(maxlen=maxlen) for i in range(3)},
+            **{f"yellow_{i}": deque(maxlen=maxlen) for i in range(3)},
+        }   
+        self.r_vel_theta = {
+            **{f"blue_{i}": deque(maxlen=maxlen) for i in range(3)},
+            **{f"yellow_{i}": deque(maxlen=maxlen) for i in range(3)},
+        }  
+        self.maxlen = maxlen
+
+    def append(self, s: dict):
+        for agent in self.r_dist.keys():
+            self.r_dist[agent].append(s[agent]["r_dist"])
+            self.r_speed[agent].append(s[agent]["r_speed"])
+            self.r_off[agent].append(s[agent]["r_off"])
+            self.r_def[agent].append(s[agent]["r_def"])
+            self.r_vel_theta[agent].append(s[agent]["r_vel_theta"])
+
+    def reset(self):
+        agents = list(self.r_dist.keys())
+        for agent in agents:
+            self.r_dist[agent].extend([0.0 for _ in range(self.maxlen)])
+            self.r_speed[agent].extend([0.0 for _ in range(self.maxlen)])
+            self.r_off[agent].extend([0.0 for _ in range(self.maxlen)])
+            self.r_def[agent].extend([0.0 for _ in range(self.maxlen)])
+            self.r_vel_theta[agent].extend([0.0 for _ in range(self.maxlen)])
+
+    def get_reward(self):
+        rewards = {
+            agent: {
+                "r_dist": np.array(self.r_dist[agent]).mean(),
+                "r_speed": np.array(self.r_speed[agent]).mean(),
+                "r_off": np.array(self.r_off[agent]).mean(),
+                "r_def": np.array(self.r_def[agent]).mean(),
+                "r_vel_theta": np.array(self.r_vel_theta[agent]).mean(),
+            } for agent in self.r_dist.keys()
+        }
+        return rewards
+    
+
 class SelfPlayUpdateCallback(DefaultCallbacks):
     def __init__(self, legacy_callbacks_dict: Dict[str, callable] = None):
 
@@ -73,6 +129,12 @@ class SelfPlayUpdateCallback(DefaultCallbacks):
         score_counter = ray.get_actor("score_counter")
         score_counter.append.remote(single_score)
 
+        info_geral = {}
+        for agent in ["blue_0", "blue_1", "blue_2", "yellow_0", "yellow_1", "yellow_2"]:
+            info_geral[agent] = episode.last_info_for(agent)
+        reward_counter = ray.get_actor("reward_counter")
+        reward_counter.append.remote(info_geral)
+
     def on_train_result(self, **info):
         """
         Update multiagent oponent weights when score is high enough
@@ -81,6 +143,17 @@ class SelfPlayUpdateCallback(DefaultCallbacks):
         current_score = ray.get(score_counter.get_score.remote())
 
         info["result"]["custom_metrics"]["score"] = current_score
+
+
+        reward_counter = ray.get_actor("reward_counter")
+        current_reward = ray.get(reward_counter.get_reward.remote())
+        for agent in ["blue_0", "blue_1", "blue_2", "yellow_0", "yellow_1", "yellow_2"]:
+            info["result"]["custom_metrics"][agent] = {}
+            info["result"]["custom_metrics"][agent]["r_dist"] = current_reward[agent]["r_dist"]
+            info["result"]["custom_metrics"][agent]["r_speed"] = current_reward[agent]["r_speed"]
+            info["result"]["custom_metrics"][agent]["r_off"] = current_reward[agent]["r_off"]
+            info["result"]["custom_metrics"][agent]["r_def"] = current_reward[agent]["r_def"]
+            info["result"]["custom_metrics"][agent]["r_vel_theta"] = current_reward[agent]["r_vel_theta"]
 
         if current_score > 0.6:
             print("---- Updating Opponent!!! ----")
@@ -104,6 +177,10 @@ if __name__ == "__main__":
     configs = {**file_configs["rllib"], **file_configs["PPO"]}
 
     counter = ScoreCounter.options(name="score_counter").remote(
+        maxlen=file_configs["score_average_over"]
+    )
+
+    reward_counter = RewardCounter.options(name="reward_counter").remote(
         maxlen=file_configs["score_average_over"]
     )
 
