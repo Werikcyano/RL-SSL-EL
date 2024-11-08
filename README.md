@@ -43,6 +43,7 @@ Em outro terminal fora do container rode:
     xhost +local:root
     
 Dentro do container coloque:
+
     python render_episode.py
 
 **Para treinar o modelo**
