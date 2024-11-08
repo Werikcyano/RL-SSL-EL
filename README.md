@@ -13,12 +13,13 @@ Um robô pode possui 4 ações continuas: alterar velocidade no eixo x, alterar 
 Um robô a cada iteração com o ambiente coleta observações sobre ele. Essas informações coletadas são compostas pelas coordenadas dos robôs e da bola, distância e ângulos entre os aliados e adversários e tempo restante da partida. Assim, cada robô tem como obsevação um vetor de 77 valores.
 
 ## Recompensa
-As recompensas são calculadas com base em 4 aspectos, 2 deles sendo compartilhados pelo time e os outros 2 individuais. Os compartilhados são velocidade da bola (r_speed) e distancia até a bola do robô aliado mais próximo da bola (r_dist). As inviduais medem o quão ofensiva e defensiva a posição do robô é no momento, a ofensiva (r_off) é o ângulo entre robô, bola e o gol do adversário, a defensiva (r_def) é o angulo entre gol aliado, o robô e a bola. No fim, a composiçào da recompensa final é: 
+As recompensas são calculadas com base em 4 aspectos, 2 deles sendo compartilhados pelo time e os outros 2 individuais. Os compartilhados são velocidade da bola (r_speed) e distancia até a bola do robô aliado mais próximo da bola (r_dist). As inviduais medem o quão ofensiva e defensiva a posição do robô é no momento, a ofensiva (r_off) é o ângulo entre robô, bola e o gol do adversário, a defensiva (r_def) é o angulo entre gol aliado, o robô e a bola. Além disso, há também o componente relacionada a rotação do robô (v_theta), penalizando movimentos desnecessários. No fim, a composiçào da recompensa final é: 
 
-- 70% da r_speed
-- 10% da r_dist
-- 10% da r_off
-- 10% da r_def
+- 30% da r_speed
+- 40% da r_dist
+- 5% da r_off
+- 5% da r_def
+- 20% da v_theta
 
 # Rodando o código
 
@@ -37,7 +38,10 @@ As recompensas são calculadas com base em 4 aspectos, 2 deles sendo compartilha
     docker run --gpus all --name pequi-ssl -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -it pequi-ssl
 
 **Para renderizar um episódio**
-
+Em outro terminal fora do container rode:
+    xhost +local:root
+    
+Dentro do container coloque:
     python render_episode.py
 
 **Para treinar o modelo**
