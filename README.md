@@ -37,8 +37,9 @@ As recompensas são calculadas com base em 4 aspectos, 2 deles sendo compartilha
 
     docker run --gpus all --name pequi-ssl -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -it pequi-ssl
 
-**Para renderizar um episódio**
+**Para renderizar um episódio** \
 Em outro terminal fora do container rode:
+
     xhost +local:root
     
 Dentro do container coloque:
