@@ -132,13 +132,13 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
                 r_def = self._get_3dots_angle_between(goal_ally, blue_robot, ball)[2] - 1
                 r_vel_theta = -abs(self.last_actions[f'blue_{idx}'][2])
 
-                blue_rw[idx] = 0.3*r_speed + 0.5*r_off + 0.5*r_def + 0.2*r_vel_theta
+                blue_rw[idx] = 0.7*r_speed + 0.1*r_off + 0.1*r_def #+ 0.2*r_vel_theta
 
                 # if idx == 0:
                 #     print(f"\nblue: {idx}")
                 #     print(f'\tr_speed: {r_speed:.5f}\tr_dist: {r_dist:.5f}\tr_off: {r_off:.5f}\t\tr_def: {r_def:.5f}\tlast_w: {r_vel_theta:.5f}\ttotal: {0.3*r_speed + 0.05*r_off + 0.05*r_def + 0.4*r_dist + 0.2*r_vel_theta:.5f}\t')
 
-            blue_rw += 0.4*r_dist*np.ones(self.n_robots_blue)
+            blue_rw += 0.1*r_dist*np.ones(self.n_robots_blue)
             blue_rw_dict = {f'blue_{id}':rw for id, rw in enumerate(blue_rw)}
 
         if self.n_robots_yellow > 0:
@@ -155,11 +155,11 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
                 r_def = self._get_3dots_angle_between(goal_ally, yellow_robot, ball)[2] - 1
                 r_vel_theta = -abs(self.last_actions[f'yellow_{idx}'][2])
             
-                yellow_rw[idx] = 0.3*r_speed + 0.05*r_off + 0.05*r_def + 0.2*r_vel_theta
+                yellow_rw[idx] = 0.7*r_speed + 0.1*r_off + 0.1*r_def #+ 0.2*r_vel_theta
                 # print(f"\nyellow: {idx}")
                 # print(f'\tr_speed: {r_speed:.5f}\tr_dist: {r_dist:.5f}\tr_off: {r_off:.5f}\t\tr_def: {r_def:.5f}\tlast_w: {r_vel_theta:.5f}\ttotal: {0.3*r_speed + 0.05*r_off + 0.05*r_def + 0.4*r_dist + 0.2*r_vel_theta:.5f}\t')
 
-            yellow_rw += 0.4*r_dist*np.ones(self.n_robots_blue)
+            yellow_rw += 0.1*r_dist*np.ones(self.n_robots_blue)
             yellow_rw_dict = {f'yellow_{id}':rw for id, rw in enumerate(yellow_rw)}
 
 
