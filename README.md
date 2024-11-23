@@ -19,7 +19,31 @@ Um robô pode possui 4 ações continuas: alterar velocidade no eixo x, alterar 
 
 
 ## Espaço de observações
-Um robô a cada iteração com o ambiente coleta observações sobre ele. Essas informações coletadas são compostas pelas coordenadas dos robôs e da bola, distância e ângulos entre os aliados e adversários e tempo restante da partida. Assim, cada robô tem como obsevação um vetor de 77 valores.
+Um robô a cada iteração com o ambiente, uma observação é contruída a partir das coordenadas dos robôs aliados, adversários e da bola. As features que compõe a observação são construídas manualmente, são elas:
+
+**1. Posições:**
+* Robôs aliados
+* Robôs adversários
+* Bola.
+
+**2. Distâncias:**
+
+* Bola para o robô
+* Bola para gol aliado, 
+* Bola para gol adversário
+
+**3. Orientações (seno, cosseno e ângulo):** 
+* Robôs aliados
+* Robôs adversários
+
+**4. Ângulo das retas em relação a horizontal (seno, cosseno e ângulo):**
+* Do robô para os aliados
+* Do robô para os adversários
+* Do robô para a bola
+
+**5. tempo restante da partida**
+
+Ao todo, cada robô tem como obsevação concatenção de todas essa features, o que gera um vetor de 77 valores. Além disso, os últimos 7 vetores observação são concatenados com a atual, totalizando 8 x 77 = 616 valores de input para rede da política. Todos os valores são normalizadas para estarem entre 0 e 1.
 
 ## Recompensa
 Para guiar o aprendizado dos agentes há as recompensas contínuas, que dâo feedback a cada step no ambiente, e as esparsas, aquelas que acontecem apenas em algumas situações. As recompensas contínuas são calculadas com base em quatro aspectos, duas delas sendo compartilhadas pelo time e as outras duas individuais. Os compartilhados são velocidade da bola (r_speed) e distancia até a bola do robô aliado mais próximo da bola (r_dist). As inviduais medem o quão ofensiva e defensiva a posição do robô é no momento, a ofensiva (r_off) é o ângulo entre robô, bola e o gol do adversário, a defensiva (r_def) é o angulo entre gol aliado, o robô e a bola. Essas quatro recompensas são combinadas linearmente, de tal forma que a recompensa total a cada step fique entre -1 e 1. No fim, a equação da recompensa total é:
@@ -34,7 +58,7 @@ Em relação as recompensas esparsas há um total de 2, a primeira delas está r
 
 $$GOAL_{REWARD} = 10$$
 
-$$OUTSIDE_{REWARD} = -10$$$
+$$OUTSIDE_{REWARD} = -10$$
 
 # Preparando o container
 
