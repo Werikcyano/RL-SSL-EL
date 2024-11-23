@@ -2,6 +2,7 @@ import numpy as np
 import gym
 import torch
 from math import log
+import os
 
 from ray.rllib.models.torch.torch_modelv2 import TorchModelV2
 from ray.rllib.utils.annotations import DeveloperAPI, override
@@ -12,6 +13,7 @@ from ray.rllib.models.action_dist import ActionDistribution
 
 from ray.rllib.utils.numpy import SMALL_NUMBER
 
+os.environ["PYTHONWARNINGS"] = "ignore::DeprecationWarning"
 
 class TorchBetaTest(TorchDistributionWrapper):
     """
@@ -26,8 +28,9 @@ class TorchBetaTest(TorchDistributionWrapper):
         self,
         inputs: List[TensorType],
         model: TorchModelV2,
-        low: float = 0.0,
+        low: float = -1.0,
         high: float = 1.0,
+        signal: list = [1, 1, 1, 1],
     ):
         super().__init__(inputs, model)
         # Stabilize input parameters (possibly coming from a linear layer).
@@ -38,11 +41,13 @@ class TorchBetaTest(TorchDistributionWrapper):
         alpha, beta = torch.chunk(self.inputs, 2, dim=-1)
         # Note: concentration0==beta, concentration1=alpha (!)
         self.dist = torch.distributions.Beta(concentration1=alpha, concentration0=beta)
+        self.signal = torch.tensor(signal)
+        self.device = "cuda" if torch.cuda.is_available() else "cpu"
 
     @override(ActionDistribution)
     def deterministic_sample(self) -> TensorType:
         self.last_sample = self._squash(self.dist.mean)
-        return self.last_sample
+        return self.signal.to(self.device) * self.last_sample
 
     @override(TorchDistributionWrapper)
     def sample(self) -> TensorType:
@@ -50,7 +55,8 @@ class TorchBetaTest(TorchDistributionWrapper):
         # the results to be backprop'able e.g. in a loss term.
         normal_sample = self.dist.rsample()
         self.last_sample = self._squash(normal_sample)
-        return self.last_sample
+
+        return self.signal.to(self.device) * self.last_sample
 
     @override(ActionDistribution)
     def logp(self, x: TensorType) -> TensorType:
@@ -75,35 +81,10 @@ class TorchBetaTest(TorchDistributionWrapper):
         return np.prod(action_space.shape) * 2
 
 
-# class BetaDist(ActionDistribution):
-#     def __init__(self, inputs: List[TensorType], model: ModelV2):
-#         super().__init__(inputs, model)
+class TorchBetaTest_yellow(TorchBetaTest):
+    def __init__(self, inputs: List[TensorType], model: TorchModelV2):
+        super().__init__(inputs, model, signal=[-1, 1, 1, 1])
 
-#         self.inputs  = self.inputs + 1.0
-
-#         alpha, beta = torch.chunk(self.inputs, 2, dim=-1)
-#         # Note: concentration0==beta, concentration1=alpha (!)
-#         self.dist = torch.distributions.Beta(
-#             concentration1=alpha, concentration0=beta)
-
-#     def sample(self) -> TensorType:
-#         # Use the reparameterization version of `dist.sample` to allow for
-#         # the results to be backprop'able e.g. in a loss term.
-#         self.last_sample = self.dist.rsample()
-#         return self.last_sample
-
-#     def deterministic_sample(self) -> TensorType:
-#         self.last_sample = self.dist.mean
-#         return self.last_sample
-
-#     def sampled_action_logp(self) -> TensorType:
-#         return
-
-#     def logp(self, x: TensorType) -> TensorType:
-#         return super().logp(x)
-
-#     def kl(self, other: "ActionDistribution") -> TensorType:
-#         return super().kl(other)
-
-#     def entropy(self) -> TensorType:
-#         return super().entropy()
+class TorchBetaTest_blue(TorchBetaTest):
+    def __init__(self, inputs: List[TensorType], model: TorchModelV2):
+        super().__init__(inputs, model, signal=[1, 1, 1, 1])

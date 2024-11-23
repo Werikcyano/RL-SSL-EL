@@ -1,11 +1,11 @@
 score_average_over: 100
-timesteps_total: 32000000 # Controla numero maximo de timesteps
-checkpoint_freq: 20 # Salvar checkpoint a cada 100 iterações 
-checkpoint_restore: "/root/ray_results/PPO_selfplay_rec/PPO_Soccer_7a9b2_00000_0_2024-11-07_22-41-50/checkpoint_000002" # Caminho para restaurar checkpoint
+timesteps_total: 160000000 # Controla numero maximo de timesteps
+checkpoint_freq: 50 # Salvar checkpoint a cada 100 iterações 
+checkpoint_restore: "/root/ray_results/PPO_selfplay_rec/PPO_Soccer_95caf_00000_0_2024-11-21_02-23-24/checkpoint_000001" # Caminho para restaurar checkpoint
 rllib:
-  num_cpus: 6  # Depende do num_workers, tem que ser igual ou maior
+  num_cpus: 7  # Depende do num_workers, tem que ser igual ou maior
   num_gpus: 1
-  num_workers: 5  # Número de ambientes em paralelo, quanto maior, mais rápido
+  num_workers: 6  # Número de ambientes em paralelo, quanto maior, mais rápido
   num_envs_per_worker: 2 # Número de ambientes por worker, quanto maior, mais rápido
   #num_gpus_per_worker: 0.2 # fração de GPU usado por cada worker (< 1/num_workers), pode melhorar a performance, mas tem que investigar mais
   framework: "torch"
@@ -13,26 +13,35 @@ rllib:
 PPO:
   batch_mode: "truncate_episodes"
   rollout_fragment_length: "auto"
-  train_batch_size: 19260 #workers*envs*fragment
-  sgd_minibatch_size: 6420 #batch/3
+  train_batch_size: 38520 #workers*envs*fragment
+  sgd_minibatch_size: 12840 #batch/3
   gamma: 0.99
   lambda: 0.95
-  entropy_coeff: 0.0
+  entropy_coeff: 0.01
+  #entropy_coeff_schedule: [[0, 1], [1000000, 0.01]]
   kl_coeff: 0.0
   lr: 0.0004
   vf_loss_coeff: 0.5
-  # max_grad_norm=0.5,
+  grad_clip: 0.5 # deve ajudar a resolver o problema dos NaNs no pesos da rede
   num_sgd_iter: 5
   clip_param: 0.2
   vf_clip_param: 100000.0 # essentially turning vf_clip off
-
   normalize_actions: false
 
+evaluation:
+  evaluation_interval: 1
+  evaluation_num_workers: 0
+  evaluation_duration: 1
+  evaluation_duration_unit: "episodes"
+  evaluation_config:
+    env: "Soccer_recorder"
+    num_envs_per_worker: 1
+  
 custom_model:
   fcnet_hiddens: [300, 200, 100]
   vf_share_layers: false
 env:
-  init_pos:
+  init_pos: # posição inicial dos jogadores
     blue:
       1: [-1.5,  0.0,    0.0]
       2: [-2.0,  1.0,    0.0]
@@ -41,6 +50,7 @@ env:
       1: [ 1.5,  0.0,  180.0]
       2: [ 2.0,  1.0,  180.0]
       3: [ 2.0, -1.0,  180.0]
-  field_type: 2
-  fps: 30 # frames per second
-  match_time: 40 # total seconds of match
+  field_type: 0
+  fps: 30 # frames por segundo
+  match_time: 40 # duração da partida em segundos
+  render_mode: "human"

@@ -5,13 +5,16 @@ from ray import air, tune
 from ray.rllib.algorithms.ppo import PPOConfig
 from ray.rllib.models import ModelCatalog
 import os
+import numpy as np
 
 from custom_torch_model import CustomFCNet
-from action_dists import TorchBetaTest
+from action_dists import TorchBetaTest, TorchBetaTest_blue, TorchBetaTest_yellow
 from rsoccer_gym.ssl.ssl_multi_agent.ssl_multi_agent import SSLMultiAgentEnv
 import time
 
 ray.init()
+
+CHECKPOINT_PATH = "/root/ray_results/PPO_selfplay_rec/PPO_Soccer_95caf_00000_0_2024-11-21_02-23-24/checkpoint_000001"
 
 def create_rllib_env(config):
     #breakpoint()
@@ -41,14 +44,15 @@ act_space = temp_env.action_space["blue_0"]
 temp_env.close()
 
 # Register the models to use.
-ModelCatalog.register_custom_action_dist("beta_dist", TorchBetaTest)
+ModelCatalog.register_custom_action_dist("beta_dist_blue", TorchBetaTest_blue)
+ModelCatalog.register_custom_action_dist("beta_dist_yellow", TorchBetaTest_yellow)
 ModelCatalog.register_custom_model("custom_vf_model", CustomFCNet)
 # Each policy can have a different configuration (including custom model).
 
 configs["multiagent"] = {
     "policies": {
-        "policy_blue": (None, obs_space, act_space, {}),
-        "policy_yellow": (None, obs_space, act_space, {}),
+        "policy_blue": (None, obs_space, act_space, {'model': {'custom_action_dist': 'beta_dist_blue'}}),
+        "policy_yellow": (None, obs_space, act_space, {'model': {'custom_action_dist': 'beta_dist_yellow'}}),
     },
     "policy_mapping_fn": policy_mapping_fn,
     "policies_to_train": ["policy_blue"],
@@ -61,20 +65,31 @@ configs["model"] = {
 configs["env"] = "Soccer"
 
 agent = PPOConfig.from_dict(configs).build()
-#print(os.listdir('root/ray_results/PPO_selfplay_rec/PPO_Soccer_d9221_00000_0_2024-11-02_13-46-23'))
-agent.restore('/root/ray_results/PPO_selfplay_rec/PPO_Soccer_7a9b2_00000_0_2024-11-07_22-41-50/checkpoint_000002')
 
+agent.restore(CHECKPOINT_PATH)
+
+configs["env_config"]["match_time"] = 40
 env = SSLMultiAgentEnv(**configs["env_config"])
 obs, *_ = env.reset()
 
 done= {'__all__': False}
+e= 0.05
 while True:
-    a = agent.compute_actions(obs, policy_id='policy_blue', full_fetch=False)
+    o_blue = {f"blue_{i}": obs[f"blue_{i}"] for i in range(3)}
+    o_yellow = {f"yellow_{i}": obs[f"yellow_{i}"] for i in range(3)}
+
+    a = {
+        **agent.compute_actions(o_blue, policy_id='policy_blue', full_fetch=False),
+        **agent.compute_actions(o_yellow, policy_id='policy_yellow', full_fetch=False)
+    }
+
+    if np.random.rand() < e:
+         a = env.action_space.sample()
+
     obs, reward, done, truncated, info = env.step(a)
     env.render()
-    # print(reward)
 
-    if done['__all__']:
+    if done['__all__'] or truncated['__all__']:
 
         obs, *_ = env.reset()
-    time.sleep(0.1)
+    #time.sleep(1)

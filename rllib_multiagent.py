@@ -1,32 +1,32 @@
 import argparse
 import os
 import yaml
-import random
 from collections import deque
 import numpy as np
 from typing import Dict
 
 import ray
 from ray import air, tune
-from ray.rllib.algorithms.ppo import PPOConfig
 from ray.rllib.algorithms.callbacks import DefaultCallbacks
 from ray.rllib.models import ModelCatalog
-from ray.rllib.policy.policy import PolicySpec
 from ray.rllib.evaluation.episode import Episode
-from ray.rllib.models.torch.fcnet import (
-    FullyConnectedNetwork as TorchFullyConnectedNetwork,
-)
 
 from custom_torch_model import CustomFCNet
-from action_dists import TorchBetaTest
-from rsoccer_gym.ssl.ssl_multi_agent.ssl_multi_agent import SSLMultiAgentEnv
+from action_dists import TorchBetaTest_blue, TorchBetaTest_yellow
+from rsoccer_gym.ssl.ssl_multi_agent.ssl_multi_agent import SSLMultiAgentEnv, SSLMultiAgentEnv_record
 
-import tqdm
 from torch.utils.tensorboard import SummaryWriter
 import os
 
 # RAY_PDB=1 python rllib_multiagent.py
 # ray debug
+
+def create_rllib_env_recorder(config):
+    trigger = lambda t: t % 1 == 0
+    config["render_mode"] = "rgb_array"
+    ssl_el_env = SSLMultiAgentEnv(**config)
+    return SSLMultiAgentEnv_record(ssl_el_env, video_folder="/ws/videos", episode_trigger=trigger, disable_logger=True)
+
 def create_rllib_env(config):
     return SSLMultiAgentEnv(**config)
 
@@ -92,14 +92,17 @@ class SelfPlayUpdateCallback(DefaultCallbacks):
                 }
             )
             score_counter = ray.get_actor("score_counter")
-            score_counter.restart.remote()
+            score_counter.reset.remote()
 
+parser = argparse.ArgumentParser(description="Treina multiagent SSL-EL.")
+parser.add_argument("--evaluation", action="store_true", help="Irá renderizar um episódio de tempos em tempos.")
 
 if __name__ == "__main__":
+    args = parser.parse_args()
+
     ray.init()
 
     with open("config.yaml") as f:
-        # use safe_load instead load
         file_configs = yaml.safe_load(f)
     
     configs = {**file_configs["rllib"], **file_configs["PPO"]}
@@ -110,13 +113,15 @@ if __name__ == "__main__":
     configs["env_config"] = file_configs["env"]
 
     tune.registry.register_env("Soccer", create_rllib_env)
+    tune.registry.register_env("Soccer_recorder", create_rllib_env_recorder)
     temp_env = create_rllib_env(configs["env_config"])
     obs_space = temp_env.observation_space["blue_0"]
     act_space = temp_env.action_space["blue_0"]
     temp_env.close()
 
     # Register the models to use.
-    ModelCatalog.register_custom_action_dist("beta_dist", TorchBetaTest)
+    ModelCatalog.register_custom_action_dist("beta_dist_blue", TorchBetaTest_blue)
+    ModelCatalog.register_custom_action_dist("beta_dist_yellow", TorchBetaTest_yellow)
     ModelCatalog.register_custom_model("custom_vf_model", CustomFCNet)
     # Each policy can have a different configuration (including custom model).
 
@@ -124,8 +129,8 @@ if __name__ == "__main__":
     configs["callbacks"] = SelfPlayUpdateCallback
     configs["multiagent"] = {
         "policies": {
-            "policy_blue": (None, obs_space, act_space, {}),
-            "policy_yellow": (None, obs_space, act_space, {}),
+            "policy_blue": (None, obs_space, act_space, {'model': {'custom_action_dist': 'beta_dist_blue'}}),
+            "policy_yellow": (None, obs_space, act_space, {'model': {'custom_action_dist': 'beta_dist_yellow'}}),
         },
         "policy_mapping_fn": policy_mapping_fn,
         "policies_to_train": ["policy_blue"],
@@ -137,14 +142,22 @@ if __name__ == "__main__":
     }
     configs["env"] = "Soccer"
 
+    if args.evaluation:
+        eval_configs = file_configs["evaluation"].copy()
+        env_config_eval = file_configs["env"].copy()
+        configs["evaluation_interval"] = eval_configs["evaluation_interval"]
+        configs["evaluation_num_workers"] = eval_configs["evaluation_num_workers"]
+        configs["evaluation_duration"] = eval_configs["evaluation_duration"]
+        configs["evaluation_duration_unit"] =  eval_configs["evaluation_duration_unit"]
+        configs["evaluation_config"] = eval_configs["evaluation_config"].copy()
+        configs["evaluation_config"]["env_config"] = env_config_eval
+
     analysis = tune.run(
         "PPO",
         name="PPO_selfplay_rec",
         config=configs,
         stop={
             "timesteps_total": int(file_configs["timesteps_total"]),
-            # "time_total_s": 7200, #2h
-            # "time_total_s": 60*60, #1h
         },
         checkpoint_freq=int(file_configs["checkpoint_freq"]),
         checkpoint_at_end=True,
@@ -153,10 +166,9 @@ if __name__ == "__main__":
         restore=file_configs["checkpoint_restore"],
     )
 
-    # Gets best trial based on max accuracy across all training iterations.
     best_trial = analysis.get_best_trial("episode_reward_mean", mode="max")
     print(best_trial)
-    # Gets best checkpoint for trial based on accuracy.
+
     best_checkpoint = analysis.get_best_checkpoint(
         trial=best_trial, metric="episode_reward_mean", mode="max"
     )

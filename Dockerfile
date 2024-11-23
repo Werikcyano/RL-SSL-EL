@@ -34,9 +34,10 @@ RUN pip install torch --index-url https://download.pytorch.org/whl/cu118
 # Instalar rSim
 RUN pip install git+https://github.com/Pequi-Mecanico-SSL/rSim.git
 
-RUN mkdir /root/ray_results
-RUN mkdir /root/ray_results/PPO_selfplay_rec
-COPY dgx_checkpoints/PPO_selfplay_rec /root/ray_results/PPO_selfplay_rec
+RUN mkdir videos
+COPY record_video.py ../usr/local/lib/python3.10/site-packages/gymnasium/wrappers/record_video.py
+COPY video_recorder.py ../usr/local/lib/python3.10/site-packages/gymnasium/wrappers/monitoring/video_recorder.py
+COPY test.py .
 
 # Copy the rSoccer directory
 RUN mkdir /rsoccer_gym
