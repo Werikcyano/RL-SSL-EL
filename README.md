@@ -22,13 +22,19 @@ Um robô pode possui 4 ações continuas: alterar velocidade no eixo x, alterar 
 Um robô a cada iteração com o ambiente coleta observações sobre ele. Essas informações coletadas são compostas pelas coordenadas dos robôs e da bola, distância e ângulos entre os aliados e adversários e tempo restante da partida. Assim, cada robô tem como obsevação um vetor de 77 valores.
 
 ## Recompensa
-As recompensas são calculadas com base em 4 aspectos, 2 deles sendo compartilhados pelo time e os outros 2 individuais. Os compartilhados são velocidade da bola (r_speed) e distancia até a bola do robô aliado mais próximo da bola (r_dist). As inviduais medem o quão ofensiva e defensiva a posição do robô é no momento, a ofensiva (r_off) é o ângulo entre robô, bola e o gol do adversário, a defensiva (r_def) é o angulo entre gol aliado, o robô e a bola. No fim, a composiçào da recompensa final é: 
+Para guiar o aprendizado dos agentes há as recompensas contínuas, que dâo feedback a cada step no ambiente, e as esparsas, aquelas que acontecem apenas em algumas situações. As recompensas contínuas são calculadas com base em quatro aspectos, duas delas sendo compartilhadas pelo time e as outras duas individuais. Os compartilhados são velocidade da bola (r_speed) e distancia até a bola do robô aliado mais próximo da bola (r_dist). As inviduais medem o quão ofensiva e defensiva a posição do robô é no momento, a ofensiva (r_off) é o ângulo entre robô, bola e o gol do adversário, a defensiva (r_def) é o angulo entre gol aliado, o robô e a bola. Essas quatro recompensas são combinadas linearmente, de tal forma que a recompensa total a cada step fique entre -1 e 1. No fim, a equação da recompensa total é:
 
 $$R_{total} = 0.7R_{speed} + 0.1R_{dist} + 0.1R_{off} + 0.1R_{def}$$
 
 <div align="center">
   <img src="./images/rewards.png" alt="Descrição da imagem" width="800">
 </div>
+
+Em relação as recompensas esparsas há um total de 2, a primeira delas está relacionada ao gol marcado e a segunda quando a bola saí de campo:
+
+$$GOAL_{REWARD} = 10$$
+
+$$OUTSIDE_{REWARD} = -10$$$
 
 # Preparando o container
 
@@ -61,6 +67,7 @@ Em outro terminal fora do container rode:
     
 # Dentro do container
 Uma vez dentro do container é possível treinar os agentes no ambiente usando o rllib ou analisar um checkpoint já treinado rederizando o ambiente.
+
 ## 1. Para realizar um treinamento com rllib
 Vá no arquivo `config.yaml`  e mude as configurações que achar necessário, nele é possível alterar configurações do PPO, do ambiente, da rede neural, treinamento e validação. Os valores padrões já devem conseguir apreder algo.
 
