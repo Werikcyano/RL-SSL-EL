@@ -70,6 +70,10 @@ Após isso, rode o comando abaixo para treinar salvando alguns episódios com mp
 
 Caso queira apenas treinar, sem salvar nenhum video, basta tirar a `flag --evaluation`
 
+Acompanhe as métricas do treino em tempo real com tensorboard, vá em um terminal fora do container dentro do projeto e rode:
+
+    tensorboard --logdir=dgx_checkpoints
+
 ## 2. Para analisar um checkpoint treinado
 Olhe a pasta dgx_checkpoints (volume) fora do container, se você já realizou algo treinamento seguindo o passo 1, seu checkpoint deve estar lá. O nome da pasta de um checkpoint é parecido com algo como:
 
@@ -92,4 +96,3 @@ Com tudo configurado, agora rode o `render_episode.py`
     python render_episode.py
     
 Caso não esteja reconhecendo a gpu, tente instalar o [nvidia container toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html#installing-with-apt) ou mudar a versão do cuda no dockerfile
-
