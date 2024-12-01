@@ -46,7 +46,7 @@ Um robô a cada iteração com o ambiente, uma observação é contruída a part
 Ao todo, cada robô tem como obsevação concatenção de todas essa features, o que gera um vetor de 77 valores. Além disso, os últimos 7 vetores observação são concatenados com a atual, totalizando 8 x 77 = 616 valores de input para rede da política. Todos os valores são normalizadas para estarem entre 0 e 1.
 
 ## Recompensa
-Para guiar o aprendizado dos agentes há as recompensas contínuas, que dâo feedback a cada step no ambiente, e as esparsas, aquelas que acontecem apenas em algumas situações. As recompensas contínuas são calculadas com base em quatro aspectos, duas delas sendo compartilhadas pelo time e as outras duas individuais. Os compartilhados são velocidade da bola (r_speed) e distancia até a bola do robô aliado mais próximo da bola (r_dist). As inviduais medem o quão ofensiva e defensiva a posição do robô é no momento, a ofensiva (r_off) é o ângulo entre robô, bola e o gol do adversário, a defensiva (r_def) é o angulo entre gol aliado, o robô e a bola. Essas quatro recompensas são combinadas linearmente, de tal forma que a recompensa total a cada step fique entre -1 e 1. No fim, a equação da recompensa total é:
+Para guiar o aprendizado dos agentes há as recompensas contínuas, que dâo feedback a cada step no ambiente, e as esparsas, aquelas que acontecem apenas em algumas situações. As recompensas contínuas são calculadas com base em quatro aspectos, duas delas sendo compartilhadas pelo time e as outras duas individuais. Os compartilhados são velocidade da bola (r_speed) e a distancia até a bola do robô aliado mais próximo (r_dist). As individuais medem o quão ofensiva e defensiva a posição do robô é no momento, a ofensiva (r_off) é o ângulo entre o robô, a bola e o gol do adversário, a defensiva (r_def) é o ângulo entre o gol aliado, o robô e a bola. Essas quatro recompensas são combinadas linearmente, de tal forma que a recompensa total a cada step fique entre -1 e 1. No fim, a equação da recompensa total é:
 
 $$R_{total} = 0.7R_{speed} + 0.1R_{dist} + 0.1R_{off} + 0.1R_{def}$$
 
@@ -70,7 +70,7 @@ $$OUTSIDE_{REWARD} = -10$$
 
 **Construa a imagem:**
 
-    Docker build -t ssl-el .
+    docker build -t ssl-el .
 
 **Rode o container**
 
