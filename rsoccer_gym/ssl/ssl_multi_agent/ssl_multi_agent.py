@@ -311,7 +311,7 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
         vec1 = p1 - p2
         vec2 = p3 - p2
 
-        cos_theta = np.arccos(np.dot(vec1, vec2)/ (np.linalg.norm(vec1) * np.linalg.norm(vec2)))
+        cos_theta = np.dot(vec1, vec2)/ (np.linalg.norm(vec1) * np.linalg.norm(vec2))
         cos_theta = np.clip(cos_theta, -1.0, 1.0)
         theta = np.arccos(cos_theta)
 
