@@ -97,7 +97,7 @@ Vá no arquivo `config.yaml`  e mude as configurações que achar necessário, n
 
 Após isso, rode o comando abaixo para treinar salvando alguns episódios com mp4 durante a treinamento. 
 
-    python render_episode.py --evaluation
+    python rllib_multiagent.py --evaluation
 
 Caso queira apenas treinar, sem salvar nenhum video, basta tirar a `flag --evaluation`
 
