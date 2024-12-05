@@ -83,7 +83,7 @@ class TorchBetaTest(TorchDistributionWrapper):
 
 class TorchBetaTest_yellow(TorchBetaTest):
     def __init__(self, inputs: List[TensorType], model: TorchModelV2):
-        super().__init__(inputs, model, signal=[-1, 1, 1, 1])
+        super().__init__(inputs, model, signal=[-1, 1, -1, 1])
 
 class TorchBetaTest_blue(TorchBetaTest):
     def __init__(self, inputs: List[TensorType], model: TorchModelV2):
