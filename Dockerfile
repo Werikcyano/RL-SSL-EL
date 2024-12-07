@@ -37,7 +37,6 @@ RUN pip install git+https://github.com/Pequi-Mecanico-SSL/rSim.git
 RUN mkdir videos
 COPY record_video.py ../usr/local/lib/python3.10/site-packages/gymnasium/wrappers/record_video.py
 COPY video_recorder.py ../usr/local/lib/python3.10/site-packages/gymnasium/wrappers/monitoring/video_recorder.py
-COPY test.py .
 
 # Copy the rSoccer directory
 RUN mkdir /rsoccer_gym
