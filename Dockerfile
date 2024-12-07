@@ -48,6 +48,8 @@ COPY action_dists.py .
 COPY custom_torch_model.py .
 COPY config.yaml .
 COPY render_episode.py .
+COPY sim2real /ws/sim2real
+COPY sim2real.py .
 
 RUN mkdir /ws/volume
 RUN mkdir /ws/scripts
