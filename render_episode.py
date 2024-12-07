@@ -11,10 +11,11 @@ from custom_torch_model import CustomFCNet
 from action_dists import TorchBetaTest, TorchBetaTest_blue, TorchBetaTest_yellow
 from rsoccer_gym.ssl.ssl_multi_agent.ssl_multi_agent import SSLMultiAgentEnv
 import time
+import random
 
 ray.init()
 
-CHECKPOINT_PATH = "/root/ray_results/PPO_selfplay_rec/PPO_Soccer_95caf_00000_0_2024-11-21_02-23-24/checkpoint_000001"
+CHECKPOINT_PATH = "/root/ray_results/PPO_selfplay_rec/PPO_Soccer_28842_00000_0_2024-12-06_02-52-40/checkpoint_000007"
 
 def create_rllib_env(config):
     #breakpoint()
@@ -35,7 +36,7 @@ configs = {**file_configs["rllib"], **file_configs["PPO"]}
 
 
 configs["env_config"] = file_configs["env"]
-
+#configs["env_config"]["init_pos"]["ball"] = [random.uniform(-2, 2), random.uniform(-1.2, 1.2)]
 tune.registry._unregister_all()
 tune.registry.register_env("Soccer", create_rllib_env)
 temp_env = create_rllib_env(configs["env_config"])
@@ -73,15 +74,17 @@ env = SSLMultiAgentEnv(**configs["env_config"])
 obs, *_ = env.reset()
 
 done= {'__all__': False}
-e= 0.05
+e= 0.0
 while True:
-    o_blue = {f"blue_{i}": obs[f"blue_{i}"] for i in range(3)}
-    o_yellow = {f"yellow_{i}": obs[f"yellow_{i}"] for i in range(3)}
+    o_blue = {f"blue_{i}": obs[f"blue_{i}"] for i in range(env.n_robots_blue)}
+    o_yellow = {f"yellow_{i}": obs[f"yellow_{i}"] for i in range(env.n_robots_yellow)}
 
-    a = {
-        **agent.compute_actions(o_blue, policy_id='policy_blue', full_fetch=False),
-        **agent.compute_actions(o_yellow, policy_id='policy_yellow', full_fetch=False)
-    }
+    a = {}
+    if env.n_robots_blue > 0:
+        a.update(agent.compute_actions(o_blue, policy_id='policy_blue', full_fetch=False))
+
+    if env.n_robots_yellow > 0:
+        a.update(agent.compute_actions(o_yellow, policy_id='policy_yellow', full_fetch=False))
 
     if np.random.rand() < e:
          a = env.action_space.sample()

@@ -10,6 +10,7 @@ from collections import OrderedDict
 from rsoccer_gym.Entities.Robot import Robot
 import copy
 from gymnasium.wrappers import RecordVideo
+import random
 
 GOAL_REWARD = 10
 OUTSIDE_REWARD = -10
@@ -26,8 +27,8 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
 
     ):
 
-        self.n_robots_yellow = 3
-        self.n_robots_blue = 3
+        self.n_robots_blue = min(len(init_pos["blue"]), 3)
+        self.n_robots_yellow = min(len(init_pos["yellow"]), 3)
         self.score = {'blue': 0, 'yellow': 0}
         self.render_mode = render_mode
         super().__init__(
@@ -163,7 +164,7 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
                 # print(f"\nyellow: {idx}")
                 # print(f'\tr_speed: {r_speed:.5f}\tr_dist: {r_dist:.5f}\tr_off: {r_off:.5f}\t\tr_def: {r_def:.5f}\tlast_w: {r_vel_theta:.5f}\ttotal: {0.3*r_speed + 0.05*r_off + 0.05*r_def + 0.4*r_dist + 0.2*r_vel_theta:.5f}\t')
 
-            yellow_rw += 0.1*r_dist*np.ones(self.n_robots_blue)
+            yellow_rw += 0.1*r_dist*np.ones(self.n_robots_yellow)
             yellow_rw_dict = {f'yellow_{id}':rw for id, rw in enumerate(yellow_rw)}
 
 
@@ -257,15 +258,19 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
 
         def y(): return random.uniform(-field_half_width + 0.1,
                                        field_half_width - 0.1)
-        
+
         def theta(): return random.uniform(0, 360)
 
         places = KDTree()
 
         pos_frame: Frame = Frame()
-        pos_frame.ball = Ball(x=0, y=0)
+
+        if isinstance(self.init_pos["ball"], list): 
+            pos_frame.ball = Ball(x=self.init_pos["ball"][0], y=self.init_pos["ball"][1])
+        else:
+            pos_frame.ball = Ball(x=random.uniform(-2, 2), y=random.uniform(-1.2, 1.2))
         places.insert((pos_frame.ball.x, pos_frame.ball.y))
-        
+
         min_dist = 0.2
         for i in range(self.n_robots_blue):
             pos = self.init_pos['blue'][i+1] 
@@ -273,7 +278,7 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
                 pos = (x(), y(), theta()) 
             places.insert(pos)
             pos_frame.robots_blue[i] = Robot(x=pos[0], y=pos[1], theta=pos[2])
-            
+
 
         for i in range(self.n_robots_yellow):
             pos = self.init_pos['yellow'][i+1] 
@@ -304,12 +309,17 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
     def _get_3dots_angle_between(self, obj1, obj2, obj3):
         """Retorna o angulo formado pelas retas que ligam o obj1 com obj2 e obj3 com obj2"""
 
+        f = lambda x: np.isnan(x).any() or np.isinf(x).any()
         p1 = np.array([obj1.x, obj1.y])
         p2 = np.array([obj2.x, obj2.y])
         p3 = np.array([obj3.x, obj3.y])
 
         vec1 = p1 - p2
         vec2 = p3 - p2
+
+        if (f(p1) or f(p2) or f(p3) or f(vec1) or f(vec2)):
+            with open('/ws/videos/error_arccos.txt', "w") as file:
+                file.write(f"p1: {p1}\np2{p2}\np3 {p3}\nvec1 {vec1}\nvec2: {vec2}")
 
         cos_theta = np.dot(vec1, vec2)/ (np.linalg.norm(vec1) * np.linalg.norm(vec2))
         cos_theta = np.clip(cos_theta, -1.0, 1.0)
