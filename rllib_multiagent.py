@@ -163,7 +163,7 @@ if __name__ == "__main__":
         checkpoint_at_end=True,
         local_dir=os.path.abspath("volume"),
         #resume=True,
-        restore=file_configs["checkpoint_restore"],
+        #restore=file_configs["checkpoint_restore"],
     )
 
     best_trial = analysis.get_best_trial("episode_reward_mean", mode="max")

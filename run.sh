@@ -1,7 +1,7 @@
-CONTAINER_NAME="andre_pequi_ssl_rl"
+CONTAINER_NAME="werikcyano_pequi_ssl_rl"
 VOLUME_HF_CACHE="./volume:/ws/volume"
 VOLUME_RAG_CHAT="./scripts:/ws/scripts"
-GPU_DEVICE="device=1"
+GPU_DEVICE="device=0"
 IMAGE="pequi-ssl-rl"
 CPU_CORES="10"
 
