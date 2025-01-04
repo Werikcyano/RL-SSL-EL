@@ -1,74 +1,78 @@
 # Experimento PPO_Soccer_e7341_00000_0_2025-01-04_18-44-17
 
-Este experimento foi executado utilizando a versão padrão do framework de treinamento. O último update antes de parar a execução foi:
+## Resultados da Execução
 
-╭─────────────────────────────────────────────────────╮
-│ Trial PPO_Soccer_e7341_00000 result                 │
-├─────────────────────────────────────────────────────┤
-│ episodes_total                                57534 │
-│ num_env_steps_sampled                   1.23264e+07 │
-│ num_env_steps_trained                   1.23264e+07 │
-│ sampler_results/episode_len_mean            149.477 │
-│ sampler_results/episode_reward_mean        -148.264 │
-╰─────────────────────────────────────────────────────╯
+Este experimento foi executado utilizando a versão padrão do framework de treinamento. O último update antes de parar a execução apresentou os seguintes resultados:
+
+| Métrica | Valor |
+|---------|-------|
+| Episodes Total | 57.534 |
+| Num Environment Steps Sampled | 12.326.400 |
+| Num Environment Steps Trained | 12.326.400 |
+| Sampler Results - Episode Length Mean | 149,477 |
+| Sampler Results - Episode Reward Mean | -148,264 |
+
+## Configurações do Experimento
 
 As configurações utilizadas neste experimento estão definidas no arquivo `config.yaml`:
 
-score_average_over: 100
-timesteps_total: 160000000 # Número máximo de timesteps para o treinamento
-checkpoint_freq: 50 # Frequência de salvamento dos checkpoints (a cada 50 iterações)
-checkpoint_restore: "/root/ray_results/PPO_selfplay_rec/PPO_Soccer_28842_00000_0_2024-12-06_02-52-40/checkpoint_000007" # Caminho para restaurar um checkpoint anterior
-rllib:
-  num_cpus: 7  # Número de CPUs utilizadas (deve ser igual ou maior que num_workers)
-  num_gpus: 1 # Número de GPUs utilizadas
-  num_workers: 6  # Número de workers (ambientes em paralelo)
-  num_envs_per_worker: 2 # Número de ambientes por worker
-  framework: "torch" # Framework utilizado (PyTorch)
-  disable_env_checking: true # Desabilita a verificação do ambiente
-PPO:
-  batch_mode: "truncate_episodes"
-  rollout_fragment_length: "auto"
-  train_batch_size: 38520 # Tamanho do batch de treinamento (workers * envs * fragment)
-  sgd_minibatch_size: 12840 # Tamanho do mini-batch SGD (batch / 3)
-  gamma: 0.99 # Fator de desconto
-  lambda: 0.95 # Parâmetro lambda para o Generalized Advantage Estimation (GAE)
-  entropy_coeff: 0.01 # Coeficiente de entropia
-  kl_coeff: 0.0 # Coeficiente KL
-  lr: 0.0004 # Taxa de aprendizado
-  vf_loss_coeff: 0.5 # Coeficiente de perda da função valor
-  grad_clip: 0.5 # Limite para o gradiente (ajuda a evitar NaNs nos pesos da rede)
-  num_sgd_iter: 5 # Número de iterações SGD
-  clip_param: 0.2 # Parâmetro de clipping do PPO
-  vf_clip_param: 100000.0 # Parâmetro de clipping da função valor (essencialmente desativado)
-  normalize_actions: false # Não normaliza as ações
+### Configurações Gerais
+- **Score Average Over**: 100 # Número de episódios usados para calcular a média da pontuação
+- **Timesteps Total**: 160.000.000 # Limite máximo de passos de tempo para todo o treinamento
+- **Checkpoint Frequency**: 50 # Frequência em que os checkpoints são salvos durante o treinamento
+- **Checkpoint Restore**: `/root/ray_results/PPO_selfplay_rec/PPO_Soccer_28842_00000_0_2024-12-06_02-52-40/checkpoint_000007` # Caminho para restaurar um checkpoint específico
 
-evaluation:
-  evaluation_interval: 1 # Intervalo de avaliação (a cada 1 iteração)
-  evaluation_num_workers: 0 # Número de workers para avaliação
-  evaluation_duration: 1 # Duração da avaliação
-  evaluation_duration_unit: "episodes" # Unidade da duração da avaliação (episódios)
-  evaluation_config:
-    env: "Soccer_recorder" # Ambiente utilizado para avaliação
-    num_envs_per_worker: 1 # Número de ambientes por worker na avaliação
-  
-custom_model:
-  fcnet_hiddens: [300, 200, 100] # Camadas ocultas da rede neural personalizada
-  vf_share_layers: false # Não compartilha camadas entre a política e a função valor
-env:
-  init_pos: # Posições iniciais dos jogadores
-    blue:
-      1: [-1.5,  0.0,    0.0]
-      2: [-2.0,  1.0,    0.0]
-      3: [-2.0, -1.0,    0.0]
-    yellow:
-      1: [ 1.5,  0.0,  180.0]
-      2: [ 2.0,  1.0,  180.0]
-      3: [ 2.0, -1.0,  180.0]
-    ball: [0, 0] # Posição inicial da bola
-  field_type: 0 # Tipo de campo
-  fps: 30 # Frames por segundo
-  match_time: 40 # Duração da partida em segundos
-  render_mode: "human" # Modo de renderização
+### Configurações RLlib
+- **CPUs**: 7 # Número de CPUs utilizadas no treinamento
+- **GPUs**: 1 # Número de GPUs utilizadas no treinamento
+- **Workers**: 6 # Número de processos paralelos executando o ambiente
+- **Envs per Worker**: 2 # Número de ambientes por worker para coleta paralela de experiências
+- **Framework**: PyTorch # Framework de deep learning utilizado
+- **Environment Checking**: Desabilitado # Desativa verificações de segurança do ambiente para melhor performance
 
+### Configurações PPO
+- **Batch Mode**: truncate_episodes # Modo de coleta de dados - trunca episódios no tamanho do fragmento
+- **Rollout Fragment Length**: auto # Tamanho automático dos fragmentos de rollout
+- **Train Batch Size**: 38.520 # Tamanho do lote de treinamento
+- **SGD Minibatch Size**: 12.840 # Tamanho do mini-lote para otimização
+- **Gamma**: 0,99 # Fator de desconto para recompensas futuras
+- **Lambda**: 0,95 # Parâmetro lambda do GAE (Generalized Advantage Estimation)
+- **Entropy Coefficient**: 0,01 # Coeficiente para incentivar exploração
+- **KL Coefficient**: 0,0 # Coeficiente para penalização de divergência KL
+- **Learning Rate**: 0,0004 # Taxa de aprendizado do otimizador
+- **VF Loss Coefficient**: 0,5 # Peso da função valor na função de perda
+- **Gradient Clip**: 0,5 # Limite para clipar gradientes e evitar explosão
+- **SGD Iterations**: 5 # Número de iterações de otimização por batch
+- **Clip Parameter**: 0,2 # Parâmetro epsilon para clipar a razão de probabilidade
+- **VF Clip Parameter**: 100.000,0 # Valor para clipar a função valor
+- **Action Normalization**: Desabilitado # Normalização do espaço de ações desativada
 
+### Configurações de Avaliação
+- **Interval**: 1 # Frequência de avaliação durante treinamento
+- **Workers**: 0 # Número de workers dedicados à avaliação
+- **Duration**: 1 episódio # Duração da avaliação
+- **Environment**: Soccer_recorder # Ambiente usado para avaliação
+- **Envs per Worker**: 1 # Ambientes por worker durante avaliação
 
+### Modelo Personalizado
+- **Hidden Layers**: [300, 200, 100] # Arquitetura das camadas ocultas da rede neural
+- **VF Share Layers**: false # Indica se a função valor compartilha camadas com a política
+
+### Configurações do Ambiente
+- **FPS**: 30 # Frames por segundo da simulação
+- **Match Duration**: 40 segundos # Duração de cada partida
+- **Render Mode**: human # Modo de renderização do ambiente
+- **Field Type**: 0 # Tipo de campo utilizado
+
+#### Posições Iniciais
+**Time Azul**:
+- Jogador 1: [-1.5, 0.0, 0.0] # Posição inicial [x, y, ângulo] do jogador 1 azul
+- Jogador 2: [-2.0, 1.0, 0.0] # Posição inicial [x, y, ângulo] do jogador 2 azul
+- Jogador 3: [-2.0, -1.0, 0.0] # Posição inicial [x, y, ângulo] do jogador 3 azul
+
+**Time Amarelo**:
+- Jogador 1: [1.5, 0.0, 180.0] # Posição inicial [x, y, ângulo] do jogador 1 amarelo
+- Jogador 2: [2.0, 1.0, 180.0] # Posição inicial [x, y, ângulo] do jogador 2 amarelo
+- Jogador 3: [2.0, -1.0, 180.0] # Posição inicial [x, y, ângulo] do jogador 3 amarelo
+
+**Bola**: [0, 0] # Posição inicial [x, y] da bola
