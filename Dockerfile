@@ -49,6 +49,8 @@ COPY config.yaml .
 COPY render_episode.py .
 COPY sim2real /ws/sim2real
 COPY sim2real.py .
+COPY src /ws/src
+
 
 RUN mkdir /ws/volume
 RUN mkdir /ws/scripts

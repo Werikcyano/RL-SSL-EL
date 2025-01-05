@@ -15,7 +15,7 @@ import random
 
 ray.init()
 
-CHECKPOINT_PATH = "/root/ray_results/PPO_selfplay_rec/PPO_Soccer_28842_00000_0_2024-12-06_02-52-40/checkpoint_000007"
+CHECKPOINT_PATH = "/root/ray_results/PPO_selfplay_rec/PPO_Soccer_2de06_00000_0_2025-01-05_05-01-53/checkpoint_000004"
 
 def create_rllib_env(config):
     #breakpoint()

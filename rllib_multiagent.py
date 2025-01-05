@@ -14,12 +14,18 @@ from ray.rllib.evaluation.episode import Episode
 from custom_torch_model import CustomFCNet
 from action_dists import TorchBetaTest_blue, TorchBetaTest_yellow
 from rsoccer_gym.ssl.ssl_multi_agent.ssl_multi_agent import SSLMultiAgentEnv, SSLMultiAgentEnv_record
+from src.environments.ssl_curriculum_env import SSLCurriculumEnv
+from src.callbacks.curriculum_callback import CurriculumCallback
 
 from torch.utils.tensorboard import SummaryWriter
 import os
 
 # RAY_PDB=1 python rllib_multiagent.py
 # ray debug
+
+def create_curriculum_env(config):
+    curriculum_config = config.pop("curriculum_config", None)  # Remove e armazena curriculum_config
+    return SSLCurriculumEnv(curriculum_config=curriculum_config, **config)
 
 def create_rllib_env_recorder(config):
     trigger = lambda t: t % 1 == 0
@@ -106,15 +112,21 @@ if __name__ == "__main__":
         file_configs = yaml.safe_load(f)
     
     configs = {**file_configs["rllib"], **file_configs["PPO"]}
+    configs["env"] = "Soccer"
+    configs["env_config"] = {
+        **file_configs["env"],
+        "curriculum_config": file_configs["curriculum"] # Adiciona configurações do curriculum dentro de env_config
+    }
 
     counter = ScoreCounter.options(name="score_counter").remote(
         maxlen=file_configs["score_average_over"]
     )
-    configs["env_config"] = file_configs["env"]
 
-    tune.registry.register_env("Soccer", create_rllib_env)
+    #tune.registry.register_env("Soccer", create_rllib_env)
     tune.registry.register_env("Soccer_recorder", create_rllib_env_recorder)
-    temp_env = create_rllib_env(configs["env_config"])
+    #tune.registry.register_env("Soccer_curriculum", create_curriculum_env)
+    tune.registry.register_env("Soccer", create_curriculum_env)
+    temp_env = create_curriculum_env(configs["env_config"].copy())  # Use .copy() para não modificar o original
     obs_space = temp_env.observation_space["blue_0"]
     act_space = temp_env.action_space["blue_0"]
     temp_env.close()
@@ -126,7 +138,8 @@ if __name__ == "__main__":
     # Each policy can have a different configuration (including custom model).
 
 
-    configs["callbacks"] = SelfPlayUpdateCallback
+    #configs["callbacks"] = SelfPlayUpdateCallback
+    configs["callbacks"] = CurriculumCallback
     configs["multiagent"] = {
         "policies": {
             "policy_blue": (None, obs_space, act_space, {'model': {'custom_action_dist': 'beta_dist_blue'}}),

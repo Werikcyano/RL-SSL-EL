@@ -1,7 +1,7 @@
 score_average_over: 100
 timesteps_total: 160000000 # Controla numero maximo de timesteps
 checkpoint_freq: 50 # Salvar checkpoint a cada 100 iterações 
-checkpoint_restore: "/root/ray_results/PPO_selfplay_rec/PPO_Soccer_28842_00000_0_2024-12-06_02-52-40/checkpoint_000007" #"/root/ray_results/PPO_selfplay_rec/PPO_Soccer_95caf_00000_0_2024-11-21_02-23-24/checkpoint_000001" # Caminho para restaurar checkpoint
+checkpoint_restore: "/root/ray_results/PPO_selfplay_rec/PPO_Soccer_2de06_00000_0_2025-01-05_05-01-53/checkpoint_000004" #"/root/ray_results/PPO_selfplay_rec/PPO_Soccer_95caf_00000_0_2024-11-21_02-23-24/checkpoint_000001" # Caminho para restaurar checkpoint
 rllib:
   num_cpus: 7  # Depende do num_workers, tem que ser igual ou maior
   num_gpus: 1
@@ -55,3 +55,18 @@ env:
   fps: 30 # frames por segundo
   match_time: 40 # duração da partida em segundos
   render_mode: "human"
+curriculum:
+  enabled: true
+  initial_task: 0  # Começa com a tarefa mais básica
+  promotion_threshold: 0.8  # Taxa de sucesso necessária para avançar
+  evaluation_window: 100  # Número de episódios para avaliar o desempenho
+  tasks:
+    0:  # Tarefa básica - posições fixas
+      max_steps: 300
+      success_distance: 0.2  # Distância considerada sucesso
+    1:  # Tarefa intermediária - posições aleatórias
+      max_steps: 400
+      success_distance: 0.2
+    2:  # Tarefa avançada - com obstáculo
+      max_steps: 500
+      success_distance: 0.2
