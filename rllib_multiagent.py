@@ -30,6 +30,8 @@ def create_curriculum_env(config):
 def create_rllib_env_recorder(config):
     trigger = lambda t: t % 1 == 0
     config["render_mode"] = "rgb_array"
+    config = config.copy()
+    config.pop("curriculum_config", None)
     ssl_el_env = SSLMultiAgentEnv(**config)
     return SSLMultiAgentEnv_record(ssl_el_env, video_folder="/ws/videos", episode_trigger=trigger, disable_logger=True)
 
@@ -117,6 +119,14 @@ if __name__ == "__main__":
         **file_configs["env"],
         "curriculum_config": file_configs["curriculum"] # Adiciona configurações do curriculum dentro de env_config
     }
+    if args.evaluation:
+        configs["evaluation_config"] = {
+            "env": "Soccer_recorder",
+            "env_config": {
+                **file_configs["env"]  # Não inclui curriculum_config na avaliação
+            }
+        }
+    
 
     counter = ScoreCounter.options(name="score_counter").remote(
         maxlen=file_configs["score_average_over"]
@@ -176,7 +186,7 @@ if __name__ == "__main__":
         checkpoint_at_end=True,
         local_dir=os.path.abspath("volume"),
         #resume=True,
-        #restore=file_configs["checkpoint_restore"],
+        restore=file_configs["checkpoint_restore"],
     )
 
     best_trial = analysis.get_best_trial("episode_reward_mean", mode="max")
