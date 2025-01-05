@@ -104,8 +104,12 @@ class SelfPlayUpdateCallback(DefaultCallbacks):
 
 parser = argparse.ArgumentParser(description="Treina multiagent SSL-EL.")
 parser.add_argument("--evaluation", action="store_true", help="Irá renderizar um episódio de tempos em tempos.")
+parser.add_argument("--curriculum", action="store_true", help="Ativa o modo curriculum learning")
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Treina multiagent SSL-EL.")
+    parser.add_argument("--evaluation", action="store_true", help="Irá renderizar um episódio de tempos em tempos.")
+    parser.add_argument("--curriculum", action="store_true", help="Ativa o modo curriculum learning")
     args = parser.parse_args()
 
     ray.init()
@@ -115,41 +119,45 @@ if __name__ == "__main__":
     
     configs = {**file_configs["rllib"], **file_configs["PPO"]}
     configs["env"] = "Soccer"
-    configs["env_config"] = {
-        **file_configs["env"],
-        "curriculum_config": file_configs["curriculum"] # Adiciona configurações do curriculum dentro de env_config
-    }
-    if args.evaluation:
-        configs["evaluation_config"] = {
-            "env": "Soccer_recorder",
-            "env_config": {
-                **file_configs["env"]  # Não inclui curriculum_config na avaliação
-            }
-        }
     
+    # Configura o ambiente baseado no modo de treinamento
+    if args.curriculum and file_configs["curriculum"]["enabled"]:
+        configs["env_config"] = {
+            **file_configs["env"],
+            "curriculum_config": file_configs["curriculum"]
+        }
+        configs["callbacks"] = CurriculumCallback
+        tune.registry.register_env("Soccer", create_curriculum_env)
+        temp_env = create_curriculum_env(configs["env_config"].copy())
+    else:
+        configs["env_config"] = file_configs["env"]
+        configs["callbacks"] = SelfPlayUpdateCallback
+        tune.registry.register_env("Soccer", create_rllib_env)
+        temp_env = create_rllib_env(configs["env_config"].copy())
 
-    counter = ScoreCounter.options(name="score_counter").remote(
-        maxlen=file_configs["score_average_over"]
-    )
+    # Configuração de avaliação
+    if args.evaluation:
+        eval_configs = file_configs["evaluation"].copy()
+        env_config_eval = file_configs["env"].copy()
+        configs["evaluation_interval"] = eval_configs["evaluation_interval"]
+        configs["evaluation_num_workers"] = eval_configs["evaluation_num_workers"]
+        configs["evaluation_duration"] = eval_configs["evaluation_duration"]
+        configs["evaluation_duration_unit"] = eval_configs["evaluation_duration_unit"]
+        configs["evaluation_config"] = eval_configs["evaluation_config"].copy()
+        configs["evaluation_config"]["env_config"] = env_config_eval
+        tune.registry.register_env("Soccer_recorder", create_rllib_env_recorder)
 
-    #tune.registry.register_env("Soccer", create_rllib_env)
-    tune.registry.register_env("Soccer_recorder", create_rllib_env_recorder)
-    #tune.registry.register_env("Soccer_curriculum", create_curriculum_env)
-    tune.registry.register_env("Soccer", create_curriculum_env)
-    temp_env = create_curriculum_env(configs["env_config"].copy())  # Use .copy() para não modificar o original
+    # Configuração dos espaços de observação e ação
     obs_space = temp_env.observation_space["blue_0"]
     act_space = temp_env.action_space["blue_0"]
     temp_env.close()
 
-    # Register the models to use.
+    # Registra os modelos customizados
     ModelCatalog.register_custom_action_dist("beta_dist_blue", TorchBetaTest_blue)
     ModelCatalog.register_custom_action_dist("beta_dist_yellow", TorchBetaTest_yellow)
     ModelCatalog.register_custom_model("custom_vf_model", CustomFCNet)
-    # Each policy can have a different configuration (including custom model).
 
-
-    #configs["callbacks"] = SelfPlayUpdateCallback
-    configs["callbacks"] = CurriculumCallback
+    # Configuração multiagente
     configs["multiagent"] = {
         "policies": {
             "policy_blue": (None, obs_space, act_space, {'model': {'custom_action_dist': 'beta_dist_blue'}}),
@@ -158,23 +166,20 @@ if __name__ == "__main__":
         "policy_mapping_fn": policy_mapping_fn,
         "policies_to_train": ["policy_blue"],
     }
+
+    # Configuração do modelo
     configs["model"] = {
         "custom_model": "custom_vf_model",
         "custom_model_config": file_configs["custom_model"],
         "custom_action_dist": "beta_dist",
     }
-    configs["env"] = "Soccer"
 
-    if args.evaluation:
-        eval_configs = file_configs["evaluation"].copy()
-        env_config_eval = file_configs["env"].copy()
-        configs["evaluation_interval"] = eval_configs["evaluation_interval"]
-        configs["evaluation_num_workers"] = eval_configs["evaluation_num_workers"]
-        configs["evaluation_duration"] = eval_configs["evaluation_duration"]
-        configs["evaluation_duration_unit"] =  eval_configs["evaluation_duration_unit"]
-        configs["evaluation_config"] = eval_configs["evaluation_config"].copy()
-        configs["evaluation_config"]["env_config"] = env_config_eval
+    # Contador de pontuação
+    counter = ScoreCounter.options(name="score_counter").remote(
+        maxlen=file_configs["score_average_over"]
+    )
 
+    # Executa o treinamento
     analysis = tune.run(
         "PPO",
         name="PPO_selfplay_rec",
@@ -185,7 +190,6 @@ if __name__ == "__main__":
         checkpoint_freq=int(file_configs["checkpoint_freq"]),
         checkpoint_at_end=True,
         local_dir=os.path.abspath("volume"),
-        #resume=True,
         restore=file_configs["checkpoint_restore"],
     )
 
@@ -197,4 +201,3 @@ if __name__ == "__main__":
     )
     print(best_checkpoint)
     print("Done training")
-
