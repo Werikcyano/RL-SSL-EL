@@ -43,15 +43,15 @@ Este processo é frequentemente modelado como um Processo de Decisão de Markov 
 Existem alguns principais abordagens para o RL, incluindo:
 
 \begin{itemize}
-\item \textbf{Métodos baseados em valor}: Aprendem a função valor-ação $$Q(s,a)$$.
-\item \textbf{Métodos baseados em política}: Otimizam diretamente a política $$\pi$$.
+\item \textbf{Métodos baseados em valor}: Aprendem a função valor-ação \textbf{Q(s,a)}.
+\item \textbf{Métodos baseados em política}: Otimizam diretamente a política \textbf{$\pi$}.
 \item \textbf{Métodos ator-crítico}: Combinam estimativas de valor e otimização de política.
 \end{itemize}
 
 \subsubsection{Processo de Decisão de Markov (MDP)}
 \label{subsubsec:mdp}
 
-Os Processos de Decisão de Markov (MDPs) são um modelo matemático fundamental no aprendizado por reforço, utilizado para modelar situações onde é necessário tomar decisões sequenciais em ambientes com incerteza \cite{introducao_modelos_probabilisticos}. Os MDPs possuem as seguintes características principais:
+Os Processos de Decisão de Markov (MDPs) são um modelo matemático fundamental no aprendizado por reforço, utilizado para modelar situações onde é necessário tomar decisões sequenciais em ambientes com incerteza \cite{introducao_modelos_probabilisticos}. A Figura \ref{fig:mdp_ilustracao} ilustra um exemplo de MDP. Os MDPs possuem as seguintes características principais:
 
 \begin{itemize}
 \item \textbf{Estados (S)}: Representam as possíveis situações do ambiente.
@@ -77,6 +77,13 @@ $$ π* = \arg\max_π \mathbb{E}\left[\sum_{t=0}^{\infty} γ^t R(s_t, a_t, s_{t+1
 
 onde π : S → A é uma política que mapeia estados para ações.
 
+\begin{figure}[H]
+ \centering
+ \includegraphics[width=0.60\textwidth]{@MDP.png}
+ \caption{Exemplo de um Processo de Decisão de Markov (MDP).}
+ \label{fig:mdp_ilustracao}
+\end{figure}
+
 Uma característica fundamental dos MDPs é a propriedade de Markov, que estabelece que a probabilidade de transição para um novo estado depende apenas do estado atual e da ação tomada, não dependendo de estados ou ações anteriores \cite{sutton}.
 
 Os MDPs são amplamente utilizados em diversas áreas, incluindo:
@@ -100,6 +107,25 @@ Os MDPs fornecem uma base teórica sólida para o desenvolvimento de algoritmos 
 
 \subsubsection{Funções de valor e política}
 \label{subsubsec:valor_politica}
+
+As funções de valor e política são conceitos fundamentais no aprendizado por reforço (RL), desempenhando papéis cruciais na tomada de decisões e na avaliação de estratégias. As funções de valor estimam o quão vantajoso é para um agente estar em um determinado estado ou executar uma ação específica em um estado. Existem dois tipos principais de funções de valor: a Função de Valor de Estado (V-function) e a Função de Valor de Ação (Q-function).
+
+A Função de Valor de Estado, representada como \( V^\pi(s) \), indica o valor esperado de estar em um estado específico seguindo uma política \(\pi\). Matematicamente, é definida como \( V^\pi(s) = \mathbb{E}_\pi[G_t | S_t = s] \), onde \( G_t \) é o retorno acumulado a partir do tempo \( t \). Por outro lado, a Função de Valor de Ação, representada como \( Q^\pi(s,a) \), indica o valor esperado de tomar uma ação específica em um estado específico e depois seguir uma política \(\pi\). Sua definição matemática é \( Q^\pi(s,a) = \mathbb{E}_\pi[G_t | S_t = s, A_t = a] \).
+
+Essas funções de valor são essenciais para métodos baseados em valor, como Q-learning e DQN (Deep Q-Network) \cite{0fe19b1631b60807bffb7757865b184d797c3016}. Elas permitem que o agente avalie a qualidade das ações em diferentes estados, facilitando a tomada de decisões ótimas.
+
+As funções de política, por sua vez, definem o comportamento do agente, mapeando estados para ações. Existem dois tipos principais de políticas: a Política Determinística e a Política Estocástica. A Política Determinística mapeia cada estado para uma única ação, representada como \(\pi(s) = a\). Já a Política Estocástica mapeia cada estado para uma distribuição de probabilidade sobre as ações, representada como \(\pi(a|s) = P(A_t = a | S_t = s)\).
+
+As funções de política são centrais para métodos baseados em política, como Policy Gradient e PPO (Proximal Policy Optimization) \cite{0fe19b1631b60807bffb7757865b184d797c3016}. Elas permitem que o agente aprenda diretamente qual ação tomar em cada estado, sem necessariamente estimar valores de estado ou ação.
+
+A relação entre funções de valor e política é estreita. A função de valor avalia a qualidade de uma política, enquanto a política pode ser derivada da função de valor, por exemplo, escolhendo a ação com o maior valor \( Q \) em cada estado. Alguns métodos, como os algoritmos ator-crítico, combinam ambos os conceitos: o "ator" (política) decide quais ações tomar, e o "crítico" (função de valor) avalia essas ações e fornece feedback para melhorar a política \cite{0fe19b1631b60807bffb7757865b184d797c3016}.
+
+O objetivo do RL é encontrar a política ótima \(\pi^*\) que maximize o retorno esperado. Isso pode ser alcançado de várias maneiras: métodos baseados em valor aprendem a função de valor ótima e derivam a política ótima a partir dela \cite{54807143779fa04466a0b0d01f4d1ecc94eb39ae}; métodos baseados em política otimizam diretamente a política, muitas vezes usando gradientes de política \cite{0fe19b1631b60807bffb7757865b184d797c3016}; e métodos híbridos combinam aprendizado de valor e otimização de política, como em algoritmos ator-crítico \cite{1911.04094}.
+
+Recentes avanços incluem o uso de redes neurais profundas para aproximar funções de valor e política em ambientes complexos, como demonstrado no jogo de Hex \cite{54807143779fa04466a0b0d01f4d1ecc94eb39ae}, e o desenvolvimento de métodos robustos para lidar com incertezas e riscos em ambientes desafiadores \cite{2312.00342}.
+
+As funções de valor e política são elementos cruciais no aprendizado por reforço (RL), especialmente em algoritmos avançados como o Proximal Policy Optimization (PPO). No PPO, as funções de valor são utilizadas para estimar a vantagem, que é essencial para o processo de otimização da política. A política, por sua vez, é ajustada para maximizar uma função objetivo surrogate, garantindo que as atualizações sejam estáveis e eficientes. Essa interação entre funções de valor e política permite que o PPO aprenda de forma eficaz em ambientes complexos, equilibrando desempenho e estabilidade. Vamos explorar esses conceitos e sua relação com o PPO.
+
 
 \subsection{Aprendizado por Reforço Profundo}
 \label{subsec:deep_rl}
