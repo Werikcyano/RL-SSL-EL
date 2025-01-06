@@ -187,15 +187,62 @@ O uso de redes neurais como aproximadores de função no PPO permite que o algor
 \subsubsection{Motivação e princípios do PPO}
 \label{subsubsec:ppo_principios}
 
+O Proximal Policy Optimization (PPO) surgiu como uma resposta às limitações dos algoritmos de aprendizado por reforço anteriores, visando melhorar a estabilidade e eficiência do treinamento em ambientes complexos. O PPO foi desenvolvido para abordar os desafios de otimização de políticas em espaços de ação contínuos e de alta dimensionalidade, comuns em problemas do mundo real\cite{https://arxiv.org/abs/2404.02577}.
+
+Os princípios fundamentais do PPO incluem:
+
+1. Atualização conservadora de política: O PPO busca realizar atualizações de política que sejam significativas, mas não excessivamente grandes, para evitar colapsos de desempenho.
+
+2. Equilíbrio entre exploração e aproveitamento: O algoritmo mantém um equilíbrio entre explorar novas ações e aproveitar as ações conhecidas que produzem bons resultados.
+
+3. Eficiência amostral: O PPO é projetado para aprender de forma eficiente a partir de experiências limitadas, reduzindo a quantidade de dados necessários para o treinamento.
+
 \subsubsection{Função objetivo e mecanismo de clipping}
 \label{subsubsec:ppo_objetivo}
+
+A função objetivo do PPO é projetada para incentivar melhorias na política enquanto evita mudanças drásticas. O componente central desta função é o mecanismo de clipping, que limita a magnitude das atualizações de política\cite{https://pubmed.ncbi.nlm.nih.gov/33705327}.
+
+A função objetivo do PPO pode ser expressa como:
+
+$$
+L^{CLIP}(\theta) = \mathbb{E}_t[\min(r_t(\theta)\hat{A}_t, \text{clip}(r_t(\theta), 1-\epsilon, 1+\epsilon)\hat{A}_t)]
+$$
+
+Onde:
+- $$r_t(\theta)$$ é a razão entre a nova e a antiga probabilidade de ação
+- $$\hat{A}_t$$ é a estimativa de vantagem
+- $$\epsilon$$ é o parâmetro de clipping
+
+O mecanismo de clipping garante que a razão de probabilidade $$r_t(\theta)$$ permaneça dentro de um intervalo $$[1-\epsilon, 1+\epsilon]$$, impedindo atualizações excessivamente grandes na política. Isso promove uma aprendizagem mais estável e reduz o risco de colapso de desempenho durante o treinamento\cite{https://www.semanticscholar.org/paper/df03d874a7bfff4fb3a769c2c3615c034cc268f1}.
 
 \subsubsection{Vantagens do PPO em ambientes contínuos e multiagentes}
 \label{subsubsec:ppo_vantagens}
 
+O PPO demonstra várias vantagens em ambientes contínuos e multiagentes:
+
+1. Estabilidade em espaços de ação contínuos: O PPO é particularmente eficaz em problemas com espaços de ação contínuos, como controle robótico e navegação autônoma\cite{https://arxiv.org/abs/2404.02577,https://arxiv.org/abs/1710.04423}.
+
+2. Escalabilidade para sistemas multiagentes: O algoritmo se adapta bem a cenários com múltiplos agentes, permitindo a coordenação eficiente em ambientes complexos\cite{https://www.semanticscholar.org/paper/bb51dbfb79919e392709be5c7b8f8119fe3f9420}.
+
+3. Eficiência computacional: Comparado a métodos centralizados, o PPO oferece vantagens em termos de complexidade computacional, garantindo tempos de planejamento curtos em ambientes de larga escala\cite{https://www.semanticscholar.org/paper/133b58d42562ce16d99fad0e59d3edeff515821c}.
+
+4. Adaptabilidade a diferentes números de agentes: Políticas aprendidas com PPO demonstram boa escalabilidade, podendo ser aplicadas a diferentes números de agentes sem perda significativa de desempenho\cite{https://www.semanticscholar.org/paper/bb51dbfb79919e392709be5c7b8f8119fe3f9420}.
+
+5. Robustez em tarefas de longo prazo: O PPO é capaz de lidar com recompensas extremamente atrasadas e horizontes de tempo longos, tornando-o adequado para tarefas complexas do mundo real\cite{https://arxiv.org/abs/2404.02577}.
+
+6. Flexibilidade na engenharia de recompensas: O PPO permite a incorporação de mecanismos sofisticados de recompensa, como recompensas de densidade e penalidades de etapas, para melhorar a eficiência da tarefa e reduzir comportamentos indesejados\cite{https://www.semanticscholar.org/paper/133b58d42562ce16d99fad0e59d3edeff515821c}.
+
+Essas vantagens tornam o PPO uma escolha popular para uma ampla gama de aplicações, desde jogos e robótica até sistemas de transporte e otimização de processos industriais\cite{https://arxiv.org/abs/2404.02577,https://www.semanticscholar.org/paper/c70691776f1c755a5f7c00dbf8929e2b61a0a240,https://www.semanticscholar.org/paper/bb51dbfb79919e392709be5c7b8f8119fe3f9420}.
+
 %% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 \section{Aprendizado por Reforço Multiagente}
 \label{sec:marl}
+
+No contexto de aprendizado por reforço (reinforcement learning) e aprendizado por reforço profundo (deep reinforcement learning), vamos detalhar os conceitos solicitados:
+
+O Aprendizado por Reforço Multiagente (Multi-Agent Reinforcement Learning - MARL) é uma extensão do aprendizado por reforço tradicional que lida com ambientes onde múltiplos agentes interagem simultaneamente\cite{https://arxiv.org/abs/2412.21088,https://arxiv.org/abs/2401.10949}. Nesse cenário, os agentes devem aprender a tomar decisões ótimas considerando não apenas o ambiente, mas também as ações e estratégias dos outros agentes.
+
+No MARL, cada agente busca maximizar sua própria recompensa, mas suas ações afetam o ambiente compartilhado e, consequentemente, as recompensas dos outros agentes\cite{https://www.semanticscholar.org/paper/c6c4198ac541ce339e76feb8ca2de813acb87fc2}. Isso cria um cenário complexo onde a cooperação e a competição entre agentes desempenham papéis cruciais.
 
 \subsection{Desafios em Ambientes Multiagente}
 \label{subsec:desafios_multi}
@@ -203,8 +250,44 @@ O uso de redes neurais como aproximadores de função no PPO permite que o algor
 \subsubsection{Coordenação e competição entre agentes}
 \label{subsubsec:coordenacao}
 
+A coordenação e competição entre agentes são aspectos fundamentais do MARL que apresentam desafios significativos:
+
+1. **Coordenação**: Em cenários cooperativos, os agentes precisam aprender a trabalhar juntos para atingir objetivos comuns\cite{https://arxiv.org/abs/2410.21290}. Isso envolve:
+   - Desenvolvimento de estratégias conjuntas
+   - Compartilhamento de informações relevantes
+   - Sincronização de ações para maximizar a eficiência coletiva
+
+2. **Competição**: Em ambientes competitivos ou mistos, os agentes podem ter objetivos conflitantes\cite{https://www.semanticscholar.org/paper/c6c4198ac541ce339e76feb8ca2de813acb87fc2}. Isso leva a:
+   - Necessidade de prever e reagir às ações dos oponentes
+   - Desenvolvimento de estratégias robustas contra adversários adaptativos
+   - Equilíbrio entre cooperação e competição em cenários mistos
+
+Para lidar com esses desafios, técnicas como o uso de métricas de alinhamento de políticas baseadas na distância de Wasserstein têm sido propostas para melhorar a coordenação entre agentes\cite{https://arxiv.org/abs/2401.10949}.
+
 \subsubsection{Não-estacionariedade do ambiente}
 \label{subsubsec:nao_estacionariedade}
+
+A não-estacionariedade é um dos principais desafios em MARL e refere-se à mudança constante do ambiente do ponto de vista de cada agente individual\cite{https://arxiv.org/abs/2412.21088,https://www.semanticscholar.org/paper/96c58672ee781bf75246a039d781e2dc8af5f43e}. Isso ocorre porque:
+
+1. **Agentes em evolução**: Cada agente está continuamente aprendendo e adaptando suas políticas, o que altera o ambiente para os outros agentes\cite{https://arxiv.org/abs/2412.20523}.
+
+2. **Dinâmica complexa**: As interações entre múltiplos agentes criam uma dinâmica que é difícil de prever e modelar\cite{https://arxiv.org/abs/2410.21290}.
+
+3. **Observações parciais**: Muitas vezes, os agentes têm acesso apenas a informações locais, o que dificulta a compreensão completa do estado do ambiente\cite{https://arxiv.org/abs/2410.21290}.
+
+A não-estacionariedade apresenta vários desafios:
+
+- **Instabilidade na aprendizagem**: As políticas que eram ótimas em um momento podem se tornar subótimas rapidamente.
+- **Exploração ineficiente**: Estratégias de exploração eficazes em ambientes estacionários podem falhar em ambientes não-estacionários.
+- **Convergência difícil**: A constante mudança no ambiente pode impedir que os agentes convirjam para políticas estáveis.
+
+Para abordar a não-estacionariedade, pesquisadores têm proposto várias soluções:
+
+- Uso de modelos do ambiente para prever mudanças e adaptar as políticas dos agentes\cite{https://www.semanticscholar.org/paper/96c58672ee781bf75246a039d781e2dc8af5f43e}.
+- Desenvolvimento de algoritmos que consideram explicitamente a natureza não-estacionária do ambiente, como variantes do algoritmo MADDPG (Multi-Agent Deep Deterministic Policy Gradient)\cite{https://arxiv.org/abs/2410.21290}.
+- Implementação de técnicas de comunicação entre agentes para melhorar a coordenação e adaptação às mudanças do ambiente\cite{https://arxiv.org/abs/2410.21290}.
+
+Essas abordagens visam melhorar a robustez e a eficácia dos sistemas de MARL em ambientes complexos e dinâmicos, permitindo que os agentes aprendam e se adaptem de forma mais eficiente em cenários multiagente desafiadores.
 
 \subsection{Aplicações em Futebol de Robôs}
 \label{subsec:futebol_robos}
