@@ -154,7 +154,6 @@ Apesar de seu potencial, o DRL também enfrenta desafios significativos, como al
 
 As redes neurais como aproximadores de função desempenham um papel fundamental no contexto do Aprendizado por Reforço Profundo (DRL), representando uma das principais diferenças em relação ao aprendizado por reforço tradicional. Esta abordagem permite que os agentes de DRL lidem com espaços de estado e ação contínuos e de alta dimensionalidade, superando limitações significativas dos métodos tabulares convencionais.
 
-\paragraph{Conceito de Aproximação de Função em DRL}
 
 No DRL, as redes neurais são utilizadas para aproximar funções complexas que mapeiam estados para valores (função de valor) ou ações (função de política). Essa capacidade de aproximação é crucial por várias razões:
 
@@ -164,7 +163,6 @@ No DRL, as redes neurais são utilizadas para aproximar funções complexas que 
 
 3. \textbf{Aprendizado de Características}: Extraem automaticamente características relevantes dos dados de entrada, eliminando a necessidade de engenharia manual de recursos.
 
-\paragraph{Aplicações em DRL}
 
 \textbf{Aproximação da Função de Valor}: As redes neurais são utilizadas para estimar o valor esperado de estados ou pares estado-ação. Isso é particularmente útil em algoritmos como o Deep Q-Network (DQN), onde a rede neural aproxima a função Q, que representa o valor de longo prazo de tomar uma ação específica em um determinado estado.
 
@@ -172,25 +170,11 @@ No DRL, as redes neurais são utilizadas para aproximar funções complexas que 
 
 \textbf{Modelos de Ambiente}: Em algumas abordagens de DRL baseadas em modelo, as redes neurais são usadas para aproximar a dinâmica do ambiente, prevendo estados futuros e recompensas com base em estados e ações atuais.
 
-\paragraph{Vantagens e Desafios}
 
-\textbf{Vantagens}:
+As vantagens incluem a capacidade de lidar com espaços de estado e ação contínuos, a habilidade de processar entradas de alta dimensionalidade, como imagens ou dados sensoriais complexos, e o potencial para transferência de aprendizado entre tarefas similares. 
 
-1. Capacidade de lidar com espaços de estado e ação contínuos.
+Os desafios envolvem a instabilidade de treinamento devido à não-estacionariedade do processo de aprendizagem, o overfitting em conjuntos de dados limitados, e a dificuldade em interpretar as decisões do modelo devido à natureza de "caixa preta" das redes neurais profundas.
 
-2. Habilidade de processar entradas de alta dimensionalidade, como imagens ou dados sensoriais complexos.
-
-3. Potencial para transferência de aprendizado entre tarefas similares.
-
-\textbf{Desafios}:
-
-1. Instabilidade de treinamento devido à não-estacionariedade do processo de aprendizagem.
-
-2. Overfitting em conjuntos de dados limitados.
-
-3. Dificuldade em interpretar as decisões do modelo devido à natureza de "caixa preta" das redes neurais profundas.
-
-\paragraph{Relação com PPO}
 
 No contexto do PPO, as redes neurais são utilizadas tanto para aproximar a função de política quanto para estimar a função de valor. A política é representada por uma rede neural que mapeia estados para distribuições de probabilidade sobre ações, enquanto uma segunda rede (ou uma rede compartilhada com saídas separadas) estima o valor de cada estado.
 
