@@ -1,0 +1,28 @@
+\chapter{Conclusão}
+\label{cap:conclusao}
+
+Este trabalho investigou a aplicação de Curriculum Learning no contexto do futebol de robôs da categoria SSL-EL, com o objetivo de melhorar o processo de aprendizagem em ambientes complexos multiagente. A abordagem proposta envolveu a decomposição de tarefas complexas em subtarefas mais simples, permitindo um aprendizado gradual e progressivo dos agentes. A implementação foi realizada através de modificações estratégicas no framework existente, com a criação de um ambiente adaptativo capaz de suportar diferentes níveis de complexidade no treinamento.
+
+Os resultados preliminares, embora apresentando uma recompensa média ligeiramente inferior nas primeiras 300 steps de treinamento (2,813 vs 3,034 do método default), demonstraram aspectos promissores da abordagem proposta. A análise do tamanho dos episódios revelou um processo de aprendizado mais estável e consistente com o Curriculum Learning, com uma curva de aprendizado mais suave e menos variações bruscas. Esta estabilidade sugere um potencial benefício para o desenvolvimento de políticas mais robustas e generalizáveis no longo prazo.
+
+A implementação do sistema de curriculum através da classe SSLCurriculumEnv e do CurriculumCallback mostrou-se efetiva na gestão da progressão entre níveis de dificuldade. O sistema de recompensas adaptativo e os mecanismos de monitoramento contínuo permitiram uma transição suave entre os diferentes estágios do aprendizado, contribuindo para a formação de uma base sólida de habilidades fundamentais antes da exposição a cenários mais desafiadores.
+
+Como trabalhos futuros, sugere-se a extensão do período de treinamento para avaliar os benefícios do Curriculum Learning em horizontes de tempo mais longos, bem como a investigação de estruturas curriculares mais complexas que possam incorporar aspectos táticos e estratégicos do futebol de robôs. Além disso, seria interessante explorar a integração de técnicas de self-play com o curriculum learning para potencializar ainda mais o processo de aprendizagem em cenários competitivos multiagente.
+
+\section{Limitações}
+
+Uma das principais limitações encontradas neste trabalho foi o tempo relativamente curto de treinamento (300 steps), que pode não ter sido suficiente para demonstrar todo o potencial do Curriculum Learning em cenários mais complexos. Além disso, a implementação atual focou principalmente em aspectos básicos do controle dos robôs, não abordando elementos táticos mais sofisticados do futebol.
+
+Outra limitação significativa foi a simplicidade da estrutura curricular implementada, que poderia ser expandida para incluir uma maior variedade de níveis e desafios progressivos. O sistema atual também não contempla mecanismos para adaptação dinâmica do currículo com base no desempenho individual de cada agente, o que poderia otimizar ainda mais o processo de aprendizagem.
+
+\section{Trabalhos Futuros}
+
+Para trabalhos futuros, diversas direções promissoras podem ser exploradas:
+
+\begin{itemize}
+    \item Desenvolvimento de estruturas curriculares mais sofisticadas, incorporando elementos táticos e estratégicos do futebol de robôs
+    \item Implementação de mecanismos de adaptação dinâmica do currículo baseados no desempenho individual dos agentes
+    \item Integração de técnicas de self-play com o Curriculum Learning para melhorar o aprendizado em cenários competitivos
+    \item Investigação de métodos para transferência de conhecimento entre diferentes níveis do currículo
+\end{itemize}
+
