@@ -1,0 +1,159 @@
+Failure # 1 (occurred at 2025-01-06_09-26-51)
+[36mray::PPO.train()[39m (pid=1010, ip=172.17.0.2, actor_id=65841a499a50ee64d09a2b8301000000, repr=PPO)
+  File "/usr/local/lib/python3.10/site-packages/ray/rllib/algorithms/ppo/ppo_torch_policy.py", line 85, in loss
+    curr_action_dist = dist_class(logits, model)
+  File "/ws/action_dists.py", line 90, in __init__
+    super().__init__(inputs, model, signal=[1, 1, 1, 1])
+  File "/ws/action_dists.py", line 43, in __init__
+    self.dist = torch.distributions.Beta(concentration1=alpha, concentration0=beta)
+  File "/usr/local/lib/python3.10/site-packages/torch/distributions/beta.py", line 51, in __init__
+    self._dirichlet = Dirichlet(
+  File "/usr/local/lib/python3.10/site-packages/torch/distributions/dirichlet.py", line 62, in __init__
+    super().__init__(batch_shape, event_shape, validate_args=validate_args)
+  File "/usr/local/lib/python3.10/site-packages/torch/distributions/distribution.py", line 71, in __init__
+    raise ValueError(
+ValueError: Expected parameter concentration (Tensor of shape (12840, 4, 2)) of distribution Dirichlet(concentration: torch.Size([12840, 4, 2])) to satisfy the constraint IndependentConstraint(GreaterThan(lower_bound=0.0), 1), but found invalid values:
+tensor([[[nan, nan],
+         [nan, nan],
+         [nan, nan],
+         [nan, nan]],
+
+        [[nan, nan],
+         [nan, nan],
+         [nan, nan],
+         [nan, nan]],
+
+        [[nan, nan],
+         [nan, nan],
+         [nan, nan],
+         [nan, nan]],
+
+        ...,
+
+        [[nan, nan],
+         [nan, nan],
+         [nan, nan],
+         [nan, nan]],
+
+        [[nan, nan],
+         [nan, nan],
+         [nan, nan],
+         [nan, nan]],
+
+        [[nan, nan],
+         [nan, nan],
+         [nan, nan],
+         [nan, nan]]], device='cuda:0', grad_fn=<StackBackward0>)
+
+The above exception was the direct cause of the following exception:
+
+[36mray::PPO.train()[39m (pid=1010, ip=172.17.0.2, actor_id=65841a499a50ee64d09a2b8301000000, repr=PPO)
+  File "/usr/local/lib/python3.10/site-packages/ray/tune/trainable/trainable.py", line 334, in train
+    raise skipped from exception_cause(skipped)
+  File "/usr/local/lib/python3.10/site-packages/ray/tune/trainable/trainable.py", line 331, in train
+    result = self.step()
+  File "/usr/local/lib/python3.10/site-packages/ray/rllib/algorithms/algorithm.py", line 849, in step
+    results, train_iter_ctx = self._run_one_training_iteration()
+  File "/usr/local/lib/python3.10/site-packages/ray/rllib/algorithms/algorithm.py", line 3194, in _run_one_training_iteration
+    results = self.training_step()
+  File "/usr/local/lib/python3.10/site-packages/ray/rllib/algorithms/ppo/ppo.py", line 410, in training_step
+    return self._training_step_old_and_hybrid_api_stacks()
+  File "/usr/local/lib/python3.10/site-packages/ray/rllib/algorithms/ppo/ppo.py", line 518, in _training_step_old_and_hybrid_api_stacks
+    train_results = train_one_step(self, train_batch)
+  File "/usr/local/lib/python3.10/site-packages/ray/rllib/execution/train_ops.py", line 56, in train_one_step
+    info = do_minibatch_sgd(
+  File "/usr/local/lib/python3.10/site-packages/ray/rllib/utils/sgd.py", line 129, in do_minibatch_sgd
+    local_worker.learn_on_batch(
+  File "/usr/local/lib/python3.10/site-packages/ray/rllib/evaluation/rollout_worker.py", line 815, in learn_on_batch
+    info_out[pid] = policy.learn_on_batch(batch)
+  File "/usr/local/lib/python3.10/site-packages/ray/rllib/utils/threading.py", line 24, in wrapper
+    return func(self, *a, **k)
+  File "/usr/local/lib/python3.10/site-packages/ray/rllib/policy/torch_policy_v2.py", line 712, in learn_on_batch
+    grads, fetches = self.compute_gradients(postprocessed_batch)
+  File "/usr/local/lib/python3.10/site-packages/ray/rllib/utils/threading.py", line 24, in wrapper
+    return func(self, *a, **k)
+  File "/usr/local/lib/python3.10/site-packages/ray/rllib/policy/torch_policy_v2.py", line 924, in compute_gradients
+    tower_outputs = self._multi_gpu_parallel_grad_calc([postprocessed_batch])
+  File "/usr/local/lib/python3.10/site-packages/ray/rllib/policy/torch_policy_v2.py", line 1421, in _multi_gpu_parallel_grad_calc
+    raise last_result[0] from last_result[1]
+ValueError: Expected parameter concentration (Tensor of shape (12840, 4, 2)) of distribution Dirichlet(concentration: torch.Size([12840, 4, 2])) to satisfy the constraint IndependentConstraint(GreaterThan(lower_bound=0.0), 1), but found invalid values:
+tensor([[[nan, nan],
+         [nan, nan],
+         [nan, nan],
+         [nan, nan]],
+
+        [[nan, nan],
+         [nan, nan],
+         [nan, nan],
+         [nan, nan]],
+
+        [[nan, nan],
+         [nan, nan],
+         [nan, nan],
+         [nan, nan]],
+
+        ...,
+
+        [[nan, nan],
+         [nan, nan],
+         [nan, nan],
+         [nan, nan]],
+
+        [[nan, nan],
+         [nan, nan],
+         [nan, nan],
+         [nan, nan]],
+
+        [[nan, nan],
+         [nan, nan],
+         [nan, nan],
+         [nan, nan]]], device='cuda:0', grad_fn=<StackBackward0>)
+ tracebackTraceback (most recent call last):
+  File "/usr/local/lib/python3.10/site-packages/ray/rllib/policy/torch_policy_v2.py", line 1336, in _worker
+    self.loss(model, self.dist_class, sample_batch)
+  File "/usr/local/lib/python3.10/site-packages/ray/rllib/algorithms/ppo/ppo_torch_policy.py", line 85, in loss
+    curr_action_dist = dist_class(logits, model)
+  File "/ws/action_dists.py", line 90, in __init__
+    super().__init__(inputs, model, signal=[1, 1, 1, 1])
+  File "/ws/action_dists.py", line 43, in __init__
+    self.dist = torch.distributions.Beta(concentration1=alpha, concentration0=beta)
+  File "/usr/local/lib/python3.10/site-packages/torch/distributions/beta.py", line 51, in __init__
+    self._dirichlet = Dirichlet(
+  File "/usr/local/lib/python3.10/site-packages/torch/distributions/dirichlet.py", line 62, in __init__
+    super().__init__(batch_shape, event_shape, validate_args=validate_args)
+  File "/usr/local/lib/python3.10/site-packages/torch/distributions/distribution.py", line 71, in __init__
+    raise ValueError(
+ValueError: Expected parameter concentration (Tensor of shape (12840, 4, 2)) of distribution Dirichlet(concentration: torch.Size([12840, 4, 2])) to satisfy the constraint IndependentConstraint(GreaterThan(lower_bound=0.0), 1), but found invalid values:
+tensor([[[nan, nan],
+         [nan, nan],
+         [nan, nan],
+         [nan, nan]],
+
+        [[nan, nan],
+         [nan, nan],
+         [nan, nan],
+         [nan, nan]],
+
+        [[nan, nan],
+         [nan, nan],
+         [nan, nan],
+         [nan, nan]],
+
+        ...,
+
+        [[nan, nan],
+         [nan, nan],
+         [nan, nan],
+         [nan, nan]],
+
+        [[nan, nan],
+         [nan, nan],
+         [nan, nan],
+         [nan, nan]],
+
+        [[nan, nan],
+         [nan, nan],
+         [nan, nan],
+         [nan, nan]]], device='cuda:0', grad_fn=<StackBackward0>)
+
+In tower 0 on device cuda:0
