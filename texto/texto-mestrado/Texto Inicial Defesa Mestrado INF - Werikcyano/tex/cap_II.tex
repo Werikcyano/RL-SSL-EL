@@ -5,14 +5,98 @@
 \section{Aprendizado por Reforço}
 \label{sec:rl}
 
-\subsection{Fundamentos do Aprendizado por Reforço}
+O Aprendizado por Reforço (Reinforcement Learning - RL) é uma área do aprendizado de máquina que se concentra em agentes que aprendem a tomar decisões através da interação com um ambiente. Diferente do Aprendizado Supervisionado e do Aprendizado Não Supervisionado, o RL depende principalmente de feedback em forma de recompensas obtidas através das interações que o agente realiza no ambiente.
+
+\subsection{Fundamentos e conceitos básicos de Aprendizado por Reforço}
 \label{subsec:rl_fund}
 
-\subsubsection{Definição e conceitos básicos}
-\label{subsubsec:rl_conceitos}
+O Aprendizado por Reforço é estruturado em torno de conceitos fundamentais que estabelecem como agentes podem aprender através da interação com o ambiente. Esta área combina elementos de programação dinâmica, teoria de controle e aprendizado estatístico para desenvolver algoritmos que permitem que agentes aprendam comportamentos ótimos através de tentativa e erro.
+
+Os principais componentes do Aprendizado por Reforço são:
+
+\begin{itemize}
+\item \textbf{Agente}: A entidade que aprende e toma decisões. Ele observa o estado atual do ambiente, escolhe ações para executar e recebe feedback na forma de recompensas.
+
+\item \textbf{Ambiente}: O mundo com o qual o agente interage. Ele fornece observações ao agente e responde às suas ações, gerando novos estados e recompensas.
+
+\item \textbf{Estado}: A representação da situação atual do ambiente. O estado pode ser completamente ou parcialmente observável pelo agente.
+
+\item \textbf{Ação}: As possíveis decisões que o agente pode tomar em cada estado. O conjunto de ações pode ser discreto ou contínuo.
+
+\item \textbf{Recompensa}: O feedback numérico que o agente recebe após cada ação. É um sinal escalar que indica o quão boa foi uma ação tomada em um determinado estado. O objetivo do agente é maximizar a soma das recompensas ao longo do tempo.
+
+\item \textbf{Política}: A estratégia que o agente usa para escolher ações com base no estado atual. Pode ser determinística ou estocástica.
+\end{itemize}
+
+O processo de aprendizagem no RL pode ser descrito pela seguinte sequência:
+
+\begin{enumerate}
+\item O agente observa o estado atual do ambiente.
+\item Com base nesse estado, o agente escolhe uma ação.
+\item O ambiente transita para um novo estado como resultado da ação.
+\item O agente recebe uma recompensa associada à transição.
+\item O agente atualiza sua política de decisão com base na experiência adquirida.
+\end{enumerate}
+
+Este processo é frequentemente modelado como um Processo de Decisão de Markov (MDP).
+
+Existem alguns principais abordagens para o RL, incluindo:
+
+\begin{itemize}
+\item \textbf{Métodos baseados em valor}: Aprendem a função valor-ação $$Q(s,a)$$.
+\item \textbf{Métodos baseados em política}: Otimizam diretamente a política $$\pi$$.
+\item \textbf{Métodos ator-crítico}: Combinam estimativas de valor e otimização de política.
+\end{itemize}
 
 \subsubsection{Processo de Decisão de Markov (MDP)}
 \label{subsubsec:mdp}
+
+Os Processos de Decisão de Markov (MDPs) são um modelo matemático fundamental no aprendizado por reforço, utilizado para modelar situações onde é necessário tomar decisões sequenciais em ambientes com incerteza \cite{introducao_modelos_probabilisticos}. Os MDPs possuem as seguintes características principais:
+
+\begin{itemize}
+\item \textbf{Estados (S)}: Representam as possíveis situações do ambiente.
+\item \textbf{Ações (A)}: Conjunto de decisões que o agente pode tomar em cada estado.
+\item \textbf{Função de transição P(s'|s,a)}: Probabilidade de transição para o estado s' dado que a ação a foi tomada no estado s.
+\item \textbf{Função de recompensa R(s,a,s')}: Retorno numérico recebido ao realizar a transição de s para s' tomando a ação a.
+\item \textbf{Fator de desconto γ}: Valor entre 0 e 1 que representa a importância de recompensas futuras.
+\end{itemize}
+
+Um MDP é formalmente definido como uma tupla (S, A, P, R, γ), onde:
+
+\begin{itemize}
+\item S é o conjunto de estados
+\item A é o conjunto de ações
+\item P : S × A × S → [0, 1] é a função de transição
+\item R : S × A × S → ℝ é a função de recompensa
+\item γ ∈ [0, 1] é o fator de desconto
+\end{itemize}
+
+O objetivo em um MDP é encontrar uma política ótima π* que maximize o retorno esperado:
+
+$$ π* = \arg\max_π \mathbb{E}\left[\sum_{t=0}^{\infty} γ^t R(s_t, a_t, s_{t+1}) | π\right] $$
+
+onde π : S → A é uma política que mapeia estados para ações.
+
+Uma característica fundamental dos MDPs é a propriedade de Markov, que estabelece que a probabilidade de transição para um novo estado depende apenas do estado atual e da ação tomada, não dependendo de estados ou ações anteriores \cite{sutton}.
+
+Os MDPs são amplamente utilizados em diversas áreas, incluindo:
+
+\begin{itemize}
+\item Robótica e controle automático
+\item Planejamento de trajetórias
+\item Gestão de recursos
+\item Sistemas de recomendação
+\item Jogos e simulações
+\end{itemize}
+
+Existem várias extensões dos MDPs para lidar com diferentes cenários:
+
+\begin{itemize}
+\item \textbf{POMDPs (Partially Observable MDPs)}: Lidam com situações onde o estado não é completamente observável.
+\item \textbf{LLMDPs (Language-Limited MDPs)}: Incorporam restrições de linguagem nas ações e observações consideradas \cite{introducao_modelos_probabilisticos}.
+\end{itemize}
+
+Os MDPs fornecem uma base teórica sólida para o desenvolvimento de algoritmos de aprendizado por reforço, permitindo a modelagem e solução de problemas complexos de tomada de decisão sequencial sob incerteza.
 
 \subsubsection{Funções de valor e política}
 \label{subsubsec:valor_politica}
@@ -22,9 +106,6 @@
 
 \subsubsection{Redes neurais como aproximadores de função}
 \label{subsubsec:redes_neurais}
-
-\subsubsection{Desafios específicos em ambientes visuais complexos}
-\label{subsubsec:desafios_visuais}
 
 \subsection{Proximal Policy Optimization (PPO)}
 \label{subsec:ppo}
