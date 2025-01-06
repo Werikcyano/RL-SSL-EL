@@ -9,7 +9,67 @@ A modelagem do curriculum foi inspirada em casos reais de jogos eletrônicos pop
 
 \subsection{Isolamento e classificação de tarefas}
 
+O processo de isolamento e classificação das tarefas foi estruturado em três níveis progressivos de complexidade, implementados através da classe \texttt{SSLCurriculumEnv}:
+
+\begin{enumerate}
+    \item \textbf{Nível 0 - Posições Fixas:} 
+    \begin{itemize}
+        \item Bola posicionada em coordenadas fixas (1.0, 1.0)
+        \item Robô posicionado em coordenadas fixas (-1.0, -1.0)
+        \item Ambiente previsível para aprendizado inicial
+    \end{itemize}
+
+    \item \textbf{Nível 1 - Posições Aleatórias:}
+    \begin{itemize}
+        \item Bola e robô posicionados aleatoriamente no intervalo [-2, 2]
+        \item Introduz variabilidade nas condições iniciais
+        \item Força o agente a generalizar seu comportamento
+    \end{itemize}
+
+    \item \textbf{Nível 2 - Obstáculos:}
+    \begin{itemize}
+        \item Mantém posições aleatórias do nível anterior
+        \item Adiciona um obstáculo entre o robô e a bola
+        \item Obstáculo posicionado a 50\% da distância entre robô e bola
+    \end{itemize}
+\end{enumerate}
+
 \subsection{Modularização dos algoritmos de aprendizagem}
+
+A modularização do aprendizado foi implementada através do \texttt{CurriculumCallback}, que gerencia a progressão entre os níveis de dificuldade. Os principais componentes são:
+
+\begin{itemize}
+    \item \textbf{Histórico de Sucesso:} Mantém registro do desempenho do agente nas últimas tentativas
+
+    \item \textbf{Critérios de Progressão:}
+    \begin{itemize}
+        \item Taxa de sucesso calculada sobre uma janela de avaliação configurável
+        \item Progride quando atinge limiar de promoção pré-definido
+        \item Atualização automática do nível de tarefa em todos os ambientes
+    \end{itemize}
+
+    \item \textbf{Sistema de Recompensas Adaptativo:}
+    \begin{itemize}
+        \item Recompensa base do ambiente
+        \item Penalização proporcional à distância até a bola
+        \item Penalização por tempo para incentivar eficiência
+        \item Penalização adicional por colisão com obstáculos no nível 2
+    \end{itemize}
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[node distance=2cm]
+        \node[draw,rectangle] (n0) {Nível 0\\Posições Fixas};
+        \node[draw,rectangle,right of=n0,xshift=3cm] (n1) {Nível 1\\Posições Aleatórias};
+        \node[draw,rectangle,right of=n1,xshift=3cm] (n2) {Nível 2\\Com Obstáculos};
+        
+        \draw[->] (n0) -- node[above] {Taxa de Sucesso $\geq$ Limiar} (n1);
+        \draw[->] (n1) -- node[above] {Taxa de Sucesso $\geq$ Limiar} (n2);
+    \end{tikzpicture}
+    \caption{Progressão do Curriculum Learning implementado}
+    \label{fig:curriculum_progression}
+\end{figure}
 
 
 
