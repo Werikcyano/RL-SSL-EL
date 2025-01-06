@@ -57,19 +57,19 @@ A modularização do aprendizado foi implementada através do \texttt{Curriculum
     \end{itemize}
 \end{itemize}
 
-\begin{figure}[H]
+\begin{table}[H]
     \centering
-    \begin{tikzpicture}[node distance=2cm]
-        \node[draw,rectangle] (n0) {Nível 0\\Posições Fixas};
-        \node[draw,rectangle,right of=n0,xshift=3cm] (n1) {Nível 1\\Posições Aleatórias};
-        \node[draw,rectangle,right of=n1,xshift=3cm] (n2) {Nível 2\\Com Obstáculos};
-        
-        \draw[->] (n0) -- node[above] {Taxa de Sucesso $\geq$ Limiar} (n1);
-        \draw[->] (n1) -- node[above] {Taxa de Sucesso $\geq$ Limiar} (n2);
-    \end{tikzpicture}
-    \caption{Progressão do Curriculum Learning implementado}
-    \label{fig:curriculum_progression}
-\end{figure}
+    \begin{tabular}{|c|c|}
+        \hline
+        \textbf{Método} & \textbf{Recompensa Média} \\
+        \hline
+        Curriculum Learning & 2,813 \\
+        Default & 3,034 \\
+        \hline
+    \end{tabular}
+    \caption{Comparação da recompensa média entre os métodos Curriculum Learning e Default nas primeiras 300 steps de treinamento}
+    \label{tab:cl_vs_default}
+\end{table}
 
 
 
