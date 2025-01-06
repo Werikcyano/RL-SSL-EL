@@ -12,58 +12,8 @@
 %---------------------------------------------------------
 % A A A
 %---------------------------------------------------------
-@article{ac_rl_intersections,
-author = {Annaswamy, Anuradha M.},
-title = {Adaptive Control and Intersections with Reinforcement Learning},
-journal = {Annual Review of Control, Robotics, and Autonomous Systems},
-volume = {6},
-number = {1},
-pages = {65-93},
-year = {2023},
-doi = {10.1146/annurev-control-062922-090153},
-URL = { 
-        https://doi.org/10.1146/annurev-control-062922-090153
-},
-eprint = { 
-        https://doi.org/10.1146/annurev-control-062922-090153
-    }
-}
-
-@book{controle_adaptativo_livro,
-  title={Adaptive control},
-  author={{\AA}str{\"o}m, Karl J and Wittenmark, Bj{\"o}rn},
-  year={2013},
-  publisher={Courier Corporation}
-}
 
 
-
-@InProceedings{relay_long_horizon,
-  title = 	 {Relay Policy Learning: Solving Long-Horizon Tasks via Imitation and Reinforcement Learning},
-  author =       {Gupta, Abhishek and Kumar, Vikash and Lynch, Corey and Levine, Sergey and Hausman, Karol},
-  booktitle = 	 {Proceedings of the Conference on Robot Learning},
-  pages = 	 {1025--1037},
-  year = 	 {2020},
-  editor = 	 {Kaelbling, Leslie Pack and Kragic, Danica and Sugiura, Komei},
-  volume = 	 {100},
-  series = 	 {Proceedings of Machine Learning Research},
-  month = 	 {30 Oct--01 Nov},
-  publisher =    {PMLR},
-  pdf = 	 {http://proceedings.mlr.press/v100/gupta20a/gupta20a.pdf},
-  url = 	 {https://proceedings.mlr.press/v100/gupta20a.html},
-  abstract = 	 {We present relay policy learning, a method for imitation and reinforcement learning that can solve multi-stage, long-horizon robotic tasks. This general and universally-applicable, two-phase approach consists of an imitation learning stage resulting in goal-conditioned hierarchical policies that can be easily improved using fine-tuning via reinforcement learning in the subsequent phase. Our method, while not necessarily perfect at imitation learning, is very amenable to further improvement via environment interaction allowing it to scale to challenging long-horizon tasks. In particular, we simplify the long-horizon policy learning problem by using a novel data-relabeling algorithm for learning goal-conditioned hierarchical policies, where the low-level only acts for a fixed number of steps, regardless of the goal achieved. While we rely on demonstration data to bootstrap policy learning, we do not assume access to demonstrations of specific tasks. Instead, our approach can leverage unstructured and unsegmented demonstrations of semantically meaningful behaviors that are not only less burdensome to provide, but also can greatly facilitate further improvement using reinforcement learning. We demonstrate the effectiveness of our method on a number of multi-stage, long-horizon manipulation tasks in a challenging kitchen simulation environment.}
-}
-
-
-@article{ac_teoria_aplicacoes,
-  title={Adaptive control theory and applications},
-  author={Cao, Chengyu and Ma, Lili and Xu, Yunjun},
-  journal={Journal of Control Science and Engineering},
-  volume={2012},
-  pages={9--9},
-  year={2012},
-  publisher={Hindawi Limited London, UK, United Kingdom}
-}
 
 @book{monte_carlo_statistical_methods,
   title={Monte Carlo statistical methods},
@@ -118,49 +68,7 @@ eprint = {
   pages={72628-72642},
   doi={10.1109/ACCESS.2022.3189021}}
 
-@article{dream_v1,
-  author       = {Danijar Hafner and
-                  Timothy P. Lillicrap and
-                  Jimmy Ba and
-                  Mohammad Norouzi},
-  title        = {Dream to Control: Learning Behaviors by Latent Imagination},
-  journal      = {CoRR},
-  volume       = {abs/1912.01603},
-  year         = {2019},
-  url          = {http://arxiv.org/abs/1912.01603},
-  eprinttype    = {arXiv},
-  eprint       = {1912.01603},
-  timestamp    = {Tue, 07 Jan 2020 13:36:12 +0100},
-  biburl       = {https://dblp.org/rec/journals/corr/abs-1912-01603.bib},
-  bibsource    = {dblp computer science bibliography, https://dblp.org}
-}
 
-
-@article{dreamer_v2,
-  author       = {Danijar Hafner and
-                  Timothy P. Lillicrap and
-                  Mohammad Norouzi and
-                  Jimmy Ba},
-  title        = {Mastering Atari with Discrete World Models},
-  journal      = {CoRR},
-  volume       = {abs/2010.02193},
-  year         = {2020},
-  url          = {https://arxiv.org/abs/2010.02193},
-  eprinttype    = {arXiv},
-  eprint       = {2010.02193},
-  timestamp    = {Mon, 12 Oct 2020 17:53:10 +0200},
-  biburl       = {https://dblp.org/rec/journals/corr/abs-2010-02193.bib},
-  bibsource    = {dblp computer science bibliography, https://dblp.org}
-}
-
-@misc{dremaer_v3,
-      title={Mastering Diverse Domains through World Models}, 
-      author={Danijar Hafner and Jurgis Pasukonis and Jimmy Ba and Timothy Lillicrap},
-      year={2023},
-      eprint={2301.04104},
-      archivePrefix={arXiv},
-      primaryClass={cs.AI}
-}
 
 @book{sutton,
   title={Reinforcement learning: An introduction},
@@ -169,39 +77,6 @@ eprint = {
   publisher={MIT press}
 }
 
-@inproceedings{46_mujoco,
-  title={Mujoco: A physics engine for model-based control},
-  author={Todorov, Emanuel and Erez, Tom and Tassa, Yuval},
-  booktitle={2012 IEEE/RSJ international conference on intelligent robots and systems},
-  pages={5026--5033},
-  year={2012},
-  organization={IEEE}
-}
-
-@inproceedings{44_comparacao_mujoco,
-  title={Simulation tools for model-based robotics: Comparison of bullet, havok, mujoco, ode and physx},
-  author={Erez, Tom and Tassa, Yuval and Todorov, Emanuel},
-  booktitle={2015 IEEE international conference on robotics and automation (ICRA)},
-  pages={4397--4404},
-  year={2015},
-  organization={IEEE}
-}
-
-@article{5_openai_gym,
-  title={Openai gym},
-  author={Brockman, Greg and Cheung, Vicki and Pettersson, Ludwig and Schneider, Jonas and Schulman, John and Tang, Jie and Zaremba, Wojciech},
-  journal={arXiv preprint arXiv:1606.01540},
-  year={2016}
-}
-
-@inproceedings{11_selecao_acoes,
-  title={Using reinforcement learning techniques to select the best action in setplays with multiple possibilities in robocup soccer simulation teams},
-  author={Fabro, Jo{\~a}o A and Reis, Luis P and Lau, Nuno},
-  booktitle={2014 joint conference on robotics: SBR-LARS robotics symposium and robocontrol},
-  pages={85--90},
-  year={2014},
-  organization={IEEE}
-}
 
 @article{pequi_tdp,
   title={Pequi Mec{\^a}nico IEEE VSS Soccer Team-CBR 2017},
@@ -220,13 +95,6 @@ eprint = {
     url = {http://www.cbrobotica.org/wp-content/uploads/2023/04/regrasVSS23.pdf}
 }
 
-@article{trabalho_thiago,
-    author = {De Oliveira, T. H.},
-    title = {Fusão de sensores para robô da categoria VSSS},
-    year = {2018},
-    type = {Bachelors Thesis},
-    school = {Universidade Federal de Goias}
-}
 
 @inproceedings{robocup,
     author = {Fahami, M. A. and Roshanzamir, M. and Izadi, N. H.},
@@ -236,90 +104,6 @@ eprint = {
     year = {2017},
     month = {2},
     day = {26}
-}
-
-
-@book{lapan2018,
-    author = {Lapan, M.},
-    title = {Deep Reinforcement Learning Hands-On: Apply Modern RL Methods, with Deep Q-Networks, Value Iteration, Policy Gradients, TRPO, AlphaGo Zero and More},
-    publisher = {Packt Publishing},
-    year = {2018},
-    series = {Expert insight}
-}
-
-@article{long_short,
-  author       = {Ruosong Wang and
-                  Simon S. Du and
-                  Lin F. Yang and
-                  Sham M. Kakade},
-  title        = {Is Long Horizon Reinforcement Learning More Difficult Than Short Horizon
-                  Reinforcement Learning?},
-  journal      = {CoRR},
-  volume       = {abs/2005.00527},
-  year         = {2020},
-  url          = {https://arxiv.org/abs/2005.00527},
-  eprinttype    = {arXiv},
-  eprint       = {2005.00527},
-  timestamp    = {Fri, 08 May 2020 15:04:04 +0200},
-  biburl       = {https://dblp.org/rec/journals/corr/abs-2005-00527.bib},
-  bibsource    = {dblp computer science bibliography, https://dblp.org}
-}
-
-@article{model_based,
-  author       = {Thomas M. Moerland and
-                  Joost Broekens and
-                  Catholijn M. Jonker},
-  title        = {Model-based Reinforcement Learning: {A} Survey},
-  journal      = {CoRR},
-  volume       = {abs/2006.16712},
-  year         = {2020},
-  url          = {https://arxiv.org/abs/2006.16712},
-  eprinttype    = {arXiv},
-  eprint       = {2006.16712},
-  timestamp    = {Thu, 02 Jul 2020 14:42:48 +0200},
-  biburl       = {https://dblp.org/rec/journals/corr/abs-2006-16712.bib},
-  bibsource    = {dblp computer science bibliography, https://dblp.org}
-}
-
-@article{modeling_long_horizon,
-  title={Modeling long-horizon tasks as sequential interaction landscapes},
-  author={Pirk, S{\"o}ren and Hausman, Karol and Toshev, Alexander and Khansari, Mohi},
-  journal={arXiv preprint arXiv:2006.04843},
-  year={2020}
-}
-
-
-@article{ac_multiple_models,
-title = {Adaptive Control Using Collective Information Obtained from Multiple Models*},
-journal = {IFAC Proceedings Volumes},
-volume = {44},
-number = {1},
-pages = {362-367},
-year = {2011},
-note = {18th IFAC World Congress},
-issn = {1474-6670},
-doi = {https://doi.org/10.3182/20110828-6-IT-1002.02237},
-url = {https://www.sciencedirect.com/science/article/pii/S1474667016436372},
-author = {Kumpati S Narendra and Zhuo Han},
-keywords = {Adaptive control, Adaptive systems, Linear systems, Convex hull, Second level adaptation},
-abstract = {Abstract
-A radically new approach to adaptive control using multiple models was recently proposed by the authors. Using parametric estimates and outputs generated by multiple adaptive identification models, an adaptive control procedure was proposed which resulted in significantly faster and more accurate response of the overall system, as compared to existing methods such as “switching” and “switching and tuning”, which also use multiple models. In this paper the ideas are extended to include fixed identification models. Further, many of the theoretical questions that have arisen concerning the stability of the overall system and the reasons for the improved performance are addressed in detail. Simulation results are included, towards the end of the paper, to indicate the effectiveness of the new methodology.}
-}
-
-
-@article{multi_ac_survey,
-title = {Multivariable adaptive control: A survey},
-journal = {Automatica},
-volume = {50},
-number = {11},
-pages = {2737-2764},
-year = {2014},
-issn = {0005-1098},
-doi = {https://doi.org/10.1016/j.automatica.2014.10.015},
-url = {https://www.sciencedirect.com/science/article/pii/S0005109814003963},
-author = {Gang Tao},
-keywords = {Adaptive control, Backstepping control, Fault-tolerant control, Certainty equivalence principle, Feedback linearization, Gain matrix decomposition, Multivariable systems, Model reference control, Parameter estimation, Parametrization, Plant-model matching, Pole placement control, Robustness, Stability and tracking, System uncertainties},
-abstract = {Adaptive control is a control methodology capable of dealing with uncertain systems to ensure desired control performance. This paper provides an overview of some fundamental theoretical aspects and technical issues of multivariable adaptive control, and a thorough presentation of various adaptive control schemes for multi-input–multi-output systems, literature reviews on adaptive control foundations and multivariable adaptive control methods, and related technical problems. It covers some basic concepts and issues such as certainty equivalence, stability, tracking, robustness, and parameter convergence. It discusses some of the most important topics of adaptive control: plant uncertainty parametrization, stable controller adaptation, and design conditions for different adaptive control schemes. The paper also presents a detailed study of well-developed multivariable model reference adaptive control theory and design techniques. It provides an introduction to multivariable adaptive pole placement and adaptive nonlinear control, and it concludes by identifying some open research problems.}
 }
 
 
@@ -353,35 +137,177 @@ abstract = {Adaptive control is a control methodology capable of dealing with un
     issn = {1531-5320}
 }
 
-@INPROCEEDINGS{dreaming,
-  author={Okada, Masashi and Taniguchi, Tadahiro},
-  booktitle={2021 IEEE International Conference on Robotics and Automation (ICRA)}, 
-  title={Dreaming: Model-based Reinforcement Learning by Latent Imagination without Reconstruction}, 
-  year={2021},
-  volume={},
-  number={},
-  pages={4209-4215},
-  doi={10.1109/ICRA48506.2021.9560734}}
-
-@InProceedings{long_horizon,
-  title = 	 {Model-Based Reinforcement Learning via Latent-Space Collocation},
-  author =       {Rybkin, Oleh and Zhu, Chuning and Nagabandi, Anusha and Daniilidis, Kostas and Mordatch, Igor and Levine, Sergey},
-  booktitle = 	 {Proceedings of the 38th International Conference on Machine Learning},
-  pages = 	 {9190--9201},
-  year = 	 {2021},
-  editor = 	 {Meila, Marina and Zhang, Tong},
-  volume = 	 {139},
-  series = 	 {Proceedings of Machine Learning Research},
-  month = 	 {18--24 Jul},
-  publisher =    {PMLR},
-  pdf = 	 {http://proceedings.mlr.press/v139/rybkin21b/rybkin21b.pdf},
-  url = 	 {https://proceedings.mlr.press/v139/rybkin21b.html},
-  abstract = 	 {The ability to plan into the future while utilizing only raw high-dimensional observations, such as images, can provide autonomous agents with broad and general capabilities. However, realistic tasks require performing temporally extended reasoning, and cannot be solved with only myopic, short-sighted planning. Recent work in model-based reinforcement learning (RL) has shown impressive results on tasks that require only short-horizon reasoning. In this work, we study how the long-horizon planning abilities can be improved with an algorithm that optimizes over sequences of states, rather than actions, which allows better credit assignment. To achieve this, we draw on the idea of collocation and adapt it to the image-based setting by leveraging probabilistic latent variable models, resulting in an algorithm that optimizes trajectories over latent variables. Our latent collocation method (LatCo) provides a general and effective visual planning approach, and significantly outperforms prior model-based approaches on challenging visual control tasks with sparse rewards and long-term goals. See the videos on the supplementary website \url{https://sites.google.com/view/latco-mbrl/.}}
-}
-
 @book{eficiencia_amostragem,
     author    = {Max Lapan},
     title     = {Deep Reinforcement Learning Hands-On: Apply modern RL methods, with deep Q-networks, value iteration, policy gradients, TRPO, AlphaGo Zero and more},
     year      = {2018},
     publisher = {Packt Publishing Ltd}
+}
+
+@inproceedings{Job2023TelemetriaAU,
+  title={Telemetria Adaptativa Usando Aprendizado por Reforço Profundo em Redes Definidas por Software},
+  author={Debora H. Job e Sidney C. de Lucena e Pedro Nuno Moura},
+  booktitle={Brazilian Symposium on Computer Networks and Distributed Systems},
+  year={2023},
+  url={https://api.semanticscholar.org/CorpusID:259756761}
+}
+
+@article{Kinoshita2022AprendizadoPR,
+  title={Aprendizado por Reforço Profundo com Redes Recorrentes Aplicado {\`a} Negociaç{\~a}o do Minicontrato Futuro de D{\'o}lar},
+  author={Jonathan Kenji Kinoshita e Douglas De Rizzo Meneghetti e Reinaldo Augusto da Costa Bianchi},
+  journal={Anais do I Brazilian Workshop on Artificial Intelligence in Finance (BWAIF 2022)},
+  year={2022},
+  url={https://api.semanticscholar.org/CorpusID:250578214}
+}
+
+@article{Jesus2023AprendizadoPR,
+  title={Aprendizado por Reforço Profundo para Navegaç{\~a}o Sem Mapa de um Ve{\'i}culo H{\'i}brido A{\'e}reo-Aqu{\'a}tico usando Imagens},
+  author={Junior D. Jesus e Paulo Lilles Jorge Drews-Jr e Rodrigo da Silva Guerra},
+  journal={Anais Estendidos do XV Simp{\'o}sio Brasileiro de Rob{\'o}tica e XX Simp{\'o}sio Latino-Americano de Rob{\'o}tica (SBR/LARS Estendido 2023)},
+  year={2023},
+  url={https://api.semanticscholar.org/CorpusID:267249421}
+}
+
+@article{Grando2021AprendizadoPR,
+  title={Aprendizado por Reforço Profundo para Navegaç{\~a}o sem Mapa de um Ve{\'i}culo H{\'i}brido A{\'e}reo-Aqu{\'a}tico},
+  author={Ricardo B. Grando e Paulo Lilles Jorge Drews-Jr},
+  journal={Anais Estendidos do XIII Simp{\'o}sio Brasileiro de Rob{\'o}tica e XVIII Simp{\'o}sio Latino Americano de Rob{\'o}tica (SBR/LARS Estendido 2021)},
+  year={2021},
+  url={https://api.semanticscholar.org/CorpusID:246953635}
+}
+
+@article{Bezerra2021PropostaDC,
+  title={Proposta de Controle de Espalhamento Espectral Utilizando Aprendizado por Reforço Profundo para Otimizaç{\~a}o do Desempenho de Redes LoRa/LoRaWAN},
+  author={C. de S. Bezerra e Ant{\^o}nio Oliveira-Jr e Fl{\'a}vio Henrique Teles Vieira},
+  journal={Anais da IX Escola Regional de Inform{\'a}tica de Goi{\'a}s (ERI-GO 2021)},
+  year={2021},
+  url={https://api.semanticscholar.org/CorpusID:245461569}
+}
+
+@article{Bezerra2023AprendizagemPR,
+  title={Aprendizagem por Reforço Profundo com Redes Convolucionais Aplicada {\`a} Navegaç{\~a}o Aut{\^o}noma de Rob{\^o}s Reais Utilizando Treinamento em Cen{\'a}rio Virtual},
+  author={Carlos Daniel Bezerra e Fl{\'a}vio Vieira},
+  journal={Anais do XVI Congresso Brasileiro de Intelig{\^e}ncia Computacional},
+  year={2023},
+  url={https://api.semanticscholar.org/CorpusID:267512800}
+}
+
+@article{Lima2023AplicaoDM,
+  title={Aplicaç{\~a}o do M{\'e}todo de Entropia Cruzada em Aprendizagem por Reforço para Controle de Fator de Espalhamento Espectral em Sistemas Internet das Coisas},
+  author={Vittor Gomes Lima e Carlos Daniel Bezerra e Fl{\'a}vio Vieira},
+  journal={Anais do XVI Congresso Brasileiro de Intelig{\^e}ncia Computacional},
+  year={2023},
+  url={https://api.semanticscholar.org/CorpusID:267534819}
+}
+
+@misc{pendyala2024solvingrealworldoptimizationproblem,
+  title={Solving a Real-World Optimization Problem Using Proximal Policy Optimization with Curriculum Learning and Reward Engineering},
+  author={Abhijeet Pendyala and Asma Atamna and Tobias Glasmachers},
+  year={2024},
+  eprint={2404.02577},
+  archivePrefix={arXiv},
+  primaryClass={cs.LG},
+  url={https://arxiv.org/abs/2404.02577},
+}
+
+@misc{han2018amberadaptivemultibatchexperience,
+  title={AMBER: Adaptive Multi-Batch Experience Replay for Continuous Action Control},
+  author={Seungyul Han and Youngchul Sung},
+  year={2018},
+  eprint={1710.04423},
+  archivePrefix={arXiv},
+  primaryClass={cs.LG},
+  url={https://arxiv.org/abs/1710.04423},
+}
+
+@article{Mller2023MultiAgentPP,
+  title={Multi-Agent Proximal Policy Optimization for a Deadlock Capable Transport System in a Simulation-Based Learning Environment},
+  author={Marcel M{\"u}ller and Tobias Reggelin and Hartmut Zadek and Lorena S. Reyes-Rubiano},
+  journal={2023 Winter Simulation Conference (WSC)},
+  year={2023},
+  pages={1818-1829},
+  url={https://api.semanticscholar.org/CorpusID:267338219}
+}
+
+@article{Li2022ResearchOO,
+  title={Research on Obstacle Avoidance Strategy of Grid Workspace Based on Deep Reinforcement Learning},
+  author={Shuo Li and Jun Zhang and Bin Zheng},
+  journal={2022 2nd Asia-Pacific Conference on Communications Technology and Computer Science (ACCTCS)},
+  year={2022},
+  pages={11-15},
+  url={https://api.semanticscholar.org/CorpusID:250663044}
+}
+
+@article{Tiong2022AutonomousVP,
+  title={Autonomous Valet Parking with Asynchronous Advantage Actor-Critic Proximal Policy Optimization},
+  author={Teckchai Tiong and Ismail Saad and Kenneth Tze Kin Teo and Herwansyah Bin Lago},
+  journal={2022 IEEE 12th Annual Computing and Communication Workshop and Conference (CCWC)},
+  year={2022},
+  pages={0334-0340},
+  url={https://api.semanticscholar.org/CorpusID:247231050}
+}
+
+@article{Mller2023MultiAgentPP,
+  title={Multi-Agent Proximal Policy Optimization for a Deadlock Capable Transport System in a Simulation-Based Learning Environment},
+  author={Marcel M{\"u}ller and Tobias Reggelin and Hartmut Zadek and Lorena S. Reyes-Rubiano},
+  journal={2023 Winter Simulation Conference (WSC)},
+  year={2023},
+  pages={1818-1829},
+  url={https://api.semanticscholar.org/CorpusID:267338219}
+}
+@misc{azadeh2024advancesmultiagentreinforcementlearning,
+      title={Advances in Multi-agent Reinforcement Learning: Persistent Autonomy and Robot Learning Lab Report 2024}, 
+      author={Reza Azadeh},
+      year={2024},
+      eprint={2412.21088},
+      archivePrefix={arXiv},
+      primaryClass={cs.MA},
+      url={https://arxiv.org/abs/2412.21088}, 
+}
+
+@misc{baheri2024synergyoptimaltransporttheory,
+      title={The Synergy Between Optimal Transport Theory and Multi-Agent Reinforcement Learning}, 
+      author={Ali Baheri and Mykel J. Kochenderfer},
+      year={2024},
+      eprint={2401.10949},
+      archivePrefix={arXiv},
+      primaryClass={cs.MA},
+      url={https://arxiv.org/abs/2401.10949}, 
+}
+
+@inproceedings{Li2023RACEIM,
+  title={RACE: Improve Multi-Agent Reinforcement Learning with Representation Asymmetry and Collaborative Evolution},
+  author={Pengyi Li and Jianye Hao and Hongyao Tang and Yan Zheng and Xian Fu},
+  booktitle={International Conference on Machine Learning},
+  year={2023},
+  url={https://api.semanticscholar.org/CorpusID:260872223}
+}
+
+@misc{wang2024multipleshipscooperativenavigation,
+      title={Multiple Ships Cooperative Navigation and Collision Avoidance using Multi-agent Reinforcement Learning with Communication}, 
+      author={Y. Wang and Y. Zhao},
+      year={2024},
+      eprint={2410.21290},
+      archivePrefix={arXiv},
+      primaryClass={cs.RO},
+      url={https://arxiv.org/abs/2410.21290}, 
+}
+
+@article{NiedzikaDomaski2024AnEM,
+  title={An environment model in multi-agent reinforcement learning with decentralized training},
+  author={Rafał Niedzi{\'o}łka-Domański and Jarosław Bylina},
+  journal={2024 19th Conference on Computer Science and Intelligence Systems (FedCSIS)},
+  year={2024},
+  pages={661-666},
+  url={https://api.semanticscholar.org/CorpusID:273573410}
+}
+
+@misc{delafuente2024gametheorymultiagentreinforcement,
+      title={Game Theory and Multi-Agent Reinforcement Learning : From Nash Equilibria to Evolutionary Dynamics}, 
+      author={Neil De La Fuente and Miquel Noguer i Alonso and Guim Casadellà},
+      year={2024},
+      eprint={2412.20523},
+      archivePrefix={arXiv},
+      primaryClass={cs.MA},
+      url={https://arxiv.org/abs/2412.20523}, 
 }
