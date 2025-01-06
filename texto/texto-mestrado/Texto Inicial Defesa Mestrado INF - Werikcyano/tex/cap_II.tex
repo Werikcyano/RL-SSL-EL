@@ -210,7 +210,9 @@ $$
 
 Onde:
 - \(r_t(\textbf{\theta})\) é a razão entre a nova e a antiga probabilidade de ação
+
 - \(\hat{A}_t\) é a estimativa de vantagem
+
 - \(\epsilon\) é o parâmetro de clipping
 
 O mecanismo de clipping garante que a razão de probabilidade $$r_t(\theta)$$ permaneça dentro de um intervalo $$[1-\epsilon, 1+\epsilon]$$, impedindo atualizações excessivamente grandes na política. Isso promove uma aprendizagem mais estável e reduz o risco de colapso de desempenho durante o treinamento\cite{https://www.semanticscholar.org/paper/df03d874a7bfff4fb3a769c2c3615c034cc268f1}.
