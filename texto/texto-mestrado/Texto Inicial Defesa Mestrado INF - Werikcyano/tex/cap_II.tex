@@ -58,22 +58,22 @@ Os Processos de Decisão de Markov (MDPs) são um modelo matemático fundamental
 \item \textbf{Ações (A)}: Conjunto de decisões que o agente pode tomar em cada estado.
 \item \textbf{Função de transição P(s'|s,a)}: Probabilidade de transição para o estado s' dado que a ação a foi tomada no estado s.
 \item \textbf{Função de recompensa R(s,a,s')}: Retorno numérico recebido ao realizar a transição de s para s' tomando a ação a.
-\item \textbf{Fator de desconto γ}: Valor entre 0 e 1 que representa a importância de recompensas futuras.
+\item \textbf{Fator de desconto \gamma}: Valor entre 0 e 1 que representa a importância de recompensas futuras.
 \end{itemize}
 
-Um MDP é formalmente definido como uma tupla (S, A, P, R, γ), onde:
+Um MDP é formalmente definido como uma tupla $(S, A, P, R, \gamma)$, onde:
 
 \begin{itemize}
 \item S é o conjunto de estados
 \item A é o conjunto de ações
-\item P : S × A × S → [0, 1] é a função de transição
-\item R : S × A × S → ℝ é a função de recompensa
-\item γ ∈ [0, 1] é o fator de desconto
+\item P : S $\times$ A $\times$ S $\rightarrow$ [0, 1] é a função de transição
+\item R : S $\times$ A $\times$ S $\rightarrow$ $\mathbb{R}$ é a função de recompensa
+\item \gamma ∈ [0, 1] é o fator de desconto
 \end{itemize}
 
 O objetivo em um MDP é encontrar uma política ótima π* que maximize o retorno esperado:
 
-$$ π* = \arg\max_π \mathbb{E}\left[\sum_{t=0}^{\infty} γ^t R(s_t, a_t, s_{t+1}) | π\right] $$
+$$ π* = \arg\max_π \mathbb{E}\left[\sum_{t=0}^{\infty} \gamma^t R(s_t, a_t, s_{t+1}) | π\right] $$
 
 onde π : S → A é uma política que mapeia estados para ações.
 
