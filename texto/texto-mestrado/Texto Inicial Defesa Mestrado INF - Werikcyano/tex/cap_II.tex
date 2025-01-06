@@ -335,11 +335,23 @@ Curriculum Learning tem demonstrado resultados promissores em diversas aplicaç�
 \subsubsection{Princípios do self-play em RL}
 \label{subsubsec:self_play_principios}
 
-%\subsubsection{Geração automática de currículos via self-play}
-%\label{subsubsec:self_play_curriculos}
+O self-play em RL baseia-se no princípio de que um agente pode aprender e melhorar suas habilidades jogando contra si mesmo. Este método envolve aspectos fundamentais como o aprendizado simétrico, onde o agente assume ambos os papéis em um ambiente competitivo, aprendendo estratégias tanto ofensivas quanto defensivas\cite{https://www.semanticscholar.org/paper/6a1dd3f39c4737fcd8eff316f6ba7b3f17cbd4a5}. Além disso, o self-play permite a geração de uma grande quantidade de dados de treinamento sem a necessidade de oponentes externos ou humanos\cite{https://www.semanticscholar.org/paper/ee17bddca3ae8a49e0daa6fd5b70112180664c72}.
+
+Ao jogar contra versões anteriores de si mesmo, o agente explora continuamente novas estratégias e contra-estratégias\cite{https://arxiv.org/abs/1811.09083}, adaptando-se constantemente às suas próprias melhores estratégias em um processo de melhoria contínua\cite{https://arxiv.org/abs/2401.04056}. Através do self-play, os agentes podem desenvolver habilidades que generalizam bem para novos cenários ou oponentes não vistos durante o treinamento\cite{https://arxiv.org/abs/2311.00651}.
 
 \subsubsection{Exemplos de sucesso em jogos complexos}
 \label{subsubsec:self_play_exemplos}
+
+O self-play tem demonstrado resultados impressionantes em diversos jogos complexos. No jogo de Go, o AlphaGo e suas iterações posteriores utilizaram self-play para alcançar e superar o nível de jogadores humanos profissionais\cite{https://arxiv.org/abs/1811.09083}. No xadrez, programas baseados em deep reinforcement learning e self-play, como o AlphaZero, alcançaram níveis sobre-humanos\cite{https://www.semanticscholar.org/paper/ce439790e2cdc916d53f427d1d164825b80dc69d}.
+
+Em jogos ainda mais complexos, como Starcraft II, agentes treinados com self-play conseguiram competir em alto nível\cite{https://arxiv.org/abs/2311.00651}. No Dota 2, o OpenAI Five demonstrou habilidades competitivas contra equipes profissionais\cite{https://arxiv.org/abs/2401.04056}. No poker, agentes de IA treinados com self-play alcançaram níveis sobre-humanos em variantes com múltiplos jogadores\cite{https://www.semanticscholar.org/paper/d8af8fd94c20c4f6ace24624c7758822003804c5}.
+
+No contexto do futebol de robôs, o self-play tem demonstrado resultados significativos no desenvolvimento de habilidades complexas e coordenação multiagente. Por exemplo, robôs têm sido treinados para realizar movimentos sofisticados como recuperação de quedas, caminhada, giros e chutes através do self-play em ambientes simulados\cite{https://www.semanticscholar.org/paper/83cc64742b5d8f0cad1a09e34cd6899b05d8ca5b}. A técnica também tem se mostrado eficaz no treinamento de equipes para cooperação e competição simultânea, permitindo que os robôs aprendam a se adaptar a situações de jogo dinâmicas e desenvolvam estratégias que generalizam bem contra novos oponentes\cite{https://www.semanticscholar.org/paper/bde09cc4a63325a1c9369edfc41c5a5bf18c41b7}. Além disso, o self-play tem sido aplicado com sucesso no desenvolvimento de sistemas completamente autônomos capazes de lidar com observações parciais do ambiente, simulando as imperfeições de sistemas de visão reais\cite{https://www.semanticscholar.org/paper/dd0637b015be33cd4cfea9d1dfb23b294350b111}.
+
+%\subsubsection{Geração automática de currículos via self-play}
+%\label{subsubsec:self_play_curriculos}
+
+
 
 %% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 % \section{Integração de Técnicas para Aquisição Progressiva de Habilidades}
