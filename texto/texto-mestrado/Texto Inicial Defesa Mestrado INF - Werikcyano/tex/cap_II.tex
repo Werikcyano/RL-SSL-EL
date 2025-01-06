@@ -252,12 +252,12 @@ No MARL, cada agente busca maximizar sua própria recompensa, mas suas ações a
 
 A coordenação e competição entre agentes são aspectos fundamentais do MARL que apresentam desafios significativos:
 
-1. **Coordenação**: Em cenários cooperativos, os agentes precisam aprender a trabalhar juntos para atingir objetivos comuns\cite{https://arxiv.org/abs/2410.21290}. Isso envolve:
+1. Coordenação: Em cenários cooperativos, os agentes precisam aprender a trabalhar juntos para atingir objetivos comuns\cite{https://arxiv.org/abs/2410.21290}. Isso envolve:
    - Desenvolvimento de estratégias conjuntas
    - Compartilhamento de informações relevantes
    - Sincronização de ações para maximizar a eficiência coletiva
 
-2. **Competição**: Em ambientes competitivos ou mistos, os agentes podem ter objetivos conflitantes\cite{https://www.semanticscholar.org/paper/c6c4198ac541ce339e76feb8ca2de813acb87fc2}. Isso leva a:
+2. Competição: Em ambientes competitivos ou mistos, os agentes podem ter objetivos conflitantes\cite{https://www.semanticscholar.org/paper/c6c4198ac541ce339e76feb8ca2de813acb87fc2}. Isso leva a:
    - Necessidade de prever e reagir às ações dos oponentes
    - Desenvolvimento de estratégias robustas contra adversários adaptativos
    - Equilíbrio entre cooperação e competição em cenários mistos
@@ -269,17 +269,17 @@ Para lidar com esses desafios, técnicas como o uso de métricas de alinhamento 
 
 A não-estacionariedade é um dos principais desafios em MARL e refere-se à mudança constante do ambiente do ponto de vista de cada agente individual\cite{https://arxiv.org/abs/2412.21088,https://www.semanticscholar.org/paper/96c58672ee781bf75246a039d781e2dc8af5f43e}. Isso ocorre porque:
 
-1. **Agentes em evolução**: Cada agente está continuamente aprendendo e adaptando suas políticas, o que altera o ambiente para os outros agentes\cite{https://arxiv.org/abs/2412.20523}.
+1. Agentes em evolução: Cada agente está continuamente aprendendo e adaptando suas políticas, o que altera o ambiente para os outros agentes\cite{https://arxiv.org/abs/2412.20523}.
 
-2. **Dinâmica complexa**: As interações entre múltiplos agentes criam uma dinâmica que é difícil de prever e modelar\cite{https://arxiv.org/abs/2410.21290}.
+2. Dinâmica complexa: As interações entre múltiplos agentes criam uma dinâmica que é difícil de prever e modelar\cite{https://arxiv.org/abs/2410.21290}.
 
-3. **Observações parciais**: Muitas vezes, os agentes têm acesso apenas a informações locais, o que dificulta a compreensão completa do estado do ambiente\cite{https://arxiv.org/abs/2410.21290}.
+3. Observações parciais: Muitas vezes, os agentes têm acesso apenas a informações locais, o que dificulta a compreensão completa do estado do ambiente\cite{https://arxiv.org/abs/2410.21290}.
 
 A não-estacionariedade apresenta vários desafios:
 
-- **Instabilidade na aprendizagem**: As políticas que eram ótimas em um momento podem se tornar subótimas rapidamente.
-- **Exploração ineficiente**: Estratégias de exploração eficazes em ambientes estacionários podem falhar em ambientes não-estacionários.
-- **Convergência difícil**: A constante mudança no ambiente pode impedir que os agentes convirjam para políticas estáveis.
+- Instabilidade na aprendizagem: As políticas que eram ótimas em um momento podem se tornar subótimas rapidamente.
+- Exploração ineficiente: Estratégias de exploração eficazes em ambientes estacionários podem falhar em ambientes não-estacionários.
+- Convergência difícil: A constante mudança no ambiente pode impedir que os agentes convirjam para políticas estáveis.
 
 Para abordar a não-estacionariedade, pesquisadores têm proposto várias soluções:
 
@@ -289,30 +289,40 @@ Para abordar a não-estacionariedade, pesquisadores têm proposto várias soluç
 
 Essas abordagens visam melhorar a robustez e a eficácia dos sistemas de MARL em ambientes complexos e dinâmicos, permitindo que os agentes aprendam e se adaptem de forma mais eficiente em cenários multiagente desafiadores.
 
-\subsection{Aplicações em Futebol de Robôs}
-\label{subsec:futebol_robos}
+% \subsection{Aplicações em Futebol de Robôs}
+% \label{subsec:futebol_robos}
 
-\subsubsection{Visão geral da categoria SSL-EL}
-\label{subsubsec:ssl_el}
+% \subsubsection{Visão geral da categoria SSL-EL}
+% \label{subsubsec:ssl_el}
 
-\subsubsection{Desafios específicos do domínio}
-\label{subsubsec:desafios_dominio}
+% \subsubsection{Desafios específicos do domínio}
+% \label{subsubsec:desafios_dominio}
 
 %% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 \section{Técnicas de Aprendizado Progressivo}
 \label{sec:aprendizado_prog}
 
+No contexto de aprendizado por reforço (reinforcement learning) e aprendizado por reforço profundo (deep reinforcement learning), as técnicas de aprendizado progressivo são abordagens que visam melhorar a eficiência e eficácia do processo de aprendizagem dos agentes. O aprendizado progressivo, também conhecido como aprendizado incremental ou currículo de aprendizagem, é uma estratégia que facilita o aprendizado de tarefas complexas dividindo-as em subtarefas mais simples e gradualmente aumentando a dificuldade. Os princípios fundamentais dessa técnica incluem a decomposição de tarefas, onde o problema principal é dividido em subtarefas mais gerenciáveis, o sequenciamento, que organiza as subtarefas em uma ordem crescente de complexidade, e a transferência de conhecimento, onde o aprendizado adquirido em tarefas mais simples é utilizado como base para tarefas mais complexas. Implementações em RL e Deep RL incluem o currículo de aprendizagem, que inicia o treinamento com versões simplificadas do ambiente e gradualmente aumenta a complexidade à medida que o agente melhora seu desempenho, o aprendizado hierárquico, que utiliza uma estrutura hierárquica de políticas onde políticas de alto nível selecionam subtarefas e políticas de baixo nível executam ações específicas, a transferência de aprendizado, onde o conhecimento adquirido em tarefas similares é transferido para acelerar o aprendizado em novas tarefas, e o meta-aprendizado, onde o agente aprende a aprender, desenvolvendo estratégias gerais que podem ser rapidamente adaptadas a novas situações. Os benefícios dessas técnicas incluem um aprendizado mais rápido, melhor generalização, superação de mínimos locais e escalabilidade, permitindo abordar problemas mais complexos que seriam intratáveis com abordagens diretas. No entanto, desafios como o design do currículo, o equilíbrio entre exploração e aproveitamento, e a necessidade de evitar overfitting são aspectos críticos a serem considerados. As técnicas de aprendizado progressivo representam uma área promissora na pesquisa de RL e Deep RL, oferecendo caminhos para superar limitações tradicionais e abordar problemas cada vez mais complexos do mundo real\cite{https://www.semanticscholar.org/paper/3004b3eba73f4def2d36d2064eadc76c5244547d,https://www.semanticscholar.org/paper/f11594e47ce3f5872bd4d4868f23655025bb6511,https://www.semanticscholar.org/paper/b30e72c8f236951fe26024bfe49bda84e8bf133b,https://www.semanticscholar.org/paper/c984fdd5f847e46a9335c5aba982d31ceafbcb27,https://www.semanticscholar.org/paper/ece55442b2aee7f9db67c7fc58a6a857ed915fcd,https://www.semanticscholar.org/paper/801d0ef8c81c13a64228720b7d43660dcf664705,https://www.semanticscholar.org/paper/68fb81aa0a7d17ff07cb4c8d74cb78f0e67bbcca,https://www.semanticscholar.org/paper/1a4a43a3997e2694b6ce91ba33ebade1269a6256,https://www.semanticscholar.org/paper/67dd6e219a02aeb8f151eec2d8254e30cf7599dd}.
+
 \subsection{Curriculum Learning}
 \label{subsec:curriculum}
+
+Curriculum Learning é uma abordagem de aprendizado progressivo inspirada na forma como os seres humanos aprendem, começando com conceitos simples e gradualmente progredindo para tarefas mais complexas. A motivação por trás dessa técnica é melhorar a eficiência e eficácia do processo de aprendizagem em ambientes de Reinforcement Learning (RL) e Deep Reinforcement Learning (Deep RL). Os princípios fundamentais do Curriculum Learning incluem a ordenação de tarefas do mais fácil ao mais difícil, o aprendizado gradual expondo o agente a desafios progressivamente mais complexos e a transferência de conhecimento de tarefas simples para problemas mais elaborados.
 
 \subsubsection{Conceito e motivação}
 \label{subsubsec:curriculum_conceito}
 
+O conceito de Curriculum Learning baseia-se na ideia de que a aprendizagem pode ser facilitada ao estruturar o processo de ensino de maneira incremental. Isso significa que, ao invés de expor o agente a tarefas complexas desde o início, ele é inicialmente treinado em tarefas mais simples, que são gradualmente substituídas por tarefas mais difíceis à medida que o agente adquire habilidades e conhecimento. A motivação para essa abordagem é que ela pode levar a um aprendizado mais eficiente e eficaz, permitindo que o agente desenvolva uma base sólida de conhecimento antes de enfrentar desafios mais complexos. Essa técnica é particularmente útil em ambientes de RL e Deep RL, onde a complexidade das tarefas pode variar significativamente e a capacidade de transferir conhecimento de tarefas simples para problemas mais elaborados pode ser crucial para o sucesso do agente.
+
 \subsubsection{Desenho de currículos para RL}
 \label{subsubsec:curriculum_desenho}
 
+O desenho de currículos eficazes para RL é um aspecto crucial do Curriculum Learning. Algumas estratégias incluem a modificação do ambiente, onde inicialmente o agente interage com versões simplificadas do ambiente, com a complexidade aumentando gradualmente. Outra estratégia é a seleção de tarefas, onde um algoritmo seleciona tarefas apropriadas baseadas no nível atual de habilidade do agente. Além disso, a estrutura de recompensas pode ser ajustada ao longo do tempo, começando com recompensas mais frequentes para comportamentos básicos e progredindo para recompensas mais esparsas focadas em comportamentos complexos. O design eficaz de um currículo frequentemente requer conhecimento especializado do domínio, e a automatização desse processo é uma área ativa de pesquisa\cite{https://www.semanticscholar.org/paper/79d92c9a3e0de40d863e43232e2c00370412a841}.
+
 \subsubsection{Aplicações em robótica e jogos}
 \label{subsubsec:curriculum_aplicacoes}
+
+Curriculum Learning tem demonstrado resultados promissores em diversas aplicações, incluindo robótica e jogos. Em manipuladores robóticos, o Curriculum Learning tem sido aplicado para melhorar o aprendizado de tarefas complexas. Técnicas como Q-Learning, Deep Reinforcement Learning, Actor-Critic e Policy Gradient são frequentemente utilizadas nesse contexto\cite{https://www.semanticscholar.org/paper/f11594e47ce3f5872bd4d4868f23655025bb6511}. No campo dos jogos digitais educacionais, abordagens de aprendizado progressivo, como o Curriculum Learning, podem ser integradas com Game Learning Analytics para melhorar a experiência de aprendizado e o engajamento dos jogadores\cite{https://www.semanticscholar.org/paper/704147ceaed752c17e5f24f9a3521c41cbfc9ff7}. Além disso, estudos têm aplicado Curriculum Learning em experimentos de navegação autônoma, demonstrando como variações nos parâmetros de aprendizado, como taxa de aprendizado e fator de desconto, podem afetar significativamente o desempenho do agente\cite{https://www.semanticscholar.org/paper/79d92c9a3e0de40d863e43232e2c00370412a841}. O Curriculum Learning oferece benefícios significativos, incluindo aprendizado mais rápido, melhor generalização e superação de mínimos locais. No entanto, desafios como o design adequado do currículo e o balanceamento entre tarefas fáceis e difíceis permanecem áreas de pesquisa ativa no campo de RL e Deep RL.
 
 \subsection{Self-Play}
 \label{subsec:self_play}
@@ -320,33 +330,33 @@ Essas abordagens visam melhorar a robustez e a eficácia dos sistemas de MARL em
 \subsubsection{Princípios do self-play em RL}
 \label{subsubsec:self_play_principios}
 
-\subsubsection{Geração automática de currículos via self-play}
-\label{subsubsec:self_play_curriculos}
+%\subsubsection{Geração automática de currículos via self-play}
+%\label{subsubsec:self_play_curriculos}
 
 \subsubsection{Exemplos de sucesso em jogos complexos}
 \label{subsubsec:self_play_exemplos}
 
 %% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-\section{Integração de Técnicas para Aquisição Progressiva de Habilidades}
-\label{sec:integracao}
+% \section{Integração de Técnicas para Aquisição Progressiva de Habilidades}
+% \label{sec:integracao}
 
-\subsection{Combinando Curriculum Learning e Self-Play}
-\label{subsec:combinacao}
+% \subsection{Combinando Curriculum Learning e Self-Play}
+% \label{subsec:combinacao}
 
-\subsubsection{Sinergias entre as abordagens}
-\label{subsubsec:sinergias}
+% \subsubsection{Sinergias entre as abordagens}
+% \label{subsubsec:sinergias}
 
-\subsubsection{Desafios na integração}
-\label{subsubsec:desafios_integracao}
+% \subsubsection{Desafios na integração}
+% \label{subsubsec:desafios_integracao}
 
-\subsection{Aplicação ao Futebol de Robôs Multiagente}
-\label{subsec:aplicacao_futebol}
+% \subsection{Aplicação ao Futebol de Robôs Multiagente}
+% \label{subsec:aplicacao_futebol}
 
-\subsubsection{Desenho de currículos para habilidades de futebol}
-\label{subsubsec:curriculos_futebol}
+% \subsubsection{Desenho de currículos para habilidades de futebol}
+% \label{subsubsec:curriculos_futebol}
 
-\subsubsection{Transição do curriculum para self-play competitivo}
-\label{subsubsec:transicao_self_play}
+% \subsubsection{Transição do curriculum para self-play competitivo}
+% \label{subsubsec:transicao_self_play}
 
-\subsubsection{Potenciais benefícios na aquisição de habilidades complexas}
-\label{subsubsec:beneficios_aquisicao}
+% \subsubsection{Potenciais benefícios na aquisição de habilidades complexas}
+% \label{subsubsec:beneficios_aquisicao}
