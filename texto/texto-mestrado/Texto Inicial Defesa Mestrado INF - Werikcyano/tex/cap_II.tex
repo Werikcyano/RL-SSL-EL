@@ -67,15 +67,15 @@ Um MDP é formalmente definido como uma tupla $(S, A, P, R, \gamma)$, onde:
 \item S é o conjunto de estados
 \item A é o conjunto de ações
 \item P : S $\times$ A $\times$ S $\rightarrow$ [0, 1] é a função de transição
-\item R : S $\times$ A $\times$ S $\rightarrow$ $\mathbb{R}$ é a função de recompensa
-\item \gamma ∈ [0, 1] é o fator de desconto
+\item R : S $\times$ A $\times$ S $\rightarrow$ \(\mathbb{R}\) é a função de recompensa
+\item \(\gamma\) \(\in\) [0, 1] é o fator de desconto
 \end{itemize}
 
-O objetivo em um MDP é encontrar uma política ótima π* que maximize o retorno esperado:
+O objetivo em um MDP é encontrar uma política ótima \(\pi^*\) que maximize o retorno esperado:
 
-$$ π* = \arg\max_π \mathbb{E}\left[\sum_{t=0}^{\infty} \gamma^t R(s_t, a_t, s_{t+1}) | π\right] $$
+$$ \pi^* = \arg\max_\pi \mathbb{E}\left[\sum_{t=0}^{\infty} \gamma^t R(s_t, a_t, s_{t+1}) \mid \pi\right] $$
 
-onde π : S → A é uma política que mapeia estados para ações.
+onde \(\pi\) : S \(\rightarrow\) A é uma política que mapeia estados para ações.
 
 \begin{figure}[H]
  \centering
