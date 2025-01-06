@@ -3,21 +3,35 @@
 
 \section{Implementação do Curriculum Learning}
 
-\subsection{Progressão Estruturada do Aprendizado}
+\subsection{Inspiração para modelagem do curriculum}
 
-A metodologia proposta baseia-se em uma progressão estruturada de aprendizado através de três tarefas principais, com níveis crescentes de complexidade:
+A modelagem do curriculum foi inspirada em casos reais de jogos eletrônicos populares que implementam sistemas de treinamento progressivo. Jogos como FIFA e Rocket League possuem seções dedicadas ao treinamento que seguem uma abordagem gradual de aprendizado, muito similar aos conceitos fundamentais do Curriculum Learning. No FIFA, por exemplo, o jogador começa aprendendo habilidades básicas como passes, chutes e dribles isoladamente, antes de progredir para situações mais complexas de jogo. De forma análoga, no Rocket League, os jogadores são introduzidos primeiro aos controles básicos do carro, como aceleração e saltos, evoluindo gradualmente para manobras aéreas e jogadas táticas elaboradas. Esta progressão natural do aprendizado, onde conceitos fundamentais são dominados antes da exposição a cenários mais desafiadores, alinha-se perfeitamente com os princípios do Curriculum Learning. A técnica propõe justamente esta abordagem estruturada, onde o agente é exposto a tarefas progressivamente mais complexas, permitindo que construa uma base sólida de conhecimento antes de enfrentar situações que exigem a combinação de múltiplas habilidades. Esta inspiração nos levou a modelar nosso curriculum de forma similar, começando com fundamentos básicos do futebol de robôs e progressivamente introduzindo cenários mais desafiadores e complexos.
 
-\begin{enumerate}
-    \item \textbf{Navegação Básica:} O agente deve aprender a se movimentar pelo campo e alcançar pontos específicos, sem obstáculos. Esta tarefa inicial estabelece as bases do controle de movimento.
-    
-    \item \textbf{Navegação com Obstáculos:} Introduz obstáculos estáticos no ambiente, exigindo que o agente aprenda a planejar rotas e desviar de colisões enquanto mantém o objetivo de alcançar pontos específicos.
-    
-    \item \textbf{Navegação Dinâmica:} Incorpora elementos móveis e perturbações ambientais, simulando condições mais próximas de uma partida real.
-\end{enumerate}
+\subsection{Isolamento e classificação de tarefas}
 
-A escolha desta progressão se justifica pela necessidade de construir gradualmente as habilidades necessárias para o jogo, permitindo que o agente consolide competências fundamentais antes de enfrentar cenários mais complexos.
+\subsection{Modularização dos algoritmos de aprendizagem}
 
-\subsection{Métricas de Avaliação e Progresso}
+
+
+\section{Parametrização do Ambiente}
+
+\subsection{Cenários de treinamento}
+
+\subsection{Recompensa}
+%lembrar que as recompensas são varáveis de acordo com o nível de dificuldade
+
+
+
+\section{Pipeline de Integração e Continuidade do Treinamento}
+
+\subsection{Adaptação ao Sistema Existente}
+%adaptar ao contexto do SSL-EL
+
+\subsection{Transição entre Modos de Treinamento}
+
+
+
+\section{Métricas e Avaliação}
 
 Para avaliar o desempenho do agente durante o treinamento, implementamos as seguintes métricas:
 
@@ -29,77 +43,3 @@ Para avaliar o desempenho do agente durante o treinamento, implementamos as segu
 \end{itemize}
 
 O monitoramento destas métricas é realizado continuamente através de um sistema automatizado de coleta e análise de dados.
-
-\section{Flexibilidade e Configuração do Treinamento}
-
-\subsection{Modos de Treinamento}
-
-O sistema implementa dois modos principais de treinamento:
-
-\begin{itemize}
-    \item \textbf{Curriculum Learning:} Progressão estruturada de tarefas
-    \item \textbf{Self-play:} Treinamento através de confrontos entre versões do agente
-\end{itemize}
-
-A integração entre estes modos é gerenciada por um sistema de avaliação que determina quando o agente está pronto para progredir no curriculum ou alternar para self-play.
-
-\subsection{Parametrização do Ambiente}
-
-O ambiente de treinamento possui diversos parâmetros configuráveis:
-
-\begin{itemize}
-    \item Dimensões e características do campo
-    \item Velocidade de simulação
-    \item Intensidade de perturbações
-    \item Frequência de amostragem
-\end{itemize}
-
-Cada parâmetro influencia diretamente o processo de aprendizagem, permitindo ajustes finos para otimizar o treinamento.
-
-\section{Integração e Compatibilidade}
-
-\subsection{Adaptação ao Sistema Existente}
-
-A implementação mantém compatibilidade com o sistema VSSS através de:
-
-\begin{itemize}
-    \item Interface padronizada de comunicação
-    \item Preservação do formato de dados existente
-    \item Modularização do código novo
-\end{itemize}
-
-\subsection{Transição entre Modos de Treinamento}
-
-O sistema gerencia transições entre modos de treinamento através de:
-
-\begin{itemize}
-    \item Checkpoints automáticos
-    \item Sistema de versionamento de modelos
-    \item Métricas de progresso para decisão de transição
-\end{itemize}
-
-\section{Monitoramento e Documentação}
-
-\subsection{Sistema de Logs}
-
-O sistema de logs implementado registra:
-
-\begin{itemize}
-    \item Métricas de desempenho por episódio
-    \item Estados do ambiente e ações do agente
-    \item Eventos de transição entre tarefas
-    \item Erros e exceções durante o treinamento
-\end{itemize}
-
-\subsection{Visualização e Acompanhamento}
-
-O progresso do treinamento é monitorado através de:
-
-\begin{itemize}
-    \item Dashboards no Tensorboard
-    \item Gráficos de evolução das métricas
-    \item Relatórios automáticos de progresso
-    \item Documentação contínua das observações
-\end{itemize}
-
-A visualização em tempo real permite ajustes rápidos nos parâmetros de treinamento quando necessário.
