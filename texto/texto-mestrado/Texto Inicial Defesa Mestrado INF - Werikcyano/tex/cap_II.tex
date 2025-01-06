@@ -148,10 +148,48 @@ O Aprendizado por Reforço Profundo tem sido aplicado com sucesso em diversas á
 
 Apesar de seu potencial, o DRL também enfrenta desafios significativos, como alta demanda computacional e longo tempo de treinamento \cite{https://www.semanticscholar.org/paper/8efe27f4a31ebb72e9b3047107a4fe940259aad9}, dificuldade em transferir o aprendizado de ambientes simulados para o mundo real \cite{https://www.semanticscholar.org/paper/fef82649815694167ef56929648a51f2eb0849e9}, sensibilidade a hiperparâmetros e configurações de treinamento \cite{https://www.semanticscholar.org/paper/3879ab51e5eea7ce06dc31edbb169afb76e0bd71}, e a necessidade de grandes quantidades de dados e interações para aprendizado efetivo.
 
-Em conclusão, o Aprendizado por Reforço Profundo representa uma fronteira promissora na inteligência artificial, combinando a capacidade de aprendizado autônomo do reforço com o poder de processamento das redes neurais profundas. Sua aplicabilidade em diversos domínios e capacidade de resolver problemas complexos o tornam uma área de pesquisa e desenvolvimento extremamente relevante e em rápida evolução.
 
 \subsubsection{Redes neurais como aproximadores de função}
 \label{subsubsec:redes_neurais}
+
+As redes neurais como aproximadores de função desempenham um papel fundamental no contexto do Aprendizado por Reforço Profundo (DRL), representando uma das principais diferenças em relação ao aprendizado por reforço tradicional. Esta abordagem permite que os agentes de DRL lidem com espaços de estado e ação contínuos e de alta dimensionalidade, superando limitações significativas dos métodos tabulares convencionais.
+
+\paragraph{Conceito de Aproximação de Função em DRL}
+
+No DRL, as redes neurais são utilizadas para aproximar funções complexas que mapeiam estados para valores (função de valor) ou ações (função de política). Essa capacidade de aproximação é crucial por várias razões:
+
+1. \textbf{Generalização}: As redes neurais podem generalizar para estados não vistos anteriormente, interpolando ou extrapolando com base em padrões aprendidos.
+
+2. \textbf{Compressão de Informação}: Permitem representar funções complexas de forma compacta, evitando a necessidade de armazenar valores para cada estado possível.
+
+3. \textbf{Aprendizado de Características}: Extraem automaticamente características relevantes dos dados de entrada, eliminando a necessidade de engenharia manual de recursos.
+
+\paragraph{Aplicações em DRL}
+
+\textbf{Aproximação da Função de Valor}: As redes neurais são utilizadas para estimar o valor esperado de estados ou pares estado-ação. Isso é particularmente útil em algoritmos como o Deep Q-Network (DQN), onde a rede neural aproxima a função Q, que representa o valor de longo prazo de tomar uma ação específica em um determinado estado.
+
+\textbf{Aproximação da Função de Política}: Em métodos baseados em política, como o PPO (Proximal Policy Optimization), as redes neurais são usadas para representar diretamente a política do agente. Elas mapeiam estados para distribuições de probabilidade sobre ações, permitindo que o agente tome decisões em ambientes contínuos ou de alta dimensionalidade.
+
+\textbf{Modelos de Ambiente}: Em algumas abordagens de DRL baseadas em modelo, as redes neurais são usadas para aproximar a dinâmica do ambiente, prevendo estados futuros e recompensas com base em estados e ações atuais.
+
+\paragraph{Vantagens e Desafios}
+
+\textbf{Vantagens}:
+1. Capacidade de lidar com espaços de estado e ação contínuos.
+2. Habilidade de processar entradas de alta dimensionalidade, como imagens ou dados sensoriais complexos.
+3. Potencial para transferência de aprendizado entre tarefas similares.
+
+\textbf{Desafios}:
+1. Instabilidade de treinamento devido à não-estacionariedade do processo de aprendizagem.
+2. Overfitting em conjuntos de dados limitados.
+3. Dificuldade em interpretar as decisões do modelo devido à natureza de "caixa preta" das redes neurais profundas.
+
+\paragraph{Relação com PPO}
+
+No contexto do PPO, as redes neurais são utilizadas tanto para aproximar a função de política quanto para estimar a função de valor. A política é representada por uma rede neural que mapeia estados para distribuições de probabilidade sobre ações, enquanto uma segunda rede (ou uma rede compartilhada com saídas separadas) estima o valor de cada estado.
+
+O uso de redes neurais como aproximadores de função no PPO permite que o algoritmo lide eficientemente com ambientes complexos e contínuos. A técnica de clipping do PPO, que limita as mudanças na política, ajuda a estabilizar o treinamento dessas redes neurais, mitigando alguns dos desafios associados à aproximação de função em DRL.
+
 
 \subsection{Proximal Policy Optimization (PPO)}
 \label{subsec:ppo}
