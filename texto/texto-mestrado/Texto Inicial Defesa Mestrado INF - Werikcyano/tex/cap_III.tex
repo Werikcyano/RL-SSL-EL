@@ -57,6 +57,157 @@ A modularização do aprendizado foi implementada através do \texttt{Curriculum
     \end{itemize}
 \end{itemize}
 
+
+
+
+\section{Parametrização do Ambiente}
+
+\subsection{Cenários de treinamento}
+O ambiente foi parametrizado para suportar diferentes cenários de treinamento através do sistema de curriculum learning. Os cenários são definidos em três níveis progressivos de dificuldade:
+
+\begin{itemize}
+    \item \textbf{Nível 0 - Posições Fixas:}
+    \begin{itemize}
+        \item Robô e bola em posições pré-determinadas
+        \item Robô sempre inicia na mesma posição (-2, 0)
+        \item Bola sempre posicionada em (0, 0)
+        \item Cenário mais simples para aprendizado inicial
+    \end{itemize}
+
+    \item \textbf{Nível 1 - Posições Aleatórias:}
+    \begin{itemize}
+        \item Robô e bola posicionados aleatoriamente no campo
+        \item Posições respeitam limites do campo e distância mínima entre objetos
+        \item Aumenta complexidade ao exigir generalização
+    \end{itemize}
+
+    \item \textbf{Nível 2 - Obstáculos:}
+    \begin{itemize}
+        \item Mantém posicionamento aleatório do nível anterior
+        \item Adiciona robôs adversários como obstáculos
+        \item Maior complexidade na navegação e planejamento
+    \end{itemize}
+\end{itemize}
+
+\subsection{Recompensa}
+O sistema de recompensas foi projetado para guiar o aprendizado do agente de forma progressiva, adaptando-se ao nível atual do curriculum. Os componentes principais da recompensa são:
+
+\begin{itemize}
+    \item \textbf{Recompensa por Velocidade da Bola (70\%):}
+    \begin{itemize}
+        \item Calculada com base no gradiente de distância da bola ao gol
+        \item Incentiva movimentação da bola em direção ao objetivo
+        \item Normalizada entre -1 e 1 pela velocidade máxima de chute
+    \end{itemize}
+
+    \item \textbf{Recompensa por Posicionamento Ofensivo (10\%):}
+    \begin{itemize}
+        \item Baseada no ângulo formado entre robô, bola e gol adversário
+        \item Incentiva posicionamento estratégico para ataque
+    \end{itemize}
+
+    \item \textbf{Recompensa por Posicionamento Defensivo (10\%):}
+    \begin{itemize}
+        \item Considera ângulo entre gol próprio, robô e bola
+        \item Promove cobertura defensiva quando necessário
+    \end{itemize}
+
+    \item \textbf{Recompensa por Proximidade (10\%):}
+    \begin{itemize}
+        \item Baseada na distância entre robô e bola
+        \item Incentiva aproximação controlada à bola
+    \end{itemize}
+\end{itemize}
+
+Adicionalmente, são aplicadas penalizações especiais:
+\begin{itemize}
+    \item -10 pontos quando a bola sai do campo
+    \item +/-10 pontos por gol marcado/sofrido
+\end{itemize}
+
+
+
+\section{Pipeline de Integração e Continuidade do Treinamento}
+
+\subsection{Adaptação ao Sistema Existente}
+O sistema SSL-EL foi adaptado para incorporar o aprendizado curricular através de modificações estratégicas em sua arquitetura. A classe \texttt{SSLCurriculumEnv} herda da classe base \texttt{SSLMultiAgentEnv}, estendendo suas funcionalidades para suportar diferentes níveis de complexidade no treinamento.
+
+A integração foi realizada através dos seguintes componentes principais:
+
+\begin{itemize}
+    \item \textbf{Ambiente Curricular:}
+    \begin{itemize}
+        \item Implementado na classe \texttt{SSLCurriculumEnv}
+        \item Gerencia estados específicos de cada nível do currículo
+        \item Adapta dinamicamente posições de robôs, bola e obstáculos
+        \item Modifica o sistema de recompensas conforme o nível atual
+    \end{itemize}
+
+    \item \textbf{Callback de Monitoramento:}
+    \begin{itemize}
+        \item Implementado na classe \texttt{CurriculumCallback}
+        \item Monitora o desempenho do agente em tempo real
+        \item Mantém histórico de sucessos em uma janela deslizante
+        \item Controla a progressão entre níveis do currículo
+    \end{itemize}
+
+    \item \textbf{Sistema de Configuração:}
+    \begin{itemize}
+        \item Gerenciado pelo arquivo \texttt{rllib\_multiagent.py}
+        \item Define parâmetros do ambiente e do treinamento
+        \item Configura modelos de rede neural e políticas
+        \item Estabelece métricas de avaliação
+    \end{itemize}
+\end{itemize}
+
+\subsection{Transição entre Modos de Treinamento}
+O sistema implementa uma transição suave entre os diferentes níveis do currículo, controlada por mecanismos automáticos de avaliação e progressão:
+
+\begin{itemize}
+    \item \textbf{Mecanismo de Progressão:}
+    \begin{itemize}
+        \item Avalia taxa de sucesso em uma janela de episódios
+        \item Progride quando atinge limiar de promoção configurável
+        \item Mantém histórico de desempenho para decisões robustas
+    \end{itemize}
+
+    \item \textbf{Adaptação Dinâmica:}
+    \begin{itemize}
+        \item Ajusta parâmetros do ambiente ao mudar de nível
+        \item Modifica posicionamentos e obstáculos gradualmente
+        \item Mantém consistência do aprendizado entre transições
+    \end{itemize}
+
+    \item \textbf{Monitoramento Contínuo:}
+    \begin{itemize}
+        \item Registra métricas de desempenho em cada nível
+        \item Permite ajuste fino dos parâmetros de progressão
+        \item Fornece feedback para análise do treinamento
+    \end{itemize}
+\end{itemize}
+
+A implementação utiliza o framework RLlib para gerenciamento do treinamento distribuído, permitindo escalabilidade e eficiência no processo de aprendizado. O sistema mantém compatibilidade com o ambiente SSL original enquanto adiciona as funcionalidades necessárias para o curriculum learning.
+
+
+
+\section{Métricas e Avaliação}
+
+Após detalhar a implementação do sistema de treinamento com curriculum learning, é fundamental estabelecer métricas adequadas para avaliar o desempenho do agente durante seu processo de aprendizagem. Para isso, desenvolvemos um conjunto abrangente de métricas que nos permitem analisar diferentes aspectos do comportamento do agente:
+
+\begin{itemize}
+    \item \textbf{Taxa de Sucesso:} Mensura o percentual de conclusão bem-sucedida das tarefas propostas, permitindo avaliar a efetividade geral do aprendizado. Esta métrica é especialmente importante para verificar se o agente está progredindo adequadamente através dos níveis do currículo.
+    
+    \item \textbf{Tempo de Conclusão:} Avalia a duração média necessária para completar cada tarefa, fornecendo insights sobre a eficiência temporal do agente. Esta métrica é crucial para identificar possíveis gargalos no processo de aprendizagem.
+    
+    \item \textbf{Eficiência de Trajetória:} Calcula a razão entre o caminho ideal teoricamente possível e o caminho efetivamente realizado pelo agente. Esta métrica nos ajuda a entender o quão otimizadas estão as políticas aprendidas.
+    
+    \item \textbf{Robustez:} Avalia a capacidade do agente em manter um desempenho consistente mesmo quando submetido a perturbações no ambiente. Esta métrica é fundamental para garantir que o aprendizado seja generalizável e não apenas memorização.
+\end{itemize}
+
+Para garantir uma avaliação precisa e contínua, implementamos um sistema automatizado de coleta e análise de dados que monitora estas métricas em tempo real durante todo o processo de treinamento. Este sistema nos permite não apenas acompanhar o progresso do agente, mas também identificar rapidamente possíveis problemas ou áreas que necessitam de ajustes.
+
+Os resultados iniciais da comparação entre o método de curriculum learning e o treinamento padrão (default) podem ser observados na Tabela \ref{tab:cl_vs_default}. Embora os dados preliminares mostrem uma pequena vantagem numérica para o método default nas primeiras 300 steps de treinamento, é importante notar que o curriculum learning frequentemente apresenta benefícios mais significativos em horizontes de tempo mais longos.
+
 \begin{table}[H]
     \centering
     \begin{tabular}{|c|c|}
@@ -70,36 +221,3 @@ A modularização do aprendizado foi implementada através do \texttt{Curriculum
     \caption{Comparação da recompensa média entre os métodos Curriculum Learning e Default nas primeiras 300 steps de treinamento}
     \label{tab:cl_vs_default}
 \end{table}
-
-
-
-\section{Parametrização do Ambiente}
-
-\subsection{Cenários de treinamento}
-
-\subsection{Recompensa}
-%lembrar que as recompensas são varáveis de acordo com o nível de dificuldade
-
-
-
-\section{Pipeline de Integração e Continuidade do Treinamento}
-
-\subsection{Adaptação ao Sistema Existente}
-%adaptar ao contexto do SSL-EL
-
-\subsection{Transição entre Modos de Treinamento}
-
-
-
-\section{Métricas e Avaliação}
-
-Para avaliar o desempenho do agente durante o treinamento, implementamos as seguintes métricas:
-
-\begin{itemize}
-    \item \textbf{Taxa de Sucesso:} Percentual de conclusão bem-sucedida das tarefas
-    \item \textbf{Tempo de Conclusão:} Duração média para completar cada tarefa
-    \item \textbf{Eficiência de Trajetória:} Razão entre o caminho ideal e o realizado
-    \item \textbf{Robustez:} Capacidade de manter o desempenho sob perturbações
-\end{itemize}
-
-O monitoramento destas métricas é realizado continuamente através de um sistema automatizado de coleta e análise de dados.
