@@ -1,6 +1,7 @@
 % Exemplo de dissertação do INF-UFG com texto em portugues formatado com LaTeX
 \documentclass[dissertacao]{inf-ufg}
 \usepackage{amsmath} 
+\usepackage{pdfpages}
 % Opções da classe inf-ufg (ao usar mais de uma, separe por vírgulas)
 %   [tese]         -> Tese de doutorado.
 %   [dissertacao]  -> Dissertação de mestrado (padrão).
@@ -16,8 +17,8 @@
 %\selectlanguage{portuguese}
 
 %------------------------------------------ AUTOR, TÍTULO E DATA DE DEFESA %
-\autor{Werikcyano L. Guimarães} % (José da Silva)
-\autorR{Guimarães L., Werikcyano} % (da Silva, José)
+\autor{Werikcyano Lima Guimarães} % (José da Silva)
+\autorR{Guimarães Lima, Werikcyano} % (da Silva, José)
 
 \titulo{Aquisição Progressiva de Habilidades por meio de Curriculum Learning para Futebol de Robôs Multiagente}
 %\subtitulo{\textless Subtítulo do Trabalho\textgreater}
@@ -56,8 +57,9 @@
 %-------------------------------------------------- ELEMENTOS PRÉ-TEXTUAIS %
 \capa    % Gera o modelo da capa externa do trabalho
 %\publica % Gera a autorização para publicação em formato eletrônico
+\includepdf[pages=-, scale=1, angle=0,  offset=0 -50]{pre/TECA_preenchido_assinado.pdf}
 \rosto   % Primeira folha interna do trabalho
-
+\includepdf[pages=-, scale=1, angle=0,  offset=0 -50]{pre/ficha_catalográfica_werikcyano.pdf}
 %\input{./pre/pre_aprovacao}
 \input{./pre/pre_direitos}
 %\input{./pre/pre_dedicatoria}
@@ -66,7 +68,7 @@
 \input{./pre/pre_resumo}
 \input{./pre/pre_abstract}
 
-%\tabelas[figtabalgcod]
+\tabelas[figtab]
 %Opções:
 %nada [] -> Gera apenas o sumário
 %fig     -> Gera o sumário e a lista de figuras
