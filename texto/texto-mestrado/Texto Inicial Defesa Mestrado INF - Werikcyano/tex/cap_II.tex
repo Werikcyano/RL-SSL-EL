@@ -32,10 +32,73 @@ A interação entre o agente e o ambiente é representada esquematicamente na Fi
 \subsubsection*{Exploração vs. Exploração:}
 Uma característica central do aprendizado por reforço é o dilema entre explorar novas ações para adquirir conhecimento e explorar o conhecimento atual para maximizar recompensas. O equilíbrio correto entre esses dois aspectos é essencial para o sucesso do agente.
 
-\subsubsection*{Modelagem por Processos de Decisão de Markov (MDPs):}
-Os MDPs oferecem uma base teórica rigorosa para a modelagem do aprendizado por reforço, formalizando o problema com base nas transições entre estados, nas ações tomadas e nas recompensas recebidas. Um processo de decisão de Markov é definido pela propriedade de Markov, segundo a qual a probabilidade de transição para o próximo estado depende apenas do estado atual e da ação executada, não dos estados anteriores.
+\subsubsection*{Modelagem por Processos de Decisão de Markov (MDPs)}
 
-A interação entre o agente e o ambiente representada na Figura \ref{fig/MDP.png} exemplifica essa estrutura de MDPs, na qual o aprendizado por reforço visa encontrar uma política ótima que maximize o valor esperado das recompensas acumuladas.
+O aprendizado por reforço é frequentemente modelado por \textbf{Processos de Decisão de Markov} (MDPs, do inglês \textit{Markov Decision Processes}), uma estrutura matemática que captura os aspectos estocásticos e sequenciais da tomada de decisão. Um MDP é definido pelo conjunto quádruplo \((S, A, P, R)\), onde:
+
+\begin{itemize}
+    \item \(S\) é o conjunto de estados possíveis do ambiente.
+    \item \(A\) é o conjunto de ações possíveis que o agente pode tomar.
+    \item \(P(s'|s, a)\) é a probabilidade de transição para o estado \(s'\) dado o estado atual \(s\) e a ação \(a\) tomada.
+    \item \(R(s, a)\) é a recompensa esperada ao tomar a ação \(a\) no estado \(s\).
+\end{itemize}
+
+O agente busca maximizar a soma esperada das recompensas acumuladas ao longo do tempo, definida pelo \textbf{retorno} \(G_t\). No caso de problemas de horizonte finito, o retorno é dado por:
+
+\[
+G_t = \sum_{k=0}^{T} \gamma^k R_{t+k+1}
+\]
+
+No caso de tarefas contínuas, aplica-se a função de desconto, onde \(\gamma \in [0, 1]\) é o fator de desconto que controla o peso das recompensas futuras.
+
+\[
+G_t = R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + \dots = \sum_{k=0}^{\infty} \gamma^k R_{t+k+1}
+\]
+
+A modelagem dos MDPs requer duas funções principais de valor, que capturam a expectativa de recompensas futuras:
+
+\paragraph{1. Função de valor de estado (\(v_\pi(s)\)):}
+Define o valor esperado de se estar no estado \(s\) e seguir uma política \(\pi\) a partir desse estado:
+
+\[
+v_\pi(s) = \mathbb{E}_\pi \left[ \sum_{k=0}^{\infty} \gamma^k R_{t+k+1} \mid S_t = s \right]
+\]
+
+Essa função pode ser definida recursivamente pela \textbf{equação de Bellman}:
+
+\[
+v_\pi(s) = \sum_{a \in A} \pi(a|s) \sum_{s' \in S} P(s'|s, a) \left[ R(s, a) + \gamma v_\pi(s') \right]
+\]
+
+\paragraph{2. Função de valor de ação (\(q_\pi(s, a)\)):}
+Define o valor esperado de se tomar a ação \(a\) no estado \(s\) e seguir a política \(\pi\) posteriormente:
+
+\[
+q_\pi(s, a) = \mathbb{E}_\pi \left[ \sum_{k=0}^{\infty} \gamma^k R_{t+k+1} \mid S_t = s, A_t = a \right]
+\]
+
+Também pode ser escrita de forma recursiva:
+
+\[
+q_\pi(s, a) = \sum_{s'} P(s'|s, a) \left[ R(s, a) + \gamma \sum_{a'} \pi(a'|s') q_\pi(s', a') \right]
+\]
+
+\paragraph{Equação de Bellman para o Ótimo:}
+Para políticas ótimas \(\pi^*\), temos as funções de valor ótimo:
+
+\[
+v^*(s) = \max_a \sum_{s'} P(s'|s, a) \left[ R(s, a) + \gamma v^*(s') \right]
+\]
+
+E a função de valor de ação ótima:
+
+\[
+q^*(s, a) = \sum_{s'} P(s'|s, a) \left[ R(s, a) + \gamma \max_{a'} q^*(s', a') \right]
+\]
+
+Essas equações de Bellman são fundamentais para algoritmos de planejamento, como \textbf{Value Iteration} e \textbf{Policy Iteration}, mas quando a dinâmica do ambiente não é conhecida, métodos de aprendizado baseados em interação, como Q-learning, se tornam necessários.
+
+Os MDPs constituem o núcleo matemático de muitos algoritmos de aprendizado por reforço, e são essenciais para o desenvolvimento de métodos de otimização de políticas, como o \textbf{Proximal Policy Optimization (PPO)}. Este algoritmo combina exploração e estabilidade ao ajustar políticas dentro de uma região de confiança definida.
 
 \subsection{PPO (Proximal Policy Optimization)}
 \label{subsec:ppo}
