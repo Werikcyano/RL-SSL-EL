@@ -7,40 +7,35 @@
 
 O Aprendizado por Reforço (AR) é uma área do Aprendizado de Máquina que se concentra em como agentes de software devem tomar ações em um ambiente para maximizar alguma noção de recompensa cumulativa \cite{sutton}. 
 
-\subsection{Conceitos básicos}
+\subsection{Conceitos Básicos}
 \label{subsec:rl_conceitos}
 
-O AR envolve diversos conceitos fundamentais que formam a base de seu funcionamento:
+O aprendizado por reforço é um paradigma computacional que explora como agentes podem aprender por meio da interação direta com o ambiente para alcançar objetivos específicos. Diferentemente de outros tipos de aprendizado, como o supervisionado e o não supervisionado, o aprendizado por reforço se baseia em um processo de tentativa e erro, no qual um agente busca maximizar um sinal de recompensa ao longo do tempo.
 
-\begin{itemize}
-    \item \textbf{Agente}: É a entidade que aprende e toma decisões. O agente interage com o ambiente, observando estados e executando ações \cite{sutton}.
-    
-    \item \textbf{Ambiente}: Representa o mundo no qual o agente interage e aprende. O ambiente pode ser determinístico ou estocástico, totalmente ou parcialmente observável.
-    
-    \item \textbf{Estado}: Define a situação atual do ambiente. O estado pode ser representado de várias formas, como um vetor de características ou uma imagem.
-    
-    \item \textbf{Ação}: Uma decisão tomada pelo agente que pode afetar o estado do ambiente. As ações podem ser discretas (como mover para cima/baixo/esquerda/direita) ou contínuas (como aplicar uma força específica).
-    
-    \item \textbf{Recompensa}: Um feedback numérico do ambiente após uma ação. A recompensa indica o quão desejável é o resultado imediato da ação.
-    
-    \item \textbf{Política}: A estratégia que o agente usa para determinar a próxima ação com base no estado atual. A política pode ser determinística ou estocástica.
-\end{itemize}
+A interação entre o agente e o ambiente é representada esquematicamente na Figura \ref{fig/MDP.png}. O agente observa o estado atual \( S_t \) do ambiente e, com base em sua política de decisão, escolhe uma ação \( A_t \). Após a execução dessa ação, o ambiente evolui para um novo estado \( S_{t+1} \) e retorna ao agente uma recompensa \( R_{t+1} \) associada a essa transição.
 
-Além disso, existem outros conceitos importantes como:
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{fig/MDP.png}
+    \caption{Interação agente-ambiente no aprendizado por reforço. O agente toma decisões com base no estado atual \( S_t \) e recebe do ambiente uma recompensa \( R_{t+1} \) após realizar a ação \( A_t \).}
+    \label{fig:agent_env_interaction}
+\end{figure}
 
-\begin{itemize}
-    \item \textbf{Função valor}: Uma previsão da recompensa futura esperada, que pode ser:
-    \begin{itemize}
-        \item Função valor-estado (V): Estima o valor esperado de estar em um determinado estado
-        \item Função valor-ação (Q): Estima o valor esperado de tomar uma ação específica em um determinado estado
-    \end{itemize}
-    
-    \item \textbf{Modelo do ambiente}: Uma representação interna de como o ambiente funciona, podendo ser baseado em modelo ou livre de modelo
-    
-    \item \textbf{Exploração vs. Aproveitamento}: O dilema entre explorar novas ações para obter mais informações sobre o ambiente e aproveitar o conhecimento atual para maximizar a recompensa
-\end{itemize}
+\subsubsection*{Elementos Fundamentais:}
+\begin{enumerate}
+    \item \textbf{Agente e Ambiente:} O agente é a entidade responsável por tomar decisões, enquanto o ambiente é tudo aquilo que responde às ações do agente e fornece feedback.
+    \item \textbf{Política (\(\pi\)):} Define a estratégia do agente, especificando a probabilidade de selecionar uma ação específica \( A_t \) em um estado \( S_t \).
+    \item \textbf{Sinal de Recompensa (\(R_{t+1}\)):} Indica o valor imediato recebido pelo agente após realizar uma ação. O objetivo é maximizar a soma acumulada das recompensas ao longo do tempo.
+    \item \textbf{Função de Valor (\(v(s)\) e \(q(s, a)\)):} Estima o valor esperado da recompensa futura a partir de um estado \( s \) ou de um par estado-ação \( (s, a) \).
+\end{enumerate}
 
-O objetivo principal do AR é que o agente aprenda uma política ótima que maximize a recompensa total ao longo do tempo. A formalização matemática do AR geralmente usa Processos de Decisão de Markov (MDP), que fornecem um framework para modelar a tomada de decisão em situações onde os resultados são parcialmente aleatórios e parcialmente sob o controle do agente \cite{mcmc}.
+\subsubsection*{Exploração vs. Exploração:}
+Uma característica central do aprendizado por reforço é o dilema entre explorar novas ações para adquirir conhecimento e explorar o conhecimento atual para maximizar recompensas. O equilíbrio correto entre esses dois aspectos é essencial para o sucesso do agente.
+
+\subsubsection*{Modelagem por Processos de Decisão de Markov (MDPs):}
+Os MDPs oferecem uma base teórica rigorosa para a modelagem do aprendizado por reforço, formalizando o problema com base nas transições entre estados, nas ações tomadas e nas recompensas recebidas. Um processo de decisão de Markov é definido pela propriedade de Markov, segundo a qual a probabilidade de transição para o próximo estado depende apenas do estado atual e da ação executada, não dos estados anteriores.
+
+A interação entre o agente e o ambiente representada na Figura \ref{fig/MDP.png} exemplifica essa estrutura de MDPs, na qual o aprendizado por reforço visa encontrar uma política ótima que maximize o valor esperado das recompensas acumuladas.
 
 \subsection{PPO (Proximal Policy Optimization)}
 \label{subsec:ppo}
