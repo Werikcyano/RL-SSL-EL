@@ -43,58 +43,66 @@ O aprendizado por reforço é frequentemente modelado por \textbf{Processos de D
     \item \(R(s, a)\) é a recompensa esperada ao tomar a ação \(a\) no estado \(s\).
 \end{itemize}
 
-O agente busca maximizar a soma esperada das recompensas acumuladas ao longo do tempo, definida pelo \textbf{retorno} \(G_t\). No caso de problemas de horizonte finito, o retorno é dado por:
+O agente busca maximizar a soma esperada das recompensas acumuladas ao longo do tempo, definida pelo \textbf{retorno} \(G_t\). No caso de problemas de horizonte finito, o retorno é dado pela Equação \ref{eq:retorno_finito}:
 
-\[
+\begin{equation}
+\label{eq:retorno_finito}
 G_t = \sum_{k=0}^{T} \gamma^k R_{t+k+1}
-\]
+\end{equation}
 
-No caso de tarefas contínuas, aplica-se a função de desconto, onde \(\gamma \in [0, 1]\) é o fator de desconto que controla o peso das recompensas futuras.
+No caso de tarefas contínuas, aplica-se a função de desconto, onde \(\gamma \in [0, 1]\) é o fator de desconto que controla o peso das recompensas futuras, como mostrado na Equação \ref{eq:retorno_infinito}:
 
-\[
+\begin{equation}
+\label{eq:retorno_infinito}
 G_t = R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + \dots = \sum_{k=0}^{\infty} \gamma^k R_{t+k+1}
-\]
+\end{equation}
 
 A modelagem dos MDPs requer duas funções principais de valor, que capturam a expectativa de recompensas futuras:
 
 \paragraph{1. Função de valor de estado (\(v_\pi(s)\)):}
-Define o valor esperado de se estar no estado \(s\) e seguir uma política \(\pi\) a partir desse estado:
+Define o valor esperado de se estar no estado \(s\) e seguir uma política \(\pi\) a partir desse estado, conforme a Equação \ref{eq:valor_estado}:
 
-\[
+\begin{equation}
+\label{eq:valor_estado}
 v_\pi(s) = \mathbb{E}_\pi \left[ \sum_{k=0}^{\infty} \gamma^k R_{t+k+1} \mid S_t = s \right]
-\]
+\end{equation}
 
-Essa função pode ser definida recursivamente pela \textbf{equação de Bellman}:
+Essa função pode ser definida recursivamente pela \textbf{equação de Bellman}, como mostrado na Equação \ref{eq:bellman_estado}:
 
-\[
+\begin{equation}
+\label{eq:bellman_estado}
 v_\pi(s) = \sum_{a \in A} \pi(a|s) \sum_{s' \in S} P(s'|s, a) \left[ R(s, a) + \gamma v_\pi(s') \right]
-\]
+\end{equation}
 
 \paragraph{2. Função de valor de ação (\(q_\pi(s, a)\)):}
-Define o valor esperado de se tomar a ação \(a\) no estado \(s\) e seguir a política \(\pi\) posteriormente:
+Define o valor esperado de se tomar a ação \(a\) no estado \(s\) e seguir a política \(\pi\) posteriormente, como apresentado na Equação \ref{eq:valor_acao}:
 
-\[
+\begin{equation}
+\label{eq:valor_acao}
 q_\pi(s, a) = \mathbb{E}_\pi \left[ \sum_{k=0}^{\infty} \gamma^k R_{t+k+1} \mid S_t = s, A_t = a \right]
-\]
+\end{equation}
 
-Também pode ser escrita de forma recursiva:
+Também pode ser escrita de forma recursiva, conforme a Equação \ref{eq:bellman_acao}:
 
-\[
+\begin{equation}
+\label{eq:bellman_acao}
 q_\pi(s, a) = \sum_{s'} P(s'|s, a) \left[ R(s, a) + \gamma \sum_{a'} \pi(a'|s') q_\pi(s', a') \right]
-\]
+\end{equation}
 
 \paragraph{Equação de Bellman para o Ótimo:}
-Para políticas ótimas \(\pi^*\), temos as funções de valor ótimo:
+Para políticas ótimas \(\pi^*\), temos as funções de valor ótimo, dada pela Equação \ref{eq:bellman_otimo_estado}:
 
-\[
+\begin{equation}
+\label{eq:bellman_otimo_estado}
 v^*(s) = \max_a \sum_{s'} P(s'|s, a) \left[ R(s, a) + \gamma v^*(s') \right]
-\]
+\end{equation}
 
-E a função de valor de ação ótima:
+E a função de valor de ação ótima, apresentada na Equação \ref{eq:bellman_otimo_acao}:
 
-\[
+\begin{equation}
+\label{eq:bellman_otimo_acao}
 q^*(s, a) = \sum_{s'} P(s'|s, a) \left[ R(s, a) + \gamma \max_{a'} q^*(s', a') \right]
-\]
+\end{equation}
 
 Essas equações de Bellman são fundamentais para algoritmos de planejamento, como \textbf{Value Iteration} e \textbf{Policy Iteration}, mas quando a dinâmica do ambiente não é conhecida, métodos de aprendizado baseados em interação, como Q-learning, se tornam necessários.
 
