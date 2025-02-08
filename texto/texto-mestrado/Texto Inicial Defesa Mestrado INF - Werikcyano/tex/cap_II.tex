@@ -5,7 +5,9 @@
 \section{Aprendizado por Reforço}
 \label{sec:rl}
 
-O Aprendizado por Reforço (AR) é uma área do Aprendizado de Máquina que se concentra em como agentes de software devem tomar ações em um ambiente para maximizar alguma noção de recompensa cumulativa \cite{sutton}. 
+O Aprendizado por Reforço (AR) é uma abordagem de aprendizado baseada na interação entre um agente e seu ambiente, onde o objetivo principal é maximizar um sinal de recompensa acumulada ao longo do tempo \cite{sutton}. O agente aprende a tomar decisões através de tentativa e erro, ajustando suas ações com base no feedback recebido. Diferentemente do aprendizado supervisionado, que utiliza exemplos rotulados, o aprendizado por reforço explora a recompensa como único sinal de desempenho, lidando com a complexidade de recompensas atrasadas e incertezas na transição de estados. Formalmente, o RL é modelado através de \textbf{processos de decisão de Markov (MDP)}, que definem as interações em termos de estados, ações e recompensas, sendo amplamente aplicável a problemas de decisão sequencial em diversas áreas.
+
+Dentre os métodos avançados de aprendizado por reforço, destaca-se o \textbf{Proximal Policy Optimization (PPO)}, que é amplamente utilizado devido à sua estabilidade em ambientes complexos. Quando aplicado ao \textbf{aprendizado por reforço multiagente (Multi-agent RL)}, permite que diversos agentes aprendam simultaneamente, interagindo de maneira colaborativa ou competitiva. Estratégias como o \textbf{self-play} têm mostrado grande eficácia ao permitir que agentes aprendam uns com os outros em cenários competitivos, como no futebol de robôs. Além disso, o \textbf{curriculum learning} tem sido utilizado para estruturar a aprendizagem progressiva, começando com tarefas simples e avançando para desafios mais complexos, um aspecto crucial em domínios como o \textbf{futebol de robôs}, onde os agentes precisam coordenar habilidades motoras e estratégias de equipe para alcançar um desempenho ótimo.
 
 \subsection{Conceitos Básicos}
 \label{subsec:rl_conceitos}
