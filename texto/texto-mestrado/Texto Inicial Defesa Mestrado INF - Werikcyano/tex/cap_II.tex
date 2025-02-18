@@ -150,6 +150,22 @@ Desenvolvimentos recentes no campo, como destacado em \cite{https://arxiv.org/ab
 \subsection{Self-play}
 \label{subsec:self_play}
 
+O Self-play emergiu como uma técnica fundamental no aprendizado por reforço, permitindo que agentes artificiais desenvolvam habilidades avançadas através do treinamento contra versões de si mesmos. Como destacado em \cite{https://en.wikipedia.org/wiki/self-play}, esta abordagem permite que os agentes criem um currículo automático de aprendizado, onde enfrentam adversários progressivamente mais desafiadores, evitando assim a estagnação em estratégias subótimas.
+
+A eficácia do self-play foi demonstrada de forma notável em diversos domínios complexos. Conforme documentado em \cite{https://pt.eitca.org/artificial-intelligence/eitc-ai-arl-advanced-reinforcement-learning/case-studies/classic-games-case-study/examination-review-classic-games-case-study/how-does-reinforcement-learning-through-self-play-contribute-to-the-development-of-superhuman-ai-performance-in-classic-games/}, sistemas como AlphaGo e AlphaZero alcançaram desempenho sobre-humano em jogos estratégicos complexos, aprendendo exclusivamente através da interação consigo mesmos.
+
+Um aspecto crucial do self-play, como apontado em \cite{https://arxiv.org/html/2408.01072v1}, é sua capacidade de gerar dados de treinamento de alta qualidade sem necessidade de supervisão humana. Esta característica é particularmente valiosa em domínios onde exemplos de especialistas são escassos ou caros de obter. O processo permite que os agentes explorem o espaço de estratégias de forma mais abrangente do que seria possível com dados puramente supervisionados.
+
+A implementação moderna do self-play frequentemente incorpora arquiteturas sofisticadas. De acordo com \cite{https://april.zju.edu.cn/core/papercite-data/pdf/liu2021spr.pdf}, o método SPAC (Self-Play Actor-Critic) introduziu inovações significativas ao integrar um crítico que considera as observações de ambos os agentes em ambientes competitivos, superando métodos tradicionais em eficácia.
+
+No entanto, o self-play também apresenta desafios significativos. Como observado em \cite{https://proceedings.mlr.press/v119/bai20a.html}, existe o risco de convergência para equilíbrios subótimos, especialmente em jogos com múltiplos equilíbrios de Nash. Para mitigar este problema, técnicas como diversificação de oponentes e regularização de entropia têm sido empregadas com sucesso.
+
+Desenvolvimentos recentes, descritos em \cite{https://openreview.net/forum?id=6smHoMdqhY}, têm explorado a integração do self-play com paradigmas emergentes como meta-aprendizado e modelos de linguagem grandes. Esta convergência tem aberto novos caminhos para o desenvolvimento de agentes mais adaptativos e versáteis.
+
+A aplicação do self-play estende-se além dos jogos tradicionais. Como documentado em \cite{https://recodechinaai.substack.com/p/strawberry-o1-and-self-play-reinforcement}, a técnica tem sido aplicada com sucesso em domínios como robótica, simulações financeiras e sistemas de controle autônomo. Em cada caso, o self-play permite que os agentes desenvolvam estratégias robustas através da exploração sistemática do espaço de possibilidades.
+
+O futuro do self-play parece promissor, com pesquisas contínuas focando na melhoria da eficiência computacional e na expansão de suas aplicações. Como sugerido em \cite{https://huggingface.co/learn/deep-rl-course/unit7/self-play}, novas técnicas de otimização e paralelização estão tornando o treinamento mais acessível, permitindo sua aplicação em uma gama cada vez maior de problemas práticos.
+
 %% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 \section{Curriculum Learning}
 \label{sec:curriculum}
