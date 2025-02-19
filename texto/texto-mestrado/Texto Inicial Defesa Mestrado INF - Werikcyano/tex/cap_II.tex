@@ -232,11 +232,41 @@ Apesar destes desafios, o consenso na literatura, como evidenciado por \cite{htt
 \section{Futebol de Robôs}
 \label{sec:futebol_robos}
 
+O futebol de robôs representa uma das principais plataformas para pesquisa e desenvolvimento em robótica móvel e sistemas multiagentes. Dentro deste contexto, a RoboCup Small Size League Entry Level (SSL-EL) emerge como uma categoria especialmente projetada para facilitar a entrada de novas equipes, mantendo os desafios técnicos fundamentais do futebol de robôs enquanto simplifica aspectos complexos da competição \cite{https://robocup-ssl.github.io/ssl-rules/sslrules.html}.
+
 \subsection{Visão geral}
 \label{subsec:futebol_visao}
+
+A SSL-EL foi estabelecida como uma divisão de entrada da Small Size League, visando democratizar o acesso à competição de futebol de robôs. Diferentemente da divisão principal, a SSL-EL opera com 6 robôs por equipe em um campo reduzido, permitindo que equipes iniciantes desenvolvam suas habilidades técnicas e estratégicas de forma progressiva \cite{https://github.com/robocup-ssl-br/rules-ssl-el}.
+
+O ambiente de jogo é estruturado em torno de um sistema centralizado de visão (SSL-Vision), que fornece informações em tempo real sobre as posições dos robôs e da bola através de câmeras suspensas \cite{https://ssl.robocup.org/technical-overview-of-the-small-size-league/}. Esta arquitetura permite que as equipes foquem no desenvolvimento de estratégias de controle e coordenação, sem a necessidade inicial de implementar sistemas complexos de percepção local.
+
+Os robôs da SSL-EL, embora sujeitos a restrições dimensionais similares às da divisão principal (diâmetro ≤18 cm, altura ≤15 cm), podem ser construídos com soluções mais acessíveis. A equipe TurtleRabbit, por exemplo, demonstrou a viabilidade de construir robôs competitivos com orçamento reduzido, utilizando componentes comerciais e estruturas impressas em 3D \cite{https://ssl.robocup.org/wp-content/uploads/2024/04/2024_TDP_turtlerabbit.pdf}.
+
+A competição promove desafios técnicos específicos, como o Ball Placement Challenge, que permitem às equipes desenvolverem e testarem capacidades fundamentais de forma isolada \cite{https://ssl.robocup.org/robocup-2024/robocup-2024-technical-challenges/}. Esta abordagem gradual ao desenvolvimento de habilidades tem se mostrado efetiva para a evolução das equipes, como evidenciado pelos resultados de competições recentes \cite{https://ssl.robocup.org/robocup-2022-technical-challenges/}.
 
 \subsection{Desafios específicos}
 \label{subsec:futebol_desafios}
 
+A SSL-EL apresenta desafios únicos que equilibram complexidade técnica com acessibilidade. Um dos principais desafios é a coordenação multiagente em tempo real, onde os robôs devem operar de forma sincronizada em velocidades consideráveis, tomando decisões em milissegundos \cite{https://www.cs.cmu.edu/~robosoccer/small/}. Esta coordenação torna-se ainda mais complexa devido aos ruídos de percepção e latência de comunicação inerentes ao sistema.
+
+O aspecto financeiro representa outro desafio significativo para equipes iniciantes. No entanto, iniciativas como a da equipe TurtleRabbit demonstram que é possível desenvolver soluções competitivas com orçamento limitado \cite{https://ssl.robocup.org/wp-content/uploads/2024/04/2024_TDP_turtlerabbit.pdf}. Através do uso de componentes comerciais acessíveis e técnicas de manufatura como impressão 3D, equipes podem construir robôs funcionais mantendo os custos controlados.
+
+O processamento em tempo real das informações do SSL-Vision apresenta desafios técnicos específicos \cite{https://ssl.robocup.org/technical-overview-of-the-small-size-league/}. As equipes precisam desenvolver sistemas robustos para lidar com:
+- Fusão de dados de múltiplas câmeras
+- Compensação de falhas momentâneas na detecção
+- Filtragem de ruídos e correção de discrepâncias
+- Predição de movimentos para compensar latências
+
+A implementação de estratégias de jogo efetivas também representa um desafio significativo. Como documentado pela equipe RoboCIn \cite{https://ssl.robocup.org/wp-content/uploads/2024/04/2024_ETDP_RoboCIn.pdf}, é necessário desenvolver algoritmos sofisticados para navegação, controle de bola e coordenação tática, mesmo no contexto simplificado da SSL-EL.
+
 \subsection{Trabalhos relacionados}
 \label{subsec:futebol_trabalhos}
+
+Diversos trabalhos têm contribuído para o avanço da SSL-EL, focando em diferentes aspectos da competição. A equipe OrcaBOT, por exemplo, desenvolveu uma abordagem inovadora para o design de robôs de baixo custo, documentada em seu TDP (Team Description Paper) \cite{https://ssl.robocup.org/wp-content/uploads/2024/04/2024_TDP_OrcaBOT.pdf}, demonstrando a viabilidade de construir sistemas competitivos com recursos limitados.
+
+No campo do controle e estratégia, trabalhos significativos têm emergido da comunidade acadêmica. A UFPE, através de seu programa de mestrado, tem explorado a aplicação de técnicas de aprendizado por reforço no contexto do futebol de robôs \cite{https://www.youtube.com/watch?v=GCwrTJuuJ3w}. Estas pesquisas demonstram o potencial de algoritmos de aprendizado de máquina para desenvolver estratégias de jogo mais sofisticadas.
+
+A organização da RoboCup tem contribuído significativamente através da documentação e padronização de regras e especificações técnicas \cite{https://robocup-ssl.github.io/ssl-rules/sslrules.html}. Este trabalho de documentação tem sido fundamental para permitir que novas equipes ingressem na competição com uma compreensão clara dos requisitos e desafios.
+
+Iniciativas de código aberto, como as disponibilizadas pela comunidade brasileira de robótica \cite{https://github.com/robocup-ssl-br}, têm facilitado o desenvolvimento de novas equipes. Estes recursos incluem implementações de referência para sistemas de controle, simuladores e ferramentas de desenvolvimento, permitindo que equipes iniciantes construam sobre uma base sólida de conhecimento estabelecido.
