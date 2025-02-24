@@ -2,6 +2,7 @@ from rsoccer_gym.ssl.ssl_multi_agent import SSLMultiAgentEnv
 import numpy as np
 from gym import spaces
 from typing import Dict, Tuple
+from time import time
 
 class SSLCurriculumEnv(SSLMultiAgentEnv):
     def __init__(self, curriculum_config=None, **kwargs):
@@ -10,7 +11,29 @@ class SSLCurriculumEnv(SSLMultiAgentEnv):
         self.task_level = curriculum_config.get("initial_task", 0) if curriculum_config else 0
         self.obstacle_pos = np.array([0.0, 0.0])
         
+        # Métricas de continuidade
+        self.continuity_metrics = {
+            'total_resets': 0,
+            'lateral_resets': 0,
+            'endline_resets': 0,
+            'time_between_resets': [],
+            'last_reset_time': None,
+            'current_sequence_time': 0,
+            'max_sequence_without_reset': 0
+        }
+        
     def reset(self, *, seed=None, options=None) -> Dict:
+        # Reseta métricas de continuidade
+        self.continuity_metrics.update({
+            'total_resets': 0,
+            'lateral_resets': 0,
+            'endline_resets': 0,
+            'time_between_resets': [],
+            'last_reset_time': None,
+            'current_sequence_time': 0,
+            'max_sequence_without_reset': 0
+        })
+        
         if seed is not None:
             np.random.seed(seed)
             
@@ -62,14 +85,48 @@ class SSLCurriculumEnv(SSLMultiAgentEnv):
             # Para robôs amarelos, retorna posição espelhada
             return -self.robot_pos
 
+    def track_reset(self, reset_type: str):
+        """
+        Atualiza as métricas quando ocorre um reset
+        Args:
+            reset_type: 'lateral' ou 'endline'
+        """
+        current_time = self.steps / self.fps
+        
+        # Atualiza contadores de reset
+        self.continuity_metrics['total_resets'] += 1
+        self.continuity_metrics[f'{reset_type}_resets'] += 1
+        
+        # Calcula e registra tempo entre resets
+        if self.continuity_metrics['last_reset_time'] is not None:
+            time_between = current_time - self.continuity_metrics['last_reset_time']
+            self.continuity_metrics['time_between_resets'].append(time_between)
+            
+            # Atualiza sequência máxima sem reset
+            if time_between > self.continuity_metrics['max_sequence_without_reset']:
+                self.continuity_metrics['max_sequence_without_reset'] = time_between
+        
+        self.continuity_metrics['last_reset_time'] = current_time
+        self.continuity_metrics['current_sequence_time'] = 0
+
     def step(self, action_dict):
         observations, rewards, dones, truncated, infos = super().step(action_dict)
         
-        # Adiciona a distância até a bola no info de cada agente
+        # Atualiza tempo da sequência atual
+        current_time = self.steps / self.fps
+        if self.continuity_metrics['last_reset_time'] is None:
+            self.continuity_metrics['current_sequence_time'] = current_time
+        else:
+            self.continuity_metrics['current_sequence_time'] = current_time - self.continuity_metrics['last_reset_time']
+        
+        # Adiciona métricas de continuidade ao info de cada agente
         for agent_id in infos.keys():
             if agent_id.startswith("blue"):
                 robot_pos = self.get_robot_position(agent_id)
                 dist_to_ball = np.linalg.norm(robot_pos - self.ball)
-                infos[agent_id]["distance_to_ball"] = dist_to_ball
+                infos[agent_id].update({
+                    "distance_to_ball": dist_to_ball,
+                    "continuity_metrics": self.continuity_metrics.copy()
+                })
         
         return observations, rewards, dones, truncated, infos

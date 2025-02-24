@@ -115,7 +115,6 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
 
 
     def _calculate_reward_done(self):
-
         done = {'__all__': False}
         truncated = {'__all__': False}
         ball = self.frame.ball
@@ -140,10 +139,6 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
 
                 blue_rw[idx] = 0.7*r_speed + 0.1*r_off + 0.1*r_def
 
-                # if idx == 0:
-                #     print(f"\nblue: {idx}")
-                #     print(f'\tr_speed: {r_speed:.5f}\tr_dist: {r_dist:.5f}\tr_off: {r_off:.5f}\t\tr_def: {r_def:.5f}\tlast_w: {r_vel_theta:.5f}\ttotal: {0.3*r_speed + 0.05*r_off + 0.05*r_def + 0.4*r_dist + 0.2*r_vel_theta:.5f}\t')
-
             blue_rw += 0.1*r_dist*np.ones(self.n_robots_blue)
             blue_rw_dict = {f'blue_{id}':rw for id, rw in enumerate(blue_rw)}
 
@@ -161,12 +156,9 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
                 r_def = self._get_3dots_angle_between(goal_ally, yellow_robot, ball)[2] - 1
             
                 yellow_rw[idx] = 0.7*r_speed + 0.1*r_off + 0.1*r_def
-                # print(f"\nyellow: {idx}")
-                # print(f'\tr_speed: {r_speed:.5f}\tr_dist: {r_dist:.5f}\tr_off: {r_off:.5f}\t\tr_def: {r_def:.5f}\tlast_w: {r_vel_theta:.5f}\ttotal: {0.3*r_speed + 0.05*r_off + 0.05*r_def + 0.4*r_dist + 0.2*r_vel_theta:.5f}\t')
 
             yellow_rw += 0.1*r_dist*np.ones(self.n_robots_yellow)
             yellow_rw_dict = {f'yellow_{id}':rw for id, rw in enumerate(yellow_rw)}
-
 
         half_len = self.field.length/2 
         half_wid = self.field.width/2
@@ -190,6 +182,10 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
             blue_rw_dict = {f'blue_{i}': OUTSIDE_REWARD for i in range(self.n_robots_blue)}
             yellow_rw_dict = {f'yellow_{i}': OUTSIDE_REWARD for i in range(self.n_robots_yellow)}
 
+            # Chama track_reset para endline
+            if hasattr(self, 'track_reset'):
+                self.track_reset('endline')
+
             initial_pos_frame: Frame = self._get_initial_positions_frame(42)
             self.rsim.reset(initial_pos_frame)
             self.frame = self.rsim.get_frame()
@@ -197,6 +193,10 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
         elif (ball.y <= -half_wid or ball.y >= half_wid):
             blue_rw_dict = {f'blue_{i}': OUTSIDE_REWARD for i in range(self.n_robots_blue)}
             yellow_rw_dict = {f'yellow_{i}': OUTSIDE_REWARD for i in range(self.n_robots_yellow)}
+
+            # Chama track_reset para lateral
+            if hasattr(self, 'track_reset'):
+                self.track_reset('lateral')
 
             initial_pos_frame: Frame = self._get_initial_positions_frame(42)
             self.rsim.reset(initial_pos_frame)
