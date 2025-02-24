@@ -26,6 +26,20 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
         render_mode='human'
 
     ):
+        # Métricas de continuidade
+        self.continuity_metrics = {
+            'total_resets': 0,
+            'lateral_resets': 0,
+            'endline_resets': 0,
+            'time_between_resets': [],
+            'last_reset_time': None,
+            'current_sequence_time': 0,
+            'max_sequence_without_reset': 0,
+            'goals_blue': 0,
+            'goals_yellow': 0,
+            'total_goals': 0,
+            'goals_per_episode': 0
+        }
 
         self.n_robots_blue = min(len(init_pos["blue"]), 3)
         self.n_robots_yellow = min(len(init_pos["yellow"]), 3)
@@ -167,6 +181,11 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
         if ball.x >= half_len and abs(ball.y) < half_goal_wid:
             done = {'__all__': True}
             self.score['blue'] += 1
+            
+            # Atualiza métricas de gols
+            self.continuity_metrics['goals_blue'] += 1
+            self.continuity_metrics['total_goals'] += 1
+            self.continuity_metrics['goals_per_episode'] += 1
 
             blue_rw_dict = {f'blue_{i}': GOAL_REWARD for i in range(self.n_robots_blue)}
             yellow_rw_dict = {f'yellow_{i}': -GOAL_REWARD for i in range(self.n_robots_yellow)}
@@ -174,6 +193,11 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
         elif ball.x <= -half_len and abs(ball.y) < half_goal_wid:
             done = {'__all__': True}
             self.score['yellow'] += 1
+            
+            # Atualiza métricas de gols
+            self.continuity_metrics['goals_yellow'] += 1
+            self.continuity_metrics['total_goals'] += 1
+            self.continuity_metrics['goals_per_episode'] += 1
 
             blue_rw_dict = {f'blue_{i}': -GOAL_REWARD for i in range(self.n_robots_blue)}
             yellow_rw_dict = {f'yellow_{i}': GOAL_REWARD for i in range(self.n_robots_yellow)}
@@ -224,6 +248,18 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
         return np.clip(ball_speed_rw/self.kick_speed_x, -1, 1)
 
     def reset(self, seed=42, options={}):
+        # Reseta métricas de continuidade
+        self.continuity_metrics.update({
+            'total_resets': 0,
+            'lateral_resets': 0,
+            'endline_resets': 0,
+            'time_between_resets': [],
+            'last_reset_time': None,
+            'current_sequence_time': 0,
+            'max_sequence_without_reset': 0,
+            'goals_per_episode': 0  # Apenas reseta os gols do episódio, mantém os totais
+        })
+
         self.steps = 0
         self.last_frame = None
         self.sent_commands = None
@@ -487,6 +523,30 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
         robot_obs = np.concatenate([positions, orientations, dists, angles, last_actions, time_left], dtype=np.float64)
         return robot_obs
     
+    def track_reset(self, reset_type: str):
+        """
+        Atualiza as métricas quando ocorre um reset
+        Args:
+            reset_type: 'lateral' ou 'endline'
+        """
+        current_time = self.steps / self.fps
+        
+        # Atualiza contadores de reset
+        self.continuity_metrics['total_resets'] += 1
+        self.continuity_metrics[f'{reset_type}_resets'] += 1
+        
+        # Calcula e registra tempo entre resets
+        if self.continuity_metrics['last_reset_time'] is not None:
+            time_between = current_time - self.continuity_metrics['last_reset_time']
+            self.continuity_metrics['time_between_resets'].append(time_between)
+            
+            # Atualiza sequência máxima sem reset
+            if time_between > self.continuity_metrics['max_sequence_without_reset']:
+                self.continuity_metrics['max_sequence_without_reset'] = time_between
+        
+        self.continuity_metrics['last_reset_time'] = current_time
+        self.continuity_metrics['current_sequence_time'] = 0
+
     def step(self, action):
         self.steps += 1
         # Join agent action with environment actions
@@ -509,6 +569,13 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
             done = {'__all__': False}
             truncated = {'__all__': True}
 
+        # Atualiza tempo da sequência atual
+        current_time = self.steps / self.fps
+        if self.continuity_metrics['last_reset_time'] is None:
+            self.continuity_metrics['current_sequence_time'] = current_time
+        else:
+            self.continuity_metrics['current_sequence_time'] = current_time - self.continuity_metrics['last_reset_time']
+
         infos = {
             **{f'blue_{i}': {} for i in range(self.n_robots_blue)},
             **{f'yellow_{i}': {} for i in range(self.n_robots_yellow)}
@@ -517,9 +584,11 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
         if done.get("__all__", False) or truncated.get("__all__", False):
             for i in range(self.n_robots_blue):
                 infos[f'blue_{i}']["score"] = self.score.copy()    
+                infos[f'blue_{i}']["continuity_metrics"] = self.continuity_metrics.copy()
 
             for i in range(self.n_robots_yellow):
                 infos[f'yellow_{i}']["score"] = self.score.copy()
+                infos[f'yellow_{i}']["continuity_metrics"] = self.continuity_metrics.copy()
         
         return self.observations.copy(), reward, done, truncated, infos
 
