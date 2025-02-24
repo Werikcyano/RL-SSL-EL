@@ -25,6 +25,41 @@ import os
 
 def create_curriculum_env(config):
     curriculum_config = config.pop("curriculum_config", None)  # Remove e armazena curriculum_config
+    
+    # Se o curriculum está habilitado, ajusta o número de agentes
+    if curriculum_config and curriculum_config.get("enabled", False):
+        task_level = curriculum_config.get("initial_task", 0)
+        task_config = curriculum_config["tasks"].get(str(task_level)) or curriculum_config["tasks"].get(task_level)
+        if task_config:
+            num_blue = task_config.get("num_agents_blue", 3)
+            num_yellow = task_config.get("num_agents_yellow", 0)
+            
+            # Ajusta init_pos baseado no número de agentes
+            if "init_pos" in config:
+                blue_pos = {}
+                yellow_pos = {}
+                
+                # Garante que temos pelo menos uma posição para cada time
+                for i in range(num_blue):
+                    key = str(i + 1)
+                    if key in config["init_pos"]["blue"]:
+                        blue_pos[key] = config["init_pos"]["blue"][key]
+                    else:
+                        blue_pos[key] = [-0.5 - i, 0.0, 0.0]  # Posição padrão
+                
+                for i in range(num_yellow):
+                    key = str(i + 1)
+                    if key in config["init_pos"]["yellow"]:
+                        yellow_pos[key] = config["init_pos"]["yellow"][key]
+                    else:
+                        yellow_pos[key] = [1.5 + i, 0.0, 180.0]  # Posição padrão
+                
+                config["init_pos"] = {
+                    "blue": blue_pos,
+                    "yellow": yellow_pos if num_yellow > 0 else {},  # Garante que yellow seja vazio se num_yellow = 0
+                    "ball": config["init_pos"]["ball"]
+                }
+    
     return SSLCurriculumEnv(curriculum_config=curriculum_config, **config)
 
 def create_rllib_env_recorder(config):
@@ -38,12 +73,25 @@ def create_rllib_env_recorder(config):
 def create_rllib_env(config):
     return SSLMultiAgentEnv(**config)
 
-def policy_mapping_fn(agent_id, episode, worker, **kwargs):
-    if "blue" in agent_id:
-        pol_id = "policy_blue"
-    elif "yellow" in agent_id:
-        pol_id = "policy_yellow"
-    return pol_id
+def create_policy_mapping_fn(curriculum_config=None):
+    def policy_mapping_fn(agent_id, episode, worker, **kwargs):
+        if "blue" in agent_id:
+            return "policy_blue"
+        elif "yellow" in agent_id:
+            # Se não estamos usando curriculum ou não há configuração, usa a política amarela
+            if not curriculum_config or not curriculum_config.get("enabled", False):
+                return "policy_yellow"
+            
+            # Se estamos usando curriculum, verifica o nível atual
+            task_level = curriculum_config.get("initial_task", 0)
+            task_config = curriculum_config["tasks"].get(str(task_level)) or curriculum_config["tasks"].get(task_level)
+            
+            # Se não houver agentes amarelos neste nível, retorna a política azul
+            if task_config and task_config.get("num_agents_yellow", 0) == 0:
+                return "policy_blue"
+            return "policy_yellow"
+        return "policy_blue"  # Caso padrão
+    return policy_mapping_fn
 
 @ray.remote
 class ScoreCounter:
@@ -183,6 +231,35 @@ if __name__ == "__main__":
     if args.evaluation:
         eval_configs = file_configs["evaluation"].copy()
         env_config_eval = file_configs["env"].copy()
+        
+        # Se estiver usando curriculum, ajusta a configuração de avaliação para o nível atual
+        if args.curriculum and file_configs["curriculum"]["enabled"]:
+            task_level = file_configs["curriculum"]["initial_task"]
+            task_config = file_configs["curriculum"]["tasks"].get(str(task_level)) or file_configs["curriculum"]["tasks"].get(task_level)
+            
+            # Ajusta as posições iniciais baseado no número de agentes no nível atual
+            num_blue = task_config.get("num_agents_blue", 3)
+            num_yellow = task_config.get("num_agents_yellow", 0)
+            
+            blue_pos = {}
+            yellow_pos = {}
+            
+            for i in range(num_blue):
+                key = str(i + 1)
+                if key in env_config_eval["init_pos"]["blue"]:
+                    blue_pos[key] = env_config_eval["init_pos"]["blue"][key]
+            
+            for i in range(num_yellow):
+                key = str(i + 1)
+                if key in env_config_eval["init_pos"]["yellow"]:
+                    yellow_pos[key] = env_config_eval["init_pos"]["yellow"][key]
+            
+            env_config_eval["init_pos"] = {
+                "blue": blue_pos,
+                "yellow": yellow_pos,
+                "ball": env_config_eval["init_pos"]["ball"]
+            }
+        
         configs["evaluation_interval"] = eval_configs["evaluation_interval"]
         configs["evaluation_num_workers"] = eval_configs["evaluation_num_workers"]
         configs["evaluation_duration"] = eval_configs["evaluation_duration"]
@@ -192,8 +269,19 @@ if __name__ == "__main__":
         tune.registry.register_env("Soccer_recorder", create_rllib_env_recorder)
 
     # Configuração dos espaços de observação e ação
-    obs_space = temp_env.observation_space["blue_0"]
-    act_space = temp_env.action_space["blue_0"]
+    if args.curriculum and file_configs["curriculum"]["enabled"]:
+        task_level = file_configs["curriculum"]["initial_task"]
+        task_config = file_configs["curriculum"]["tasks"].get(str(task_level)) or file_configs["curriculum"]["tasks"].get(task_level)
+        num_blue = task_config.get("num_agents_blue", 3)
+        if num_blue > 0:
+            # Sempre usa o primeiro agente como referência para os espaços
+            obs_space = temp_env.observation_space["blue_0"]
+            act_space = temp_env.action_space["blue_0"]
+        else:
+            raise ValueError("Número de agentes azuis deve ser maior que 0")
+    else:
+        obs_space = temp_env.observation_space["blue_0"]
+        act_space = temp_env.action_space["blue_0"]
     temp_env.close()
 
     # Registra os modelos customizados
@@ -202,14 +290,39 @@ if __name__ == "__main__":
     ModelCatalog.register_custom_model("custom_vf_model", CustomFCNet)
 
     # Configuração multiagente
-    configs["multiagent"] = {
-        "policies": {
+    if args.curriculum and file_configs["curriculum"]["enabled"]:
+        task_level = file_configs["curriculum"]["initial_task"]
+        task_config = file_configs["curriculum"]["tasks"].get(str(task_level)) or file_configs["curriculum"]["tasks"].get(task_level)
+        
+        # Configuração básica das políticas
+        policies = {
             "policy_blue": (None, obs_space, act_space, {'model': {'custom_action_dist': 'beta_dist_blue'}}),
-            "policy_yellow": (None, obs_space, act_space, {'model': {'custom_action_dist': 'beta_dist_yellow'}}),
-        },
-        "policy_mapping_fn": policy_mapping_fn,
-        "policies_to_train": ["policy_blue"],
-    }
+        }
+        
+        # Adiciona política amarela apenas se houver agentes amarelos no nível
+        if task_config.get("num_agents_yellow", 0) > 0:
+            policies["policy_yellow"] = (None, obs_space, act_space, {'model': {'custom_action_dist': 'beta_dist_yellow'}})
+        
+        configs["multiagent"] = {
+            "policies": policies,
+            "policy_mapping_fn": create_policy_mapping_fn(file_configs["curriculum"]),
+            "policies_to_train": ["policy_blue"],
+        }
+        
+        # Ajusta a configuração de avaliação se necessário
+        if args.evaluation:
+            eval_config = configs.get("evaluation_config", {})
+            eval_config["multiagent"] = configs["multiagent"]
+            configs["evaluation_config"] = eval_config
+    else:
+        configs["multiagent"] = {
+            "policies": {
+                "policy_blue": (None, obs_space, act_space, {'model': {'custom_action_dist': 'beta_dist_blue'}}),
+                "policy_yellow": (None, obs_space, act_space, {'model': {'custom_action_dist': 'beta_dist_yellow'}}),
+            },
+            "policy_mapping_fn": create_policy_mapping_fn(),
+            "policies_to_train": ["policy_blue"],
+        }
 
     # Configuração do modelo
     configs["model"] = {

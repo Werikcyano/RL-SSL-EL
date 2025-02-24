@@ -10,6 +10,7 @@ class SSLCurriculumEnv(SSLMultiAgentEnv):
         self.curriculum_config = curriculum_config or {}
         self.task_level = curriculum_config.get("initial_task", 0) if curriculum_config else 0
         self.obstacle_pos = np.array([0.0, 0.0])
+        self.ball_touched = False  # Flag para controlar se a bola foi tocada
         
         # Métricas de continuidade
         self.continuity_metrics = {
@@ -23,6 +24,9 @@ class SSLCurriculumEnv(SSLMultiAgentEnv):
         }
         
     def reset(self, *, seed=None, options=None) -> Dict:
+        # Reseta flag de toque na bola
+        self.ball_touched = False
+        
         # Reseta métricas de continuidade
         self.continuity_metrics.update({
             'total_resets': 0,
@@ -61,9 +65,21 @@ class SSLCurriculumEnv(SSLMultiAgentEnv):
     def compute_reward(self, robot_id: str) -> float:
         base_reward = super().compute_reward(robot_id)
         
+        if not robot_id.startswith("blue"):
+            return 0  # No nível 0, apenas o time azul recebe recompensas
+        
         # Recompensa adicional baseada na distância até a bola
         robot_pos = self.get_robot_position(robot_id)
         dist_to_ball = np.linalg.norm(robot_pos - self.ball)
+        
+        # Verifica se tocou na bola (nível 0)
+        reward = 0
+        if self.task_level == 0:
+            task_config = self.curriculum_config["tasks"].get(str(self.task_level)) or self.curriculum_config["tasks"].get(self.task_level)
+            if task_config and dist_to_ball <= task_config.get("success_distance", 0.2):
+                if not self.ball_touched:  # Apenas recompensa na primeira vez que tocar
+                    reward = task_config.get("reward_touch", 10.0)
+                    self.ball_touched = True
         
         # Penalidade por colisão com obstáculo no nível 2
         obstacle_penalty = 0
@@ -75,7 +91,7 @@ class SSLCurriculumEnv(SSLMultiAgentEnv):
         # Recompensa por tempo (quanto mais rápido melhor)
         time_penalty = -0.01
         
-        return base_reward + (-dist_to_ball * 0.1) + time_penalty + obstacle_penalty
+        return base_reward + (-dist_to_ball * 0.1) + time_penalty + obstacle_penalty + reward
     
     def get_robot_position(self, robot_id):
         """Retorna a posição do robô como um array numpy"""
@@ -126,7 +142,13 @@ class SSLCurriculumEnv(SSLMultiAgentEnv):
                 dist_to_ball = np.linalg.norm(robot_pos - self.ball)
                 infos[agent_id].update({
                     "distance_to_ball": dist_to_ball,
+                    "ball_touched": self.ball_touched,
                     "continuity_metrics": self.continuity_metrics.copy()
                 })
+                
+                # No nível 0, termina o episódio quando tocar na bola
+                if self.task_level == 0 and self.ball_touched:
+                    dones[agent_id] = True
+                    dones["__all__"] = True
         
         return observations, rewards, dones, truncated, infos

@@ -43,13 +43,10 @@ custom_model:
 env:
   init_pos: # posição inicial dos jogadores
     blue:
-      1: [-1.5,  0.0,    0.0]
-      2: [-2.0,  1.0,    0.0]
-      3: [-2.0, -1.0,    0.0]
-    yellow:
-      1: [ 1.5,  0.0,  180.0]
-      2: [ 2.0,  1.0,  180.0]
-      3: [ 2.0, -1.0,  180.0]
+      1: [-0.5,  0.0,    0.0]  # Atacante
+      2: [-1.0,  0.0,    0.0]  # Intermediário
+      3: [-2.0,  0.0,    0.0]  # Goleiro
+    yellow: {}  # Nível 0 não tem robôs amarelos
     ball: [0, 0]
   field_type: 0
   fps: 30 # frames por segundo
@@ -61,12 +58,27 @@ curriculum:
   promotion_threshold: 0.8  # Taxa de sucesso necessária para avançar
   evaluation_window: 100  # Número de episódios para avaliar o desempenho
   tasks:
-    0:  # Tarefa básica - posições fixas
+    0:  # Tarefa básica - Centro de treinamento
       max_steps: 300
       success_distance: 0.2  # Distância considerada sucesso
+      reward_touch: 10.0  # Recompensa por tocar na bola
+      num_agents_blue: 3  # Atacante, intermediário e goleiro
+      num_agents_yellow: 0  # Sem oponentes no nível 0
     1:  # Tarefa intermediária - posições aleatórias
       max_steps: 400
       success_distance: 0.2
+      num_agents_blue: 3
+      num_agents_yellow: 1
+      init_pos:
+        yellow:
+          1: [ 1.5,  0.0,  180.0]
     2:  # Tarefa avançada - com obstáculo
       max_steps: 500
       success_distance: 0.2
+      num_agents_blue: 3
+      num_agents_yellow: 3
+      init_pos:
+        yellow:
+          1: [ 1.5,  0.0,  180.0]
+          2: [ 2.0,  1.0,  180.0]
+          3: [ 2.0, -1.0,  180.0]

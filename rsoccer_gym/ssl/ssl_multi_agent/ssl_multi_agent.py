@@ -24,7 +24,6 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
         match_time=40,
         stack_observation=8,
         render_mode='human'
-
     ):
         # Métricas de continuidade
         self.continuity_metrics = {
@@ -41,8 +40,18 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
             'goals_per_episode': 0
         }
 
-        self.n_robots_blue = min(len(init_pos["blue"]), 3)
-        self.n_robots_yellow = min(len(init_pos["yellow"]), 3)
+        # Garante que init_pos tenha as chaves necessárias
+        if not isinstance(init_pos, dict):
+            init_pos = {"blue": {}, "yellow": {}, "ball": [0, 0]}
+        if "blue" not in init_pos:
+            init_pos["blue"] = {}
+        if "yellow" not in init_pos:
+            init_pos["yellow"] = {}
+        if "ball" not in init_pos:
+            init_pos["ball"] = [0, 0]
+
+        self.n_robots_blue = len(init_pos["blue"])
+        self.n_robots_yellow = len(init_pos["yellow"])
         self.score = {'blue': 0, 'yellow': 0}
         self.render_mode = render_mode
         super().__init__(
@@ -257,7 +266,10 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
             'last_reset_time': None,
             'current_sequence_time': 0,
             'max_sequence_without_reset': 0,
-            'goals_per_episode': 0  # Apenas reseta os gols do episódio, mantém os totais
+            'goals_blue': 0,
+            'goals_yellow': 0,
+            'total_goals': 0,
+            'goals_per_episode': 0
         })
 
         self.steps = 0
@@ -309,20 +321,34 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
 
         min_dist = 0.2
         for i in range(self.n_robots_blue):
-            pos = self.init_pos['blue'][i+1] 
-            while places.get_nearest(pos[:2])[1] < min_dist:
-                pos = (x(), y(), theta()) 
-            places.insert(pos)
-            pos_frame.robots_blue[i] = Robot(x=pos[0], y=pos[1], theta=pos[2])
-
+            key = str(i + 1)
+            if key in self.init_pos['blue']:
+                pos = self.init_pos['blue'][key]
+                while places.get_nearest(pos[:2])[1] < min_dist:
+                    pos = (x(), y(), theta()) 
+                places.insert(pos)
+                pos_frame.robots_blue[i] = Robot(x=pos[0], y=pos[1], theta=pos[2])
+            else:
+                pos = (x(), y(), theta())
+                while places.get_nearest(pos[:2])[1] < min_dist:
+                    pos = (x(), y(), theta())
+                places.insert(pos)
+                pos_frame.robots_blue[i] = Robot(x=pos[0], y=pos[1], theta=pos[2])
 
         for i in range(self.n_robots_yellow):
-            pos = self.init_pos['yellow'][i+1] 
-            while places.get_nearest(pos[:2])[1] < min_dist:
-                pos = (x(), y(), theta()) 
-
-            places.insert(pos)
-            pos_frame.robots_yellow[i] = Robot(x=pos[0], y=pos[1], theta=pos[2])
+            key = str(i + 1)
+            if key in self.init_pos['yellow']:
+                pos = self.init_pos['yellow'][key]
+                while places.get_nearest(pos[:2])[1] < min_dist:
+                    pos = (x(), y(), theta()) 
+                places.insert(pos)
+                pos_frame.robots_yellow[i] = Robot(x=pos[0], y=pos[1], theta=pos[2])
+            else:
+                pos = (x(), y(), theta())
+                while places.get_nearest(pos[:2])[1] < min_dist:
+                    pos = (x(), y(), theta())
+                places.insert(pos)
+                pos_frame.robots_yellow[i] = Robot(x=pos[0], y=pos[1], theta=pos[2])
 
         return pos_frame
 
