@@ -1,0 +1,1 @@
+exeperimento curriculum desde o zero com a task 0

@@ -32,31 +32,14 @@ class TorchBetaTest(TorchDistributionWrapper):
         high: float = 1.0,
         signal: list = [1, 1, 1, 1],
     ):
-        super(TorchDistributionWrapper, self).__init__(inputs, model)
-        
-        # Primeiro, garante que os inputs estão em um intervalo razoável
-        self.inputs = torch.clamp(self.inputs, -10.0, 10.0)
-        
-        # Divide os inputs em dois grupos
-        alpha_raw, beta_raw = torch.chunk(self.inputs, 2, dim=-1)
-        
-        # Aplica softplus e adiciona um pequeno epsilon para garantir positividade
-        epsilon = 0.1  # Aumentado para maior estabilidade
-        alpha = torch.nn.functional.softplus(alpha_raw) + epsilon
-        beta = torch.nn.functional.softplus(beta_raw) + epsilon
-        
-        # Limita os valores máximos para evitar instabilidade numérica
-        alpha = torch.clamp(alpha, min=0.1, max=20.0)  # Aumentado o range
-        beta = torch.clamp(beta, min=0.1, max=20.0)  # Aumentado o range
-        
-        # Verifica se há NaNs e substitui por valores padrão seguros
-        alpha = torch.where(torch.isnan(alpha), torch.ones_like(alpha), alpha)
-        beta = torch.where(torch.isnan(beta), torch.ones_like(beta), beta)
-        
+        super().__init__(inputs, model)
+        # Stabilize input parameters (possibly coming from a linear layer).
+        self.inputs = torch.clamp(self.inputs, log(SMALL_NUMBER), -log(SMALL_NUMBER))
+        self.inputs = torch.log(torch.exp(self.inputs) + 1.0) + 1.0
         self.low = low
         self.high = high
-        
-        # Note: concentration0==beta, concentration1=alpha
+        alpha, beta = torch.chunk(self.inputs, 2, dim=-1)
+        # Note: concentration0==beta, concentration1=alpha (!)
         self.dist = torch.distributions.Beta(concentration1=alpha, concentration0=beta)
         self.signal = torch.tensor(signal)
         self.device = "cuda" if torch.cuda.is_available() else "cpu"

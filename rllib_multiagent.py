@@ -60,6 +60,7 @@ def create_curriculum_env(config):
                     "ball": config["init_pos"]["ball"]
                 }
     
+    # Retorna SSLCurriculumEnv em vez de SSLMultiAgentEnv
     return SSLCurriculumEnv(curriculum_config=curriculum_config, **config)
 
 def create_rllib_env_recorder(config):
@@ -68,18 +69,23 @@ def create_rllib_env_recorder(config):
     config = config.copy()
     curriculum_config = config.pop("curriculum_config", None)
     
-    # Se temos configuração de curriculum, mostra a task atual e usa o ambiente de curriculum
+    # Se temos configuração de curriculum, mostra a task atual
     if curriculum_config and curriculum_config.get("enabled", False):
         task_level = curriculum_config.get("initial_task", 0)
         print(f"\n[AVALIAÇÃO] Task Atual: {task_level}")
-        ssl_el_env = SSLCurriculumEnv(curriculum_config=curriculum_config, **config)
-    else:
-        ssl_el_env = SSLMultiAgentEnv(**config)
     
+    # Usa SSLCurriculumEnv também para avaliação
+    ssl_el_env = SSLCurriculumEnv(curriculum_config=curriculum_config, **config)
     return SSLMultiAgentEnv_record(ssl_el_env, video_folder="/ws/videos", episode_trigger=trigger, disable_logger=True)
 
 def create_rllib_env(config):
-    return SSLMultiAgentEnv(**config)
+    # Extrai e passa a configuração do curriculum
+    curriculum_config = config.get("curriculum_config")
+    if "curriculum_config" in config:
+        config = config.copy()
+        del config["curriculum_config"]
+    # Usa SSLCurriculumEnv também para ambiente padrão
+    return SSLCurriculumEnv(curriculum_config=curriculum_config, **config)
 
 def create_policy_mapping_fn(curriculum_config=None):
     def policy_mapping_fn(agent_id, episode, worker, **kwargs):
@@ -235,7 +241,11 @@ if __name__ == "__main__":
         eval_configs = file_configs["evaluation"].copy()
         env_config_eval = file_configs["env"].copy()
         
-        # Se estiver usando curriculum, ajusta a configuração de avaliação para o nível atual
+        # Se estiver usando curriculum, propaga a configuração para avaliação
+        if args.curriculum and file_configs["curriculum"]["enabled"]:
+            env_config_eval["curriculum_config"] = file_configs["curriculum"]
+            
+        # Ajusta as posições iniciais baseado no número de agentes no nível atual
         if args.curriculum and file_configs["curriculum"]["enabled"]:
             task_level = file_configs["curriculum"]["initial_task"]
             task_config = file_configs["curriculum"]["tasks"].get(str(task_level)) or file_configs["curriculum"]["tasks"].get(task_level)

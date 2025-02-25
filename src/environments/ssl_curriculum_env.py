@@ -11,6 +11,7 @@ class SSLCurriculumEnv(SSLMultiAgentEnv):
         self.task_level = curriculum_config.get("initial_task", 0) if curriculum_config else 0
         self.obstacle_pos = np.array([0.0, 0.0])
         self.ball_touched = False  # Flag para controlar se a bola foi tocada
+        self.last_ball_pos = None  # Para detectar movimento da bola
         self.ball_possession_blue = 0  # Contador de posse de bola para time azul
         self.ball_possession_yellow = 0  # Contador de posse de bola para time amarelo
         
@@ -30,6 +31,7 @@ class SSLCurriculumEnv(SSLMultiAgentEnv):
     def reset(self, *, seed=None, options=None) -> Dict:
         # Reseta flags e contadores
         self.ball_touched = False
+        self.last_ball_pos = None
         self.ball_possession_blue = 0
         self.ball_possession_yellow = 0
         
@@ -194,6 +196,25 @@ class SSLCurriculumEnv(SSLMultiAgentEnv):
         else:
             self.continuity_metrics['current_sequence_time'] = current_time - self.continuity_metrics['last_reset_time']
         
+        # Verifica toque na bola (Task 0)
+        if self.task_level == 0:
+            current_ball_pos = np.array([self.frame.ball.x, self.frame.ball.y])
+            
+            # Verifica se algum robô azul está próximo da bola
+            for i in range(self.n_robots_blue):
+                robot_pos = np.array([self.frame.robots_blue[i].x, self.frame.robots_blue[i].y])
+                dist_to_ball = np.linalg.norm(robot_pos - current_ball_pos)
+                
+                task_config = self.curriculum_config["tasks"].get(str(self.task_level)) or self.curriculum_config["tasks"].get(self.task_level)
+                if task_config and dist_to_ball <= task_config.get("success_distance", 0.2):
+                    # Verifica se a bola se moveu
+                    if self.last_ball_pos is not None:
+                        ball_movement = np.linalg.norm(current_ball_pos - self.last_ball_pos)
+                        if ball_movement > 0.01:  # Threshold para movimento da bola
+                            self.ball_touched = True
+            
+            self.last_ball_pos = current_ball_pos
+        
         # Adiciona métricas de continuidade ao info de cada agente
         for agent_id in infos.keys():
             if agent_id.startswith("blue"):
@@ -205,6 +226,8 @@ class SSLCurriculumEnv(SSLMultiAgentEnv):
                 
                 # Atualiza métricas específicas da Tarefa 1
                 if self.task_level == 1:
+                    if dist_to_ball < 0.2:  # Distância de posse
+                        self.ball_possession_blue += 1
                     infos[agent_id].update({
                         "ball_possession_time": self.ball_possession_blue,
                         "opponent_possession_time": self.ball_possession_yellow

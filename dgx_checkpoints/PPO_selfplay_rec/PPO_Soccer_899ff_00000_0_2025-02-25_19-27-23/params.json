@@ -1,0 +1,179 @@
+{
+  "batch_mode": "truncate_episodes",
+  "callbacks": "<class 'src.callbacks.curriculum_callback.CurriculumCallback'>",
+  "clip_param": 0.2,
+  "disable_env_checking": true,
+  "entropy_coeff": 0.01,
+  "env": "Soccer",
+  "env_config": {
+    "curriculum_config": {
+      "enabled": true,
+      "evaluation_window": 100,
+      "initial_task": 0,
+      "promotion_threshold": 0.8,
+      "tasks": {
+        "0": {
+          "max_steps": 300,
+          "num_agents_blue": 3,
+          "num_agents_yellow": 0,
+          "reward_touch": 10.0,
+          "success_distance": 0.2
+        },
+        "1": {
+          "init_pos": {
+            "ball": [
+              0,
+              0
+            ],
+            "blue": {
+              "1": [
+                -0.5,
+                0.1,
+                0.0
+              ],
+              "2": [
+                -1.0,
+                0.0,
+                0.0
+              ],
+              "3": [
+                -2.0,
+                -0.1,
+                0.0
+              ]
+            },
+            "yellow": {
+              "1": [
+                1.5,
+                0.0,
+                180.0
+              ]
+            }
+          },
+          "max_steps": 400,
+          "num_agents_blue": 3,
+          "num_agents_yellow": 1,
+          "possession_threshold": 0.2,
+          "possession_time_success": 90,
+          "reward_weights": {
+            "ball_proximity": 0.1,
+            "opponent_distance": 0.05,
+            "opponent_penalty": 0.2,
+            "possession": 0.1
+          },
+          "success_distance": 0.2
+        },
+        "2": {
+          "init_pos": {
+            "yellow": {
+              "1": [
+                1.5,
+                0.0,
+                180.0
+              ],
+              "2": [
+                2.0,
+                1.0,
+                180.0
+              ],
+              "3": [
+                2.0,
+                -1.0,
+                180.0
+              ]
+            }
+          },
+          "max_steps": 500,
+          "num_agents_blue": 3,
+          "num_agents_yellow": 3,
+          "success_distance": 0.2
+        }
+      }
+    },
+    "field_type": 0,
+    "fps": 30,
+    "init_pos": {
+      "ball": [
+        0,
+        0
+      ],
+      "blue": {
+        "1": [
+          -0.5,
+          0.1,
+          0.0
+        ],
+        "2": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "3": [
+          -2.0,
+          -0.1,
+          0.0
+        ]
+      },
+      "yellow": {}
+    },
+    "match_time": 40,
+    "render_mode": "human"
+  },
+  "framework": "torch",
+  "gamma": 0.99,
+  "grad_clip": 0.5,
+  "kl_coeff": 0.0,
+  "lambda": 0.95,
+  "lr": 0.0004,
+  "model": {
+    "custom_action_dist": "beta_dist",
+    "custom_model": "custom_vf_model",
+    "custom_model_config": {
+      "fcnet_hiddens": [
+        300,
+        200,
+        100
+      ],
+      "vf_share_layers": false
+    }
+  },
+  "multiagent": {
+    "policies": {
+      "policy_blue": [
+        null,
+        "Box(-1.2009999999999998, 1.2009999999999998, (616,), float64)",
+        "Box(-1.0, 1.0, (4,), float64)",
+        {
+          "model": {
+            "custom_action_dist": "beta_dist_blue"
+          }
+        }
+      ],
+      "policy_yellow": [
+        null,
+        "Box(-1.2009999999999998, 1.2009999999999998, (616,), float64)",
+        "Box(-1.0, 1.0, (4,), float64)",
+        {
+          "model": {
+            "custom_action_dist": "beta_dist_yellow"
+          }
+        }
+      ]
+    },
+    "policies_to_train": [
+      "policy_blue"
+    ],
+    "policy_mapping_fn": "<function create_policy_mapping_fn.<locals>.policy_mapping_fn at 0x71f792f09630>"
+  },
+  "normalize_actions": false,
+  "num_cpus": 7,
+  "num_envs_per_worker": 2,
+  "num_gpus": 1,
+  "num_sgd_iter": 5,
+  "num_workers": 6,
+  "rollout_fragment_length": "auto",
+  "sgd_minibatch_size": 12840,
+  "train_batch_size": 38520,
+  "vf_clip_param": 100000.0,
+  "vf_loss_coeff": 0.5
+}
