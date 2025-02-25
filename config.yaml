@@ -1,7 +1,7 @@
 score_average_over: 100
 timesteps_total: 160000000 # Controla numero maximo de timesteps
 checkpoint_freq: 50 # Salvar checkpoint a cada 100 iterações 
-checkpoint_restore: null #"/root/ray_results/PPO_selfplay_rec/PPO_Soccer_739dd_00000_0_2025-02-24_23-09-51/checkpoint_000010" # Removido para iniciar treinamento do zero
+checkpoint_restore: "/root/ray_results/PPO_selfplay_rec/PPO_Soccer_739dd_00000_0_2025-02-24_23-09-51/checkpoint_000010" # Removido para iniciar treinamento do zero
 rllib:
   num_cpus: 7  # Depende do num_workers, tem que ser igual ou maior
   num_gpus: 1
@@ -47,17 +47,15 @@ env:
       2: [-1.0,  0.0,    0.0]  # Intermediário (centro)
       3: [-2.0, -0.1,    0.0]  # Goleiro (leve deslocamento para esquerda)
     yellow:
-      1: [ 0.5,  0.1,  180.0]  # Atacante (espelhado do azul)
-      2: [ 1.0,  0.0,  180.0]  # Intermediário (espelhado do azul)
-      3: [ 1.5, -0.1,  180.0]  # Goleiro (espelhado do azul)
+      1: [ 1.5,  0.0,  180.0]  # Apenas um oponente
     ball: [0, 0]
   field_type: 0
   fps: 30 # frames por segundo
   match_time: 40 # duração da partida em segundos
   render_mode: "human"
 curriculum:
-  enabled: false  # Desativando o curriculum learning
-  initial_task: 0  # Começa com a tarefa mais básica
+  enabled: true  # Ativando o curriculum learning
+  initial_task: 1  # Começando diretamente na tarefa 1
   promotion_threshold: 0.8  # Taxa de sucesso necessária para avançar
   evaluation_window: 100  # Número de episódios para avaliar o desempenho
   tasks:
@@ -67,14 +65,26 @@ curriculum:
       reward_touch: 10.0  # Recompensa por tocar na bola
       num_agents_blue: 3  # Atacante, intermediário e goleiro
       num_agents_yellow: 0  # Sem oponentes no nível 0
-    1:  # Tarefa intermediária - posições aleatórias
+    1:  # Tarefa intermediária - manter posse contra um oponente
       max_steps: 400
       success_distance: 0.2
       num_agents_blue: 3
-      num_agents_yellow: 1
+      num_agents_yellow: 1  # Explicitamente definindo 1 robô amarelo
+      reward_weights:  # Pesos para diferentes componentes da recompensa
+        ball_proximity: 0.1  # Peso para proximidade da bola
+        possession: 0.1  # Peso para posse de bola
+        opponent_distance: 0.05  # Peso para manter bola longe do oponente
+        opponent_penalty: 0.2  # Penalidade quando oponente está mais próximo
+      possession_threshold: 0.2  # Distância para considerar posse de bola
+      possession_time_success: 90  # Frames necessários com posse (3s * 30fps)
       init_pos:
+        blue:  # Posições base para variação aleatória
+          1: [-0.5,  0.1,    0.0]  # Atacante
+          2: [-1.0,  0.0,    0.0]  # Intermediário
+          3: [-2.0, -0.1,    0.0]  # Goleiro
         yellow:
-          1: [ 1.5,  0.0,  180.0]
+          1: [ 1.5,  0.0,  180.0]  # Apenas um oponente
+        ball: [0, 0]  # Posição inicial da bola (será variada no reset)
     2:  # Tarefa avançada - com obstáculo
       max_steps: 500
       success_distance: 0.2
