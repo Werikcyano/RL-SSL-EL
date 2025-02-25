@@ -1,7 +1,7 @@
 score_average_over: 100
 timesteps_total: 160000000 # Controla numero maximo de timesteps
 checkpoint_freq: 50 # Salvar checkpoint a cada 100 iterações 
-checkpoint_restore: "/root/ray_results/PPO_selfplay_rec/PPO_Soccer_739dd_00000_0_2025-02-24_23-09-51/checkpoint_000010" # Removido para iniciar treinamento do zero
+checkpoint_restore: null #"/root/ray_results/PPO_selfplay_rec/PPO_Soccer_739dd_00000_0_2025-02-24_23-09-51/checkpoint_000010" # Removido para iniciar treinamento do zero
 rllib:
   num_cpus: 7  # Depende do num_workers, tem que ser igual ou maior
   num_gpus: 1
@@ -49,7 +49,7 @@ env:
     yellow:
       1: [ 0.5,  0.1,  180.0]  # Atacante (espelhado do azul)
       2: [ 1.0,  0.0,  180.0]  # Intermediário (espelhado do azul)
-      3: [ 2.0, -0.1,  180.0]  # Goleiro (espelhado do azul)
+      3: [ 1.5, -0.1,  180.0]  # Goleiro (espelhado do azul)
     ball: [0, 0]
   field_type: 0
   fps: 30 # frames por segundo

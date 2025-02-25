@@ -1,0 +1,1 @@
+experimento evaluation selfplay a partir de curriculum 
