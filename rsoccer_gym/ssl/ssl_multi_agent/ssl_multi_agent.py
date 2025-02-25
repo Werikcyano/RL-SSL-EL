@@ -102,18 +102,21 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
     def _get_commands(self, actions):
         commands = []
         for i in range(self.n_robots_blue):
-            robot_actions = actions[f'blue_{i}'].copy()
-            angle = self.frame.robots_blue[i].theta
-            v_x, v_y, v_theta = self.convert_actions(robot_actions, np.deg2rad(angle))
-            cmd = Robot(yellow=False, id=i, v_x=v_x, v_y=v_y, v_theta=v_theta, kick_v_x=self.kick_speed_x if robot_actions[3] > 0 else 0.)
+            robot_actions = actions.get(f'blue_{i}')
+            if robot_actions is not None:
+                angle = self.frame.robots_blue[i].theta
+                v_x, v_y, v_theta = self.convert_actions(robot_actions, np.deg2rad(angle))
+                cmd = Robot(yellow=False, id=i, v_x=v_x, v_y=v_y, v_theta=v_theta, kick_v_x=self.kick_speed_x if robot_actions[3] > 0 else 0.)
+            else:
+                cmd = Robot(yellow=False, id=i, v_x=0, v_y=0, v_theta=0, kick_v_x=0)
             commands.append(cmd)
         
         for i in range(self.n_robots_yellow):
-            # Se estiver na Tarefa 1, mantém o robô amarelo estático
-            if hasattr(self, 'task_level') and self.task_level == 1:
+            robot_actions = actions.get(f'yellow_{i}')
+            # Se não houver ações para o robô amarelo (Tarefa 1) ou se estiver explicitamente na Tarefa 1
+            if robot_actions is None or (hasattr(self, 'task_level') and self.task_level == 1):
                 cmd = Robot(yellow=True, id=i, v_x=0, v_y=0, v_theta=0, kick_v_x=0)
             else:
-                robot_actions = actions[f'yellow_{i}'].copy()
                 angle = self.frame.robots_yellow[i].theta
                 v_x, v_y, v_theta = self.convert_actions(robot_actions, np.deg2rad(angle))
                 cmd = Robot(yellow=True, id=i, v_x=v_x, v_y=v_y, v_theta=v_theta, kick_v_x=self.kick_speed_x if robot_actions[3] > 0 else 0.)
@@ -417,11 +420,11 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
         )
 
     def _frame_to_observations(self):
-
         # print("=====================================OBSERVATION===================================================")
         f = lambda x: " ".join([f"{i:.2f}" for i in x])
         ball_template = namedtuple('ball', ['x', 'y', 'v_x', 'v_y'])
         goal = namedtuple('goal', ['x', 'y'])
+
         for i in range(self.n_robots_blue):
             robot = self.frame.robots_blue[i] 
             robot_action = self.last_actions[f'blue_{i}']
@@ -438,16 +441,12 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
             self.observations[f'blue_{i}'] = np.delete(self.observations[f'blue_{i}'], range(len(robot_obs)))
             self.observations[f'blue_{i}'] = np.concatenate([self.observations[f'blue_{i}'], robot_obs], axis=0, dtype=np.float64)
 
-            # if i == 1:
-            #     print(f"blue_{i}")
-            #     print(f"\tX={robot.x}\tY={robot.y}\tTheta={robot.theta}\tVx={robot.v_x}\tVy={robot.v_y}\tVtheta={robot.v_theta}")
-            #     print(f"\t pos: {f(robot_obs[:14])} \n\t ori: {f(robot_obs[14:32])} \n\t dist: {f(robot_obs[32:40])} \n\t ang: {f(robot_obs[40:64])} \n\t last_act: {f(robot_obs[64:76])} \n\t time_left: {robot_obs[76]}")
-
         for i in range(self.n_robots_yellow):
             robot = self.inverted_robot(self.frame.robots_yellow[i])
-            robot_action = self.last_actions[f'yellow_{i}']
+            # Usa zeros como ações padrão se não houver ações para o robô amarelo
+            robot_action = self.last_actions.get(f'yellow_{i}', np.zeros(4))
             allys = [self.inverted_robot(self.frame.robots_yellow[j]) for j in range(self.n_robots_yellow) if j != i]
-            allys_actions = [self.last_actions[f'yellow_{j}'] for j in range(self.n_robots_yellow) if j != i]
+            allys_actions = [self.last_actions.get(f'yellow_{j}', np.zeros(4)) for j in range(self.n_robots_yellow) if j != i]
             advs = [self.inverted_robot(self.frame.robots_blue[j]) for j in range(self.n_robots_blue)]
 
             ball = ball_template(x=-self.frame.ball.x, y=self.frame.ball.y, v_x=-self.frame.ball.v_x, v_y=self.frame.ball.v_y)
@@ -459,11 +458,6 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
 
             self.observations[f'yellow_{i}'] = np.delete(self.observations[f'yellow_{i}'], range(len(robot_obs)))
             self.observations[f'yellow_{i}'] = np.concatenate([self.observations[f'yellow_{i}'], robot_obs], axis=0, dtype=np.float64)
-
-            # if i == 1:
-            #     print(f"\nyellow_{i}")
-            #     print(f"\tX={robot.x}\tY={robot.y}\tTheta={robot.theta}\tVx={robot.v_x}\tVy={robot.v_y}\tVtheta={robot.v_theta}")
-            #     print(f"\t pos: {f(robot_obs[:14])} \n\t ori: {f(robot_obs[14:32])} \n\t dist: {f(robot_obs[32:40])} \n\t ang: {f(robot_obs[40:64])} \n\t last_act: {f(robot_obs[64:76])} \n\t time_left: {robot_obs[76]}")
 
     def robot_observation(self, robot, allys, adversaries, robot_action, allys_actions, ball, goal_adv, goal_ally):
 
@@ -567,6 +561,11 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
 
     def step(self, action):
         self.steps += 1
+        
+        # Se estiver na Tarefa 1, remove as ações dos robôs amarelos
+        if hasattr(self, 'task_level') and self.task_level == 1:
+            action = {k: v for k, v in action.items() if 'yellow' not in k}
+        
         # Join agent action with environment actions
         commands = self._get_commands(action)
         # Send command to simulator

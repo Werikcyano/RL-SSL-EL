@@ -68,12 +68,14 @@ def create_rllib_env_recorder(config):
     config = config.copy()
     curriculum_config = config.pop("curriculum_config", None)
     
-    # Se temos configuração de curriculum, mostra a task atual
+    # Se temos configuração de curriculum, mostra a task atual e usa o ambiente de curriculum
     if curriculum_config and curriculum_config.get("enabled", False):
         task_level = curriculum_config.get("initial_task", 0)
         print(f"\n[AVALIAÇÃO] Task Atual: {task_level}")
+        ssl_el_env = SSLCurriculumEnv(curriculum_config=curriculum_config, **config)
+    else:
+        ssl_el_env = SSLMultiAgentEnv(**config)
     
-    ssl_el_env = SSLMultiAgentEnv(**config)
     return SSLMultiAgentEnv_record(ssl_el_env, video_folder="/ws/videos", episode_trigger=trigger, disable_logger=True)
 
 def create_rllib_env(config):
@@ -84,17 +86,12 @@ def create_policy_mapping_fn(curriculum_config=None):
         if "blue" in agent_id:
             return "policy_blue"
         elif "yellow" in agent_id:
-            # Se não estamos usando curriculum ou não há configuração, usa a política amarela
-            if not curriculum_config or not curriculum_config.get("enabled", False):
-                return "policy_yellow"
-            
-            # Se estamos usando curriculum, verifica o nível atual
-            task_level = curriculum_config.get("initial_task", 0)
-            task_config = curriculum_config["tasks"].get(str(task_level)) or curriculum_config["tasks"].get(task_level)
-            
-            # Se não houver agentes amarelos neste nível, retorna a política azul
-            if task_config and task_config.get("num_agents_yellow", 0) == 0:
-                return "policy_blue"
+            # Se estamos usando curriculum e estamos na Tarefa 1, retorna None para não gerar ações
+            if curriculum_config and curriculum_config.get("enabled", False):
+                task_level = curriculum_config.get("initial_task", 0)
+                task_config = curriculum_config["tasks"].get(str(task_level)) or curriculum_config["tasks"].get(task_level)
+                if task_level == 1:
+                    return None  # Robôs amarelos não receberão ações na Tarefa 1
             return "policy_yellow"
         return "policy_blue"  # Caso padrão
     return policy_mapping_fn
@@ -305,8 +302,8 @@ if __name__ == "__main__":
             "policy_blue": (None, obs_space, act_space, {'model': {'custom_action_dist': 'beta_dist_blue'}}),
         }
         
-        # Adiciona política amarela apenas se houver agentes amarelos no nível
-        if task_config.get("num_agents_yellow", 0) > 0:
+        # Adiciona política amarela apenas se não estiver na Tarefa 1
+        if task_level != 1:
             policies["policy_yellow"] = (None, obs_space, act_space, {'model': {'custom_action_dist': 'beta_dist_yellow'}})
         
         configs["multiagent"] = {
