@@ -1,4 +1,3 @@
-
 from sim2real.utils import pos, angle_between_two, dist_between, inverted_robot
 from sim2real.config import FIELD_LENGTH, FIELD_WIDTH, N_ROBOTS_BLUE, N_ROBOTS_YELLOW, MAX_EP_LENGTH, GOAL, BALL, ROBOT
 import numpy as np
@@ -92,7 +91,6 @@ def robot_observation(robot, allys, adversaries, robot_action, allys_actions, ba
         angles.append([sin_AlR, cos_AlR, theta_AlR])
     
     for i in range(N_ROBOTS_BLUE - len(allys) - 1):
-        print("não é pra entrar aqui")
         x_al, y_al, sin_al, cos_al, theta_al = 0, 0, 0, 0, 0
         sin_AlR, cos_AlR, theta_AlR = 0, 0, 0
         ally_dist = 0

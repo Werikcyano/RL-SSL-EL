@@ -18,6 +18,13 @@ class CurriculumCallback(DefaultCallbacks):
                 'endline': []
             }
         }
+        # Métricas específicas para Tarefa 1
+        self.task1_stats = {
+            'possession_time': [],
+            'opponent_possession_time': [],
+            'successful_possessions': 0,
+            'total_episodes': 0
+        }
 
     def on_episode_start(
         self, *, worker, base_env, policies, episode: Episode, env_index: int, **kwargs
@@ -27,6 +34,10 @@ class CurriculumCallback(DefaultCallbacks):
         if hasattr(worker.env, "task_level"):
             self.task_level = worker.env.task_level
             print(f"\n[TREINAMENTO] Task Atual: {self.task_level}")
+            
+            # Inicializa contadores específicos para Tarefa 1
+            if self.task_level == 1:
+                self.task1_stats['total_episodes'] += 1
 
     def on_episode_end(
         self, *, worker, base_env, policies, episode: Episode, **kwargs
@@ -55,6 +66,18 @@ class CurriculumCallback(DefaultCallbacks):
                     metrics['endline_resets']
                 )
                 
+                # Processa métricas específicas da Tarefa 1
+                if self.task_level == 1:
+                    info = episode.last_info_for("blue_0")
+                    if "ball_possession_time" in info:
+                        self.task1_stats['possession_time'].append(info["ball_possession_time"])
+                    if "opponent_possession_time" in info:
+                        self.task1_stats['opponent_possession_time'].append(info["opponent_possession_time"])
+                    
+                    # Verifica se foi uma posse bem-sucedida (3 segundos = 90 frames)
+                    if info.get("ball_possession_time", 0) >= 90:
+                        self.task1_stats['successful_possessions'] += 1
+                
                 # Adiciona métricas customizadas ao episódio
                 episode.custom_metrics.update({
                     "total_resets": metrics['total_resets'],
@@ -62,59 +85,75 @@ class CurriculumCallback(DefaultCallbacks):
                     "max_sequence_without_reset": metrics['max_sequence_without_reset'],
                     "lateral_resets_ratio": metrics['lateral_resets'] / max(metrics['total_resets'], 1),
                     "endline_resets_ratio": metrics['endline_resets'] / max(metrics['total_resets'], 1),
-                    "goals_blue": metrics['goals_blue'],
-                    "goals_yellow": metrics['goals_yellow'],
-                    "total_goals": metrics['total_goals'],
-                    "goals_per_episode": metrics['goals_per_episode'],
+                    "goals_blue": metrics.get('goals_blue', 0),
+                    "goals_yellow": metrics.get('goals_yellow', 0),
+                    "total_goals": metrics.get('total_goals', 0),
+                    "goals_per_episode": metrics.get('goals_per_episode', 0),
                     "current_task_level": self.task_level
                 })
+                
+                # Adiciona métricas específicas da Tarefa 1
+                if self.task_level == 1:
+                    possession_success_rate = self.task1_stats['successful_possessions'] / max(self.task1_stats['total_episodes'], 1)
+                    avg_possession_time = np.mean(self.task1_stats['possession_time']) if self.task1_stats['possession_time'] else 0
+                    
+                    episode.custom_metrics.update({
+                        "possession_success_rate": possession_success_rate,
+                        "avg_possession_time": avg_possession_time,
+                        "successful_possessions": self.task1_stats['successful_possessions'],
+                        "total_task1_episodes": self.task1_stats['total_episodes']
+                    })
             
-            # Processa métricas de score
+            # Processa métricas de score e sucesso
             info_a = episode.last_info_for("blue_0")
-            single_score = info_a["score"]["blue"] - info_a["score"]["yellow"]
-            self.success_rate.append(1 if single_score > 0 else 0)
+            
+            # Critérios de sucesso específicos para cada tarefa
+            success = False
+            if self.task_level == 0:
+                # Tarefa 0: Sucesso se tocou na bola
+                success = info_a.get("ball_touched", False)
+            elif self.task_level == 1:
+                # Tarefa 1: Sucesso se manteve posse por tempo suficiente
+                success = info_a.get("ball_possession_time", 0) >= 90  # 3 segundos
+            else:
+                # Tarefa 2: Mantém lógica existente
+                final_distance = info_a.get("distance_to_ball")
+                if final_distance is not None:
+                    success = final_distance < worker.config["env_config"]["curriculum_config"]["tasks"][self.task_level]["success_distance"]
+            
+            self.success_rate.append(1 if success else 0)
 
             # Verifica se é hora de promover para o próximo nível
             if len(self.success_rate) >= 100:
                 success_rate = sum(self.success_rate) / len(self.success_rate)
                 print(f"\n[CURRICULUM] Taxa de Sucesso Atual: {success_rate:.2f}")
                 
-                if success_rate >= 0.8 and hasattr(worker.env, "task_level"):
-                    worker.env.task_level = min(worker.env.task_level + 1, 2)
-                    print(f"[CURRICULUM] Promovido para Task {worker.env.task_level}!")
-                    self.success_rate.clear()
-                
-            # Processa métricas de sucesso (código existente)
-            final_distance = episode.last_info_for("blue_0").get("distance_to_ball")
-            if final_distance is None:
-                print("Aviso: distance_to_ball não encontrado no info")
-                return
-                
-            success = final_distance < worker.config["env_config"]["curriculum_config"]["tasks"][self.task_level]["success_distance"]
-            
-            # Calcula taxa de sucesso
-            success_rate = np.mean(self.success_rate)
-            
-            # Verifica se deve avançar para próxima tarefa
-            if (success_rate >= worker.config["env_config"]["curriculum_config"]["promotion_threshold"] and 
-                self.task_level < 2):
-                self.task_level += 1
-                print(f"Avançando para tarefa {self.task_level}")
-                
-                # Atualiza o nível da tarefa em todos os ambientes
-                for env in base_env.get_unwrapped():
-                    env.task_level = self.task_level
+                if success_rate >= worker.config["env_config"]["curriculum_config"]["promotion_threshold"] and self.task_level < 2:
+                    self.task_level += 1
+                    print(f"[CURRICULUM] Promovido para Task {self.task_level}!")
                     
-                # Reseta estatísticas de continuidade ao mudar de nível
-                self.continuity_stats = {
-                    'episode_resets': [],
-                    'avg_time_between_resets': [],
-                    'max_sequence_lengths': [],
-                    'reset_distribution': {
-                        'lateral': [],
-                        'endline': []
+                    # Atualiza o nível da tarefa em todos os ambientes
+                    for env in base_env.get_unwrapped():
+                        env.task_level = self.task_level
+                    
+                    # Reseta estatísticas
+                    self.success_rate.clear()
+                    self.continuity_stats = {
+                        'episode_resets': [],
+                        'avg_time_between_resets': [],
+                        'max_sequence_lengths': [],
+                        'reset_distribution': {
+                            'lateral': [],
+                            'endline': []
+                        }
                     }
-                }
+                    if self.task_level == 1:
+                        self.task1_stats = {
+                            'possession_time': [],
+                            'opponent_possession_time': [],
+                            'successful_possessions': 0,
+                            'total_episodes': 0
+                        }
                 
         except Exception as e:
             print(f"Erro no callback: {e}")
@@ -124,10 +163,21 @@ class CurriculumCallback(DefaultCallbacks):
         if not self.continuity_stats['episode_resets']:
             return {}
             
-        return {
+        stats = {
             'mean_resets_per_episode': np.mean(self.continuity_stats['episode_resets']),
             'mean_time_between_resets': np.mean(self.continuity_stats['avg_time_between_resets']) if self.continuity_stats['avg_time_between_resets'] else 0,
             'max_sequence_length': max(self.continuity_stats['max_sequence_lengths']) if self.continuity_stats['max_sequence_lengths'] else 0,
             'lateral_reset_ratio': np.mean(self.continuity_stats['reset_distribution']['lateral']) / max(np.mean(self.continuity_stats['episode_resets']), 1),
             'endline_reset_ratio': np.mean(self.continuity_stats['reset_distribution']['endline']) / max(np.mean(self.continuity_stats['episode_resets']), 1)
         }
+        
+        # Adiciona estatísticas específicas da Tarefa 1 se estiver nela
+        if self.task_level == 1:
+            stats.update({
+                'possession_success_rate': self.task1_stats['successful_possessions'] / max(self.task1_stats['total_episodes'], 1),
+                'avg_possession_time': np.mean(self.task1_stats['possession_time']) if self.task1_stats['possession_time'] else 0,
+                'total_successful_possessions': self.task1_stats['successful_possessions'],
+                'total_task1_episodes': self.task1_stats['total_episodes']
+            })
+            
+        return stats

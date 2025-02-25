@@ -11,6 +11,8 @@ class SSLCurriculumEnv(SSLMultiAgentEnv):
         self.task_level = curriculum_config.get("initial_task", 0) if curriculum_config else 0
         self.obstacle_pos = np.array([0.0, 0.0])
         self.ball_touched = False  # Flag para controlar se a bola foi tocada
+        self.ball_possession_blue = 0  # Contador de posse de bola para time azul
+        self.ball_possession_yellow = 0  # Contador de posse de bola para time amarelo
         
         # Métricas de continuidade
         self.continuity_metrics = {
@@ -20,12 +22,16 @@ class SSLCurriculumEnv(SSLMultiAgentEnv):
             'time_between_resets': [],
             'last_reset_time': None,
             'current_sequence_time': 0,
-            'max_sequence_without_reset': 0
+            'max_sequence_without_reset': 0,
+            'ball_possession_blue': 0,
+            'ball_possession_yellow': 0
         }
         
     def reset(self, *, seed=None, options=None) -> Dict:
-        # Reseta flag de toque na bola
+        # Reseta flags e contadores
         self.ball_touched = False
+        self.ball_possession_blue = 0
+        self.ball_possession_yellow = 0
         
         # Reseta métricas de continuidade
         self.continuity_metrics.update({
@@ -35,30 +41,46 @@ class SSLCurriculumEnv(SSLMultiAgentEnv):
             'time_between_resets': [],
             'last_reset_time': None,
             'current_sequence_time': 0,
-            'max_sequence_without_reset': 0
+            'max_sequence_without_reset': 0,
+            'ball_possession_blue': 0,
+            'ball_possession_yellow': 0
         })
         
         if seed is not None:
             np.random.seed(seed)
             
+        task_config = self.curriculum_config["tasks"].get(str(self.task_level)) or self.curriculum_config["tasks"].get(self.task_level)
+            
         if self.task_level == 0:
-            # Tarefa 1: Posições fixas
-            self.ball = np.array([1.0, 1.0])
-            self.robot_pos = np.array([-1.0, -1.0])
+            # Tarefa 0: Posições fixas do config
+            return super().reset(seed=seed, options=options)
             
         elif self.task_level == 1:
-            # Tarefa 2: Posições aleatórias
-            self.ball = np.random.uniform(-2, 2, 2)
-            self.robot_pos = np.random.uniform(-2, 2, 2)
+            # Tarefa 1: Posições semi-aleatórias mantendo formação tática
+            if task_config and "init_pos" in task_config:
+                # Usa posições base do config com pequena variação aleatória
+                for team in ["blue", "yellow"]:
+                    if team in task_config["init_pos"]:
+                        for robot_id, pos in task_config["init_pos"][team].items():
+                            # Adiciona pequena variação aleatória nas posições (±0.3 metros)
+                            pos[0] += np.random.uniform(-0.3, 0.3)
+                            pos[1] += np.random.uniform(-0.3, 0.3)
+                            # Mantém o ângulo original
+                
+                # Posição da bola com variação controlada
+                ball_x = np.random.uniform(-1.0, 1.0)
+                ball_y = np.random.uniform(-1.0, 1.0)
+                task_config["init_pos"]["ball"] = [ball_x, ball_y]
+                
+            return super().reset(seed=seed, options=options)
             
         elif self.task_level == 2:
-            # Tarefa 3: Posições aleatórias + obstáculo
+            # Tarefa 2: Mantém implementação existente
             self.ball = np.random.uniform(-2, 2, 2)
             self.robot_pos = np.random.uniform(-2, 2, 2)
-            
-            # Posiciona obstáculo entre robô e bola
             direction = self.ball - self.robot_pos
             self.obstacle_pos = self.robot_pos + direction * 0.5
+            return super().reset(seed=seed, options=options)
                 
         return super().reset(seed=seed, options=options)
         
@@ -66,40 +88,73 @@ class SSLCurriculumEnv(SSLMultiAgentEnv):
         base_reward = super().compute_reward(robot_id)
         
         if not robot_id.startswith("blue"):
-            return 0  # No nível 0, apenas o time azul recebe recompensas
+            return 0
         
-        # Recompensa adicional baseada na distância até a bola
+        # Obtém posições atuais
         robot_pos = self.get_robot_position(robot_id)
-        dist_to_ball = np.linalg.norm(robot_pos - self.ball)
+        ball_pos = np.array([self.frame.ball.x, self.frame.ball.y])
+        dist_to_ball = np.linalg.norm(robot_pos - ball_pos)
         
-        # Verifica se tocou na bola (nível 0)
         reward = 0
+        task_config = self.curriculum_config["tasks"].get(str(self.task_level)) or self.curriculum_config["tasks"].get(self.task_level)
+        
         if self.task_level == 0:
-            task_config = self.curriculum_config["tasks"].get(str(self.task_level)) or self.curriculum_config["tasks"].get(self.task_level)
+            # Lógica existente para Tarefa 0
             if task_config and dist_to_ball <= task_config.get("success_distance", 0.2):
-                if not self.ball_touched:  # Apenas recompensa na primeira vez que tocar
+                if not self.ball_touched:
                     reward = task_config.get("reward_touch", 10.0)
                     self.ball_touched = True
-        
-        # Penalidade por colisão com obstáculo no nível 2
-        obstacle_penalty = 0
-        if self.task_level == 2:
+                    
+        elif self.task_level == 1:
+            # Nova lógica para Tarefa 1
+            # 1. Recompensa por proximidade da bola
+            ball_reward = -0.1 * dist_to_ball
+            
+            # 2. Recompensa por posse de bola
+            possession_reward = 0
+            if dist_to_ball < 0.2:  # Distância de posse
+                self.ball_possession_blue += 1
+                possession_reward = 0.1 * min(self.ball_possession_blue / 30, 1.0)  # Máximo após 1 segundo (30 frames)
+            
+            # 3. Penalidade se oponente está próximo da bola
+            opponent_penalty = 0
+            if self.n_robots_yellow > 0:
+                yellow_pos = np.array([self.frame.robots_yellow[0].x, self.frame.robots_yellow[0].y])
+                yellow_dist_to_ball = np.linalg.norm(yellow_pos - ball_pos)
+                if yellow_dist_to_ball < dist_to_ball:  # Oponente mais próximo da bola
+                    opponent_penalty = -0.2
+                
+            # 4. Recompensa por manter bola longe do oponente
+            positioning_reward = 0
+            if self.n_robots_yellow > 0:
+                yellow_pos = np.array([self.frame.robots_yellow[0].x, self.frame.robots_yellow[0].y])
+                ball_to_yellow_dist = np.linalg.norm(yellow_pos - ball_pos)
+                positioning_reward = 0.05 * min(ball_to_yellow_dist, 2.0)  # Limitado a 2 metros
+            
+            # Combina todas as recompensas
+            reward = ball_reward + possession_reward + opponent_penalty + positioning_reward
+            
+        elif self.task_level == 2:
+            # Mantém lógica existente para Tarefa 2
             dist_to_obstacle = np.linalg.norm(robot_pos - self.obstacle_pos)
-            if dist_to_obstacle < 0.3:  # Raio de colisão
-                obstacle_penalty = -1.0
+            if dist_to_obstacle < 0.3:
+                reward -= 1.0
         
-        # Recompensa por tempo (quanto mais rápido melhor)
+        # Penalidade por tempo comum a todas as tarefas
         time_penalty = -0.01
         
-        return base_reward + (-dist_to_ball * 0.1) + time_penalty + obstacle_penalty + reward
+        return base_reward + reward + time_penalty
     
     def get_robot_position(self, robot_id):
         """Retorna a posição do robô como um array numpy"""
         if robot_id.startswith("blue"):
-            return self.robot_pos  # Posição definida no reset()
+            robot_num = int(robot_id.split("_")[1])
+            return np.array([self.frame.robots_blue[robot_num].x, 
+                           self.frame.robots_blue[robot_num].y])
         else:
-            # Para robôs amarelos, retorna posição espelhada
-            return -self.robot_pos
+            robot_num = int(robot_id.split("_")[1])
+            return np.array([self.frame.robots_yellow[robot_num].x, 
+                           self.frame.robots_yellow[robot_num].y])
 
     def track_reset(self, reset_type: str):
         """
@@ -124,6 +179,10 @@ class SSLCurriculumEnv(SSLMultiAgentEnv):
         
         self.continuity_metrics['last_reset_time'] = current_time
         self.continuity_metrics['current_sequence_time'] = 0
+        
+        # Atualiza métricas de posse de bola
+        self.continuity_metrics['ball_possession_blue'] = self.ball_possession_blue
+        self.continuity_metrics['ball_possession_yellow'] = self.ball_possession_yellow
 
     def step(self, action_dict):
         observations, rewards, dones, truncated, infos = super().step(action_dict)
@@ -144,15 +203,27 @@ class SSLCurriculumEnv(SSLMultiAgentEnv):
                 ball_pos = np.array([self.frame.ball.x, self.frame.ball.y])
                 dist_to_ball = np.linalg.norm(robot_pos - ball_pos)
                 
+                # Atualiza métricas específicas da Tarefa 1
+                if self.task_level == 1:
+                    infos[agent_id].update({
+                        "ball_possession_time": self.ball_possession_blue,
+                        "opponent_possession_time": self.ball_possession_yellow
+                    })
+                
                 infos[agent_id].update({
                     "distance_to_ball": dist_to_ball,
                     "ball_touched": self.ball_touched,
                     "continuity_metrics": self.continuity_metrics.copy()
                 })
                 
-                # No nível 0, termina o episódio quando tocar na bola
+                # Condições de término específicas para cada tarefa
                 if self.task_level == 0 and self.ball_touched:
                     dones[agent_id] = True
                     dones["__all__"] = True
+                elif self.task_level == 1:
+                    # Termina o episódio se mantiver posse por tempo suficiente
+                    if self.ball_possession_blue >= 90:  # 3 segundos (30 fps * 3)
+                        dones[agent_id] = True
+                        dones["__all__"] = True
         
         return observations, rewards, dones, truncated, infos
