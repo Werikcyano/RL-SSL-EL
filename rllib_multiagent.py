@@ -66,7 +66,13 @@ def create_rllib_env_recorder(config):
     trigger = lambda t: t % 1 == 0
     config["render_mode"] = "rgb_array"
     config = config.copy()
-    config.pop("curriculum_config", None)
+    curriculum_config = config.pop("curriculum_config", None)
+    
+    # Se temos configuração de curriculum, mostra a task atual
+    if curriculum_config and curriculum_config.get("enabled", False):
+        task_level = curriculum_config.get("initial_task", 0)
+        print(f"\n[AVALIAÇÃO] Task Atual: {task_level}")
+    
     ssl_el_env = SSLMultiAgentEnv(**config)
     return SSLMultiAgentEnv_record(ssl_el_env, video_folder="/ws/videos", episode_trigger=trigger, disable_logger=True)
 

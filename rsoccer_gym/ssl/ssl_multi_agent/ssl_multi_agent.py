@@ -296,59 +296,49 @@ class SSLMultiAgentEnv(SSLBaseEnv, MultiAgentEnv):
   
     def _get_initial_positions_frame(self, seed):
         '''Returns the position of each robot and ball for the initial frame'''
-        #np.random.seed(seed)
-
         field_half_length = self.field.length / 2
         field_half_width = self.field.width / 2
 
-        def x(): return random.uniform(-field_half_length + 0.1,
-                                       field_half_length - 0.1)
-
-        def y(): return random.uniform(-field_half_width + 0.1,
-                                       field_half_width - 0.1)
-
-        def theta(): return random.uniform(0, 360)
-
         places = KDTree()
-
         pos_frame: Frame = Frame()
 
+        # Posição da bola
         if isinstance(self.init_pos["ball"], list): 
             pos_frame.ball = Ball(x=self.init_pos["ball"][0], y=self.init_pos["ball"][1])
         else:
-            pos_frame.ball = Ball(x=random.uniform(-2, 2), y=random.uniform(-1.2, 1.2))
+            pos_frame.ball = Ball(x=0, y=0)  # Posição padrão no centro
         places.insert((pos_frame.ball.x, pos_frame.ball.y))
 
         min_dist = 0.2
+        # Posições dos robôs azuis
         for i in range(self.n_robots_blue):
             key = str(i + 1)
             if key in self.init_pos['blue']:
                 pos = self.init_pos['blue'][key]
-                while places.get_nearest(pos[:2])[1] < min_dist:
-                    pos = (x(), y(), theta()) 
-                places.insert(pos)
                 pos_frame.robots_blue[i] = Robot(x=pos[0], y=pos[1], theta=pos[2])
+                places.insert((pos[0], pos[1]))
             else:
-                pos = (x(), y(), theta())
-                while places.get_nearest(pos[:2])[1] < min_dist:
-                    pos = (x(), y(), theta())
-                places.insert(pos)
-                pos_frame.robots_blue[i] = Robot(x=pos[0], y=pos[1], theta=pos[2])
+                # Se não houver posição definida, usa posição padrão
+                x = -0.5 - i
+                y = 0.0
+                theta = 0.0
+                pos_frame.robots_blue[i] = Robot(x=x, y=y, theta=theta)
+                places.insert((x, y))
 
+        # Posições dos robôs amarelos
         for i in range(self.n_robots_yellow):
             key = str(i + 1)
             if key in self.init_pos['yellow']:
                 pos = self.init_pos['yellow'][key]
-                while places.get_nearest(pos[:2])[1] < min_dist:
-                    pos = (x(), y(), theta()) 
-                places.insert(pos)
                 pos_frame.robots_yellow[i] = Robot(x=pos[0], y=pos[1], theta=pos[2])
+                places.insert((pos[0], pos[1]))
             else:
-                pos = (x(), y(), theta())
-                while places.get_nearest(pos[:2])[1] < min_dist:
-                    pos = (x(), y(), theta())
-                places.insert(pos)
-                pos_frame.robots_yellow[i] = Robot(x=pos[0], y=pos[1], theta=pos[2])
+                # Se não houver posição definida, usa posição padrão
+                x = 1.5 + i
+                y = 0.0
+                theta = 180.0
+                pos_frame.robots_yellow[i] = Robot(x=x, y=y, theta=theta)
+                places.insert((x, y))
 
         return pos_frame
 

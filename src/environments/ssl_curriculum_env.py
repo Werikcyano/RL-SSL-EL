@@ -138,8 +138,12 @@ class SSLCurriculumEnv(SSLMultiAgentEnv):
         # Adiciona métricas de continuidade ao info de cada agente
         for agent_id in infos.keys():
             if agent_id.startswith("blue"):
-                robot_pos = self.get_robot_position(agent_id)
-                dist_to_ball = np.linalg.norm(robot_pos - self.ball)
+                # Calcula a distância até a bola para cada robô azul
+                robot_pos = np.array([self.frame.robots_blue[int(agent_id.split('_')[1])].x,
+                                    self.frame.robots_blue[int(agent_id.split('_')[1])].y])
+                ball_pos = np.array([self.frame.ball.x, self.frame.ball.y])
+                dist_to_ball = np.linalg.norm(robot_pos - ball_pos)
+                
                 infos[agent_id].update({
                     "distance_to_ball": dist_to_ball,
                     "ball_touched": self.ball_touched,

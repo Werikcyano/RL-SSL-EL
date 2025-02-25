@@ -1,7 +1,7 @@
 score_average_over: 100
 timesteps_total: 160000000 # Controla numero maximo de timesteps
 checkpoint_freq: 50 # Salvar checkpoint a cada 100 iterações 
-checkpoint_restore: null # Removido para iniciar treinamento do zero
+checkpoint_restore: "/root/ray_results/PPO_selfplay_rec/PPO_Soccer_739dd_00000_0_2025-02-24_23-09-51/checkpoint_000010" # Removido para iniciar treinamento do zero
 rllib:
   num_cpus: 7  # Depende do num_workers, tem que ser igual ou maior
   num_gpus: 1
@@ -43,17 +43,20 @@ custom_model:
 env:
   init_pos: # posição inicial dos jogadores
     blue:
-      1: [-0.5,  0.0,    0.0]  # Atacante
-      2: [-1.0,  0.0,    0.0]  # Intermediário
-      3: [-2.0,  0.0,    0.0]  # Goleiro
-    yellow: {}  # Nível 0 não tem robôs amarelos
+      1: [-0.5,  0.1,    0.0]  # Atacante (leve deslocamento para direita)
+      2: [-1.0,  0.0,    0.0]  # Intermediário (centro)
+      3: [-2.0, -0.1,    0.0]  # Goleiro (leve deslocamento para esquerda)
+    yellow:
+      1: [ 0.5,  0.1,  180.0]  # Atacante (espelhado do azul)
+      2: [ 1.0,  0.0,  180.0]  # Intermediário (espelhado do azul)
+      3: [ 2.0, -0.1,  180.0]  # Goleiro (espelhado do azul)
     ball: [0, 0]
   field_type: 0
   fps: 30 # frames por segundo
   match_time: 40 # duração da partida em segundos
   render_mode: "human"
 curriculum:
-  enabled: true
+  enabled: false  # Desativando o curriculum learning
   initial_task: 0  # Começa com a tarefa mais básica
   promotion_threshold: 0.8  # Taxa de sucesso necessária para avançar
   evaluation_window: 100  # Número de episódios para avaliar o desempenho
