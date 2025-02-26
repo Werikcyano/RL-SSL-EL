@@ -25,7 +25,11 @@ class SSLCurriculumEnv(SSLMultiAgentEnv):
             'current_sequence_time': 0,
             'max_sequence_without_reset': 0,
             'ball_possession_blue': 0,
-            'ball_possession_yellow': 0
+            'ball_possession_yellow': 0,
+            'goals_blue': 0,
+            'goals_yellow': 0,
+            'total_goals': 0,
+            'goals_per_episode': 0
         }
         
     def reset(self, *, seed=None, options=None) -> Dict:
@@ -45,13 +49,21 @@ class SSLCurriculumEnv(SSLMultiAgentEnv):
             'current_sequence_time': 0,
             'max_sequence_without_reset': 0,
             'ball_possession_blue': 0,
-            'ball_possession_yellow': 0
+            'ball_possession_yellow': 0,
+            'goals_blue': 0,
+            'goals_yellow': 0,
+            'total_goals': 0,
+            'goals_per_episode': 0
         })
         
         if seed is not None:
             np.random.seed(seed)
             
-        task_config = self.curriculum_config["tasks"].get(str(self.task_level)) or self.curriculum_config["tasks"].get(self.task_level)
+        # Verifica se o currículo está habilitado
+        if not self.curriculum_config.get("enabled", False):
+            return super().reset(seed=seed, options=options)
+            
+        task_config = self.curriculum_config.get("tasks", {}).get(str(self.task_level)) or self.curriculum_config.get("tasks", {}).get(self.task_level)
             
         if self.task_level == 0:
             # Tarefa 0: Posições fixas do config
@@ -98,7 +110,12 @@ class SSLCurriculumEnv(SSLMultiAgentEnv):
         dist_to_ball = np.linalg.norm(robot_pos - ball_pos)
         
         reward = 0
-        task_config = self.curriculum_config["tasks"].get(str(self.task_level)) or self.curriculum_config["tasks"].get(self.task_level)
+        
+        # Verifica se o currículo está habilitado
+        if not self.curriculum_config.get("enabled", False):
+            return base_reward
+            
+        task_config = self.curriculum_config.get("tasks", {}).get(str(self.task_level)) or self.curriculum_config.get("tasks", {}).get(self.task_level)
         
         if self.task_level == 0:
             # Lógica existente para Tarefa 0
@@ -108,33 +125,47 @@ class SSLCurriculumEnv(SSLMultiAgentEnv):
                     self.ball_touched = True
                     
         elif self.task_level == 1:
-            # Nova lógica para Tarefa 1
+            # Nova lógica para Tarefa 1 focada em gols
             # 1. Recompensa por proximidade da bola
             ball_reward = -0.1 * dist_to_ball
             
-            # 2. Recompensa por posse de bola
+            # 2. Recompensa por posse de bola (reduzida)
             possession_reward = 0
             if dist_to_ball < 0.2:  # Distância de posse
                 self.ball_possession_blue += 1
-                possession_reward = 0.1 * min(self.ball_possession_blue / 30, 1.0)  # Máximo após 1 segundo (30 frames)
+                possession_reward = 0.05 * min(self.ball_possession_blue / 30, 1.0)  # Máximo após 1 segundo (30 frames)
             
-            # 3. Penalidade se oponente está próximo da bola
-            opponent_penalty = 0
-            if self.n_robots_yellow > 0:
-                yellow_pos = np.array([self.frame.robots_yellow[0].x, self.frame.robots_yellow[0].y])
-                yellow_dist_to_ball = np.linalg.norm(yellow_pos - ball_pos)
-                if yellow_dist_to_ball < dist_to_ball:  # Oponente mais próximo da bola
-                    opponent_penalty = -0.2
-                
-            # 4. Recompensa por manter bola longe do oponente
-            positioning_reward = 0
-            if self.n_robots_yellow > 0:
-                yellow_pos = np.array([self.frame.robots_yellow[0].x, self.frame.robots_yellow[0].y])
-                ball_to_yellow_dist = np.linalg.norm(yellow_pos - ball_pos)
-                positioning_reward = 0.05 * min(ball_to_yellow_dist, 2.0)  # Limitado a 2 metros
+            # 3. Recompensa por proximidade ao gol adversário
+            half_len = self.field.length/2
+            half_wid = self.field.width/2
+            goal_pos = np.array([half_len, 0])  # Posição do gol adversário (amarelo)
+            ball_to_goal_dist = np.linalg.norm(goal_pos - ball_pos)
+            max_dist_to_goal = np.linalg.norm([self.field.length, self.field.width/2])  # Distância máxima possível
+            goal_reward = 0.3 * (1 - ball_to_goal_dist/max_dist_to_goal)  # Normalizado entre 0 e 0.3
+            
+            # 4. Recompensa por gol
+            if abs(ball_pos[0]) >= half_len and abs(ball_pos[1]) < self.field.goal_width/2:
+                if ball_pos[0] > 0:  # Gol azul (nosso time)
+                    goal_reward = 10.0
+                    self.continuity_metrics['goals_blue'] += 1
+                else:  # Gol amarelo (oponente)
+                    goal_reward = -10.0
+                    self.continuity_metrics['goals_yellow'] += 1
+                self.continuity_metrics['total_goals'] += 1
+                self.continuity_metrics['goals_per_episode'] += 1
+            
+            # 5. Penalidade por sair do campo
+            field_penalty = 0
+            if abs(robot_pos[0]) > half_len or abs(robot_pos[1]) > half_wid:
+                field_penalty = -1.0
+            if abs(ball_pos[0]) > half_len or abs(ball_pos[1]) > half_wid:
+                field_penalty -= 0.5
             
             # Combina todas as recompensas
-            reward = ball_reward + possession_reward + opponent_penalty + positioning_reward
+            reward = (ball_reward + 
+                     possession_reward + 
+                     goal_reward +
+                     field_penalty)
             
         elif self.task_level == 2:
             # Mantém lógica existente para Tarefa 2
@@ -196,6 +227,10 @@ class SSLCurriculumEnv(SSLMultiAgentEnv):
         else:
             self.continuity_metrics['current_sequence_time'] = current_time - self.continuity_metrics['last_reset_time']
         
+        # Verifica se o currículo está habilitado
+        if not self.curriculum_config.get("enabled", False):
+            return observations, rewards, dones, truncated, infos
+            
         # Verifica toque na bola (Task 0)
         if self.task_level == 0:
             current_ball_pos = np.array([self.frame.ball.x, self.frame.ball.y])
@@ -205,7 +240,7 @@ class SSLCurriculumEnv(SSLMultiAgentEnv):
                 robot_pos = np.array([self.frame.robots_blue[i].x, self.frame.robots_blue[i].y])
                 dist_to_ball = np.linalg.norm(robot_pos - current_ball_pos)
                 
-                task_config = self.curriculum_config["tasks"].get(str(self.task_level)) or self.curriculum_config["tasks"].get(self.task_level)
+                task_config = self.curriculum_config.get("tasks", {}).get(str(self.task_level)) or self.curriculum_config.get("tasks", {}).get(self.task_level)
                 if task_config and dist_to_ball <= task_config.get("success_distance", 0.2):
                     # Verifica se a bola se moveu
                     if self.last_ball_pos is not None:
@@ -226,27 +261,25 @@ class SSLCurriculumEnv(SSLMultiAgentEnv):
                 
                 # Atualiza métricas específicas da Tarefa 1
                 if self.task_level == 1:
-                    if dist_to_ball < 0.2:  # Distância de posse
-                        self.ball_possession_blue += 1
                     infos[agent_id].update({
-                        "ball_possession_time": self.ball_possession_blue,
-                        "opponent_possession_time": self.ball_possession_yellow
+                        'ball_distance': dist_to_ball,
+                        'ball_possession': self.ball_possession_blue,
+                        'goals_blue': self.continuity_metrics['goals_blue'],
+                        'goals_yellow': self.continuity_metrics['goals_yellow'],
+                        'total_goals': self.continuity_metrics['total_goals'],
+                        'goals_per_episode': self.continuity_metrics['goals_per_episode']
                     })
                 
+                # Atualiza métricas comuns a todas as tarefas
                 infos[agent_id].update({
-                    "distance_to_ball": dist_to_ball,
-                    "ball_touched": self.ball_touched,
-                    "continuity_metrics": self.continuity_metrics.copy()
+                    'total_resets': self.continuity_metrics['total_resets'],
+                    'lateral_resets': self.continuity_metrics['lateral_resets'],
+                    'endline_resets': self.continuity_metrics['endline_resets'],
+                    'current_sequence_time': self.continuity_metrics['current_sequence_time'],
+                    'max_sequence_without_reset': self.continuity_metrics['max_sequence_without_reset']
                 })
                 
-                # Condições de término específicas para cada tarefa
-                if self.task_level == 0 and self.ball_touched:
-                    dones[agent_id] = True
-                    dones["__all__"] = True
-                elif self.task_level == 1:
-                    # Termina o episódio se mantiver posse por tempo suficiente
-                    if self.ball_possession_blue >= 90:  # 3 segundos (30 fps * 3)
-                        dones[agent_id] = True
-                        dones["__all__"] = True
+                if self.continuity_metrics['time_between_resets']:
+                    infos[agent_id]['avg_time_between_resets'] = sum(self.continuity_metrics['time_between_resets']) / len(self.continuity_metrics['time_between_resets'])
         
         return observations, rewards, dones, truncated, infos

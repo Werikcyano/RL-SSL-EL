@@ -31,8 +31,14 @@ docker run -d \
     --shm-size=10gb \
     $IMAGE_NAME tail -f /dev/null
 
-echo -e "${YELLOW}Iniciando treinamento com curriculum (Tarefa 1) e avaliação...${NC}"
-docker exec -it $CONTAINER_NAME python rllib_multiagent.py --curriculum --evaluation
+# Passa todos os argumentos recebidos para o script Python
+#if [ "$#" -eq 0 ]; then
+#    echo -e "${YELLOW}Iniciando treinamento no modo padrão (selfplay)...${NC}"
+#    docker exec -it $CONTAINER_NAME python rllib_multiagent.py
+#else
+echo -e "${YELLOW}Iniciando treinamento com argumentos: $@${NC}"
+docker exec -it $CONTAINER_NAME python rllib_multiagent.py --evaluation
+#fi
 
 # Limpa a permissão do X11
 xhost -local:docker

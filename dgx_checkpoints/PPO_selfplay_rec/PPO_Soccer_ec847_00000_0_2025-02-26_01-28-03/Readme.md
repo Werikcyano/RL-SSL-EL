@@ -1,0 +1,1 @@
+Experimento selfplay (evaluation) from curriculum depois de passar pelas tasks 0 e 1

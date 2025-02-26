@@ -113,8 +113,19 @@ class CurriculumCallback(DefaultCallbacks):
                 # Tarefa 0: Sucesso se tocou na bola
                 success = info_a.get("ball_touched", False)
             elif self.task_level == 1:
-                # Tarefa 1: Sucesso se manteve posse por tempo suficiente
-                success = info_a.get("ball_possession_time", 0) >= 90  # 3 segundos
+                # Tarefa 1: Sucesso se fez gol
+                success = info_a.get("goals_blue", 0) > 0
+                
+                # Atualiza estatísticas de gols
+                episode.custom_metrics.update({
+                    "goals_blue": info_a.get("goals_blue", 0),
+                    "goals_yellow": info_a.get("goals_yellow", 0),
+                    "total_goals": info_a.get("total_goals", 0),
+                    "goals_per_episode": info_a.get("goals_per_episode", 0),
+                    "episodes_with_goals": 1 if info_a.get("goals_blue", 0) > 0 else 0,
+                    "episodes_without_goals": 1 if info_a.get("goals_blue", 0) == 0 else 0,
+                    "episodes_with_opponent_goals": 1 if info_a.get("goals_yellow", 0) > 0 else 0
+                })
             else:
                 # Tarefa 2: Mantém lógica existente
                 final_distance = info_a.get("distance_to_ball")

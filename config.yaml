@@ -1,7 +1,9 @@
 score_average_over: 100
 timesteps_total: 160000000 # Controla numero maximo de timesteps
 checkpoint_freq: 10 # Salvar checkpoint a cada 100 iterações 
-checkpoint_restore: "/root/ray_results/PPO_selfplay_rec/PPO_Soccer_899ff_00000_0_2025-02-25_19-27-23/checkpoint_000000"
+checkpoint_restore: "/root/ray_results/PPO_selfplay_rec/PPO_Soccer_e92a4_00000_0_2025-02-25_21-46-03/checkpoint_000005"
+#checkpoint_restore: "/root/ray_results/PPO_selfplay_rec/PPO_Soccer_899ff_00000_0_2025-02-25_19-27-23/checkpoint_000000"
+#/home/werikcyano/Documents/mestrado-codigo-treinamento/RL-SSL-EL/dgx_checkpoints/PPO_selfplay_rec/PPO_Soccer_e92a4_00000_0_2025-02-25_21-46-03/checkpoint_000005
 
 rllib:
   num_cpus: 7  # Depende do num_workers, tem que ser igual ou maior
@@ -48,14 +50,16 @@ env:
       2: [-1.0,  0.0,    0.0]  # Intermediário (centro)
       3: [-1.5, -0.1,    0.0]  # Goleiro (leve deslocamento para esquerda)
     yellow: #{}
-      1: [ 0.5,  0.0,  180.0]  # Apenas um oponente, mais próximo da bola
+      1: [ 0.5,  0.1,  180.0]  # Apenas um oponente, mais próximo da bola
+      2: [ 1.0,  0.0,  180.0]  # Apenas um oponente, mais próximo da bola
+      3: [ 1.5, -0.1,  180.0]  # Apenas um oponente, mais próximo da bola
     ball: [0, 0]
   field_type: 0
   fps: 30 # frames por segundo
   match_time: 40 # duração da partida em segundos
   render_mode: "human"
 curriculum:
-  enabled: true  # Ativando o curriculum learning
+  enabled: false  # Ativando o curriculum learning
   initial_task: 1  # Começando diretamente na tarefa 1
   promotion_threshold: 0.8  # Taxa de sucesso necessária para avançar
   evaluation_window: 100  # Número de episódios para avaliar o desempenho
@@ -66,26 +70,25 @@ curriculum:
       reward_touch: 10.0  # Recompensa por tocar na bola
       num_agents_blue: 3  # Atacante, intermediário e goleiro
       num_agents_yellow: 0  # Sem oponentes no nível 0
-    1:  # Tarefa intermediária - manter posse contra um oponente
-      max_steps: 400
-      success_distance: 0.2
-      num_agents_blue: 3
-      num_agents_yellow: 1  # Explicitamente definindo 1 robô amarelo
-      reward_weights:  # Pesos para diferentes componentes da recompensa
-        ball_proximity: 0.1  # Peso para proximidade da bola
-        possession: 0.1  # Peso para posse de bola
-        opponent_distance: 0.05  # Peso para manter bola longe do oponente
-        opponent_penalty: 0.2  # Penalidade quando oponente está mais próximo
-      possession_threshold: 0.2  # Distância para considerar posse de bola
-      possession_time_success: 90  # Frames necessários com posse (3s * 30fps)
+    1:  # Tarefa 1 - Fazer gols contra oponente estático
       init_pos:
-        blue:  # Posições base para variação aleatória
-          1: [-0.5,  0.1,    0.0]  # Atacante
-          2: [-1.0,  0.0,    0.0]  # Intermediário
-          3: [-1.5, -0.1,    0.0]  # Goleiro
+        ball: [0, 0]  # Bola no centro
+        blue:
+          1: [-0.5,  0.1,    0.0]  # Atacante (leve deslocamento para direita)
+          2: [-1.0,  0.0,    0.0]  # Intermediário (centro)
+          3: [-1.5, -0.1,    0.0]  # Goleiro (leve deslocamento para esquerda)
         yellow:
-          1: [ 0.5,  0.0,  180.0]  # Oponente mais próximo da bola
-        ball: [0, 0]  # Posição inicial da bola (será variada no reset)
+          1: [ 0.5,  0.0,  180.0]  # Oponente estático
+      max_steps: 400  # Aumentado para dar mais tempo para fazer gol
+      num_agents_blue: 3
+      num_agents_yellow: 1
+      reward_weights:
+        ball_proximity: 0.1  # Recompensa por estar perto da bola
+        goal_proximity: 0.3  # Recompensa por levar a bola em direção ao gol
+        goal_reward: 10.0    # Recompensa por fazer gol
+        possession: 0.05     # Recompensa reduzida por posse de bola
+      success_criteria:
+        goal_scored: true    # Sucesso se fizer gol
     2:  # Tarefa avançada - com obstáculo
       max_steps: 500
       success_distance: 0.2

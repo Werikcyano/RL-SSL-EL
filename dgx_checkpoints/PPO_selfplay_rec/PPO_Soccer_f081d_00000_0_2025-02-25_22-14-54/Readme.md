@@ -1,0 +1,1 @@
+Experimento com task 1 a partir do checkpoint do experimento da task 0 com foco em fazer gols avaliação gerando videos
