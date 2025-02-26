@@ -1,7 +1,7 @@
 score_average_over: 100
 timesteps_total: 160000000 # Controla numero maximo de timesteps
 checkpoint_freq: 10 # Salvar checkpoint a cada 100 iterações 
-checkpoint_restore: "/root/ray_results/PPO_selfplay_rec/PPO_Soccer_e92a4_00000_0_2025-02-25_21-46-03/checkpoint_000005"
+checkpoint_restore: null #"/root/ray_results/PPO_selfplay_rec/PPO_Soccer_e92a4_00000_0_2025-02-25_21-46-03/checkpoint_000005"
 #checkpoint_restore: "/root/ray_results/PPO_selfplay_rec/PPO_Soccer_899ff_00000_0_2025-02-25_19-27-23/checkpoint_000000"
 #/home/werikcyano/Documents/mestrado-codigo-treinamento/RL-SSL-EL/dgx_checkpoints/PPO_selfplay_rec/PPO_Soccer_e92a4_00000_0_2025-02-25_21-46-03/checkpoint_000005
 

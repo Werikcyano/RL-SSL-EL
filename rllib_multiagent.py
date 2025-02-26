@@ -129,48 +129,60 @@ class SelfPlayUpdateCallback(DefaultCallbacks):
     def on_episode_end(
         self, *, worker, base_env, policies, episode: Episode, **kwargs
     ) -> None:
-        # Processa métricas de continuidade
-        metrics = episode.last_info_for("blue_0").get("continuity_metrics", {})
-        if metrics:
-            self.continuity_stats['episode_resets'].append(metrics['total_resets'])
-            
-            # Calcula média de tempo entre resets
-            if metrics['time_between_resets']:
-                avg_time = np.mean(metrics['time_between_resets'])
-                self.continuity_stats['avg_time_between_resets'].append(avg_time)
-            
-            # Registra sequência máxima sem reset
-            self.continuity_stats['max_sequence_lengths'].append(
-                metrics['max_sequence_without_reset']
-            )
-            
-            # Registra distribuição dos tipos de reset
-            self.continuity_stats['reset_distribution']['lateral'].append(
-                metrics['lateral_resets']
-            )
-            self.continuity_stats['reset_distribution']['endline'].append(
-                metrics['endline_resets']
-            )
-            
-            # Adiciona métricas customizadas ao episódio
-            episode.custom_metrics.update({
-                "total_resets": metrics['total_resets'],
-                "avg_time_between_resets": avg_time if metrics['time_between_resets'] else 0,
-                "max_sequence_without_reset": metrics['max_sequence_without_reset'],
-                "lateral_resets_ratio": metrics['lateral_resets'] / max(metrics['total_resets'], 1),
-                "endline_resets_ratio": metrics['endline_resets'] / max(metrics['total_resets'], 1),
-                "goals_blue": metrics['goals_blue'],
-                "goals_yellow": metrics['goals_yellow'],
-                "total_goals": metrics['total_goals'],
-                "goals_per_episode": metrics['goals_per_episode']
-            })
+        try:
+            # Processa métricas de continuidade
+            metrics = episode.last_info_for("blue_0").get("continuity_metrics", {})
+            if metrics:
+                self.continuity_stats['episode_resets'].append(metrics['total_resets'])
+                
+                # Calcula média de tempo entre resets
+                if metrics['time_between_resets']:
+                    avg_time = np.mean(metrics['time_between_resets'])
+                    self.continuity_stats['avg_time_between_resets'].append(avg_time)
+                
+                # Registra sequência máxima sem reset
+                self.continuity_stats['max_sequence_lengths'].append(
+                    metrics['max_sequence_without_reset']
+                )
+                
+                # Registra distribuição dos tipos de reset
+                self.continuity_stats['reset_distribution']['lateral'].append(
+                    metrics['lateral_resets']
+                )
+                self.continuity_stats['reset_distribution']['endline'].append(
+                    metrics['endline_resets']
+                )
+                
+                # Adiciona métricas customizadas ao episódio
+                episode.custom_metrics.update({
+                    "total_resets": metrics['total_resets'],
+                    "avg_time_between_resets": avg_time if metrics['time_between_resets'] else 0,
+                    "max_sequence_without_reset": metrics['max_sequence_without_reset'],
+                    "lateral_resets_ratio": metrics['lateral_resets'] / max(metrics['total_resets'], 1),
+                    "endline_resets_ratio": metrics['endline_resets'] / max(metrics['total_resets'], 1),
+                    "goals_blue": metrics.get('goals_blue', 0),
+                    "goals_yellow": metrics.get('goals_yellow', 0),
+                    "total_goals": metrics.get('total_goals', 0),
+                    "goals_per_episode": metrics.get('goals_per_episode', 0)
+                })
+                
+                # Atualiza estatísticas de gols
+                info_a = episode.last_info_for("blue_0")
+                episode.custom_metrics.update({
+                    "episodes_with_goals": 1 if metrics.get('goals_blue', 0) > 0 else 0,
+                    "episodes_without_goals": 1 if metrics.get('goals_blue', 0) == 0 else 0,
+                    "episodes_with_opponent_goals": 1 if metrics.get('goals_yellow', 0) > 0 else 0
+                })
 
-        # Processa métricas de score
-        info_a = episode.last_info_for("blue_0")
-        single_score = info_a["score"]["blue"] - info_a["score"]["yellow"]
+            # Processa métricas de score para self-play
+            info_a = episode.last_info_for("blue_0")
+            single_score = info_a["score"]["blue"] - info_a["score"]["yellow"]
 
-        score_counter = ray.get_actor("score_counter")
-        score_counter.append.remote(single_score)
+            score_counter = ray.get_actor("score_counter")
+            score_counter.append.remote(single_score)
+            
+        except Exception as e:
+            print(f"Erro no callback: {e}")
 
     def on_train_result(self, **info):
         """
@@ -191,6 +203,21 @@ class SelfPlayUpdateCallback(DefaultCallbacks):
             )
             score_counter = ray.get_actor("score_counter")
             score_counter.reset.remote()
+            
+    def get_continuity_statistics(self) -> Dict:
+        """Retorna estatísticas agregadas das métricas de continuidade"""
+        if not self.continuity_stats['episode_resets']:
+            return {}
+            
+        stats = {
+            'mean_resets_per_episode': np.mean(self.continuity_stats['episode_resets']),
+            'mean_time_between_resets': np.mean(self.continuity_stats['avg_time_between_resets']) if self.continuity_stats['avg_time_between_resets'] else 0,
+            'max_sequence_length': max(self.continuity_stats['max_sequence_lengths']) if self.continuity_stats['max_sequence_lengths'] else 0,
+            'lateral_reset_ratio': np.mean(self.continuity_stats['reset_distribution']['lateral']) / max(np.mean(self.continuity_stats['episode_resets']), 1),
+            'endline_reset_ratio': np.mean(self.continuity_stats['reset_distribution']['endline']) / max(np.mean(self.continuity_stats['episode_resets']), 1)
+        }
+            
+        return stats
 
 parser = argparse.ArgumentParser(description="Treina multiagent SSL-EL.")
 parser.add_argument("--evaluation", action="store_true", help="Irá renderizar um episódio de tempos em tempos.")

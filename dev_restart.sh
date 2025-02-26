@@ -37,7 +37,7 @@ docker run -d \
 #    docker exec -it $CONTAINER_NAME python rllib_multiagent.py
 #else
 echo -e "${YELLOW}Iniciando treinamento com argumentos: $@${NC}"
-docker exec -it $CONTAINER_NAME python rllib_multiagent.py --evaluation
+docker exec -it $CONTAINER_NAME python rllib_multiagent.py
 #fi
 
 # Limpa a permissão do X11
