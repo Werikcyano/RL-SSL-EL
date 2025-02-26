@@ -1,0 +1,23 @@
+# Configuração da Arena Serra Dourada
+arena:
+  match_time: 600  # 10 minutos em segundos
+  num_matches: 1   # Número de jogos a serem simulados
+  speed_up: 10      # Fator de aceleração do jogo (1 = tempo real)
+  checkpoints:
+    blue: "/root/ray_results/PPO_selfplay_rec/PPO_Soccer_1a942_00000_0_2025-02-26_01-50-49/checkpoint_000076"  # checkpoint selfplay com curriculum
+    yellow: "/root/ray_results/PPO_selfplay_rec/PPO_Soccer_6671b_00000_0_2025-02-26_13-34-27/checkpoint_000011" # checkpoint selfplay sem curriculum
+#/home/werikcyano/Documents/mestrado-futebol-jogo/RL-SSL-EL/dgx_checkpoints/PPO_selfplay_rec/PPO_Soccer_6671b_00000_0_2025-02-26_13-34-27/checkpoint_000011
+env:
+  init_pos:
+    blue:
+      1: [-0.5,  0.1,    0.0]
+      2: [-1.0,  0.0,    0.0]
+      3: [-1.5, -0.1,    0.0]
+    yellow:
+      1: [ 0.5,  0.1,  180.0]
+      2: [ 1.0,  0.0,  180.0]
+      3: [ 1.5, -0.1,  180.0]
+    ball: [0, 0]
+  field_type: 0
+  fps: 30
+  render_mode: "human" 

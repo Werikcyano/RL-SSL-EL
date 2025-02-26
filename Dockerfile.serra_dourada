@@ -1,0 +1,78 @@
+# Descrição: Dockerfile para criar um contêiner com o ambiente da Arena Serra Dourada
+
+# Use uma imagem base Python oficial
+FROM python:3.10-slim
+
+# Defina o diretório de trabalho dentro do contêiner (ws == workspace)
+WORKDIR /ws
+
+# Instalar dependências do sistema
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    build-essential \
+    libstdc++6 \
+    gcc \
+    g++ \
+    git \
+    cmake \
+    ninja-build \
+    libode-dev \
+    python3-opengl \
+    python3-pyqt5 \
+    python3-pyqtgraph \
+    mesa-utils \
+    xvfb \
+    x11-xserver-utils \
+    libgl1-mesa-glx \
+    libgl1-mesa-dri \
+    libglib2.0-0 \
+    libxext6 \
+    libsm6 \
+    libxrender1 \
+    xauth \
+    && rm -rf /var/lib/apt/lists/*
+
+# Configuração do ambiente X11
+ENV DISPLAY=:0
+ENV QT_X11_NO_MITSHM=1
+ENV PYTHONUNBUFFERED=1
+
+# Copie o arquivo requirements.txt para o contêiner
+COPY requirements.txt .
+
+# Instale as dependências do Python listadas em requirements.txt
+RUN pip install --no-cache-dir setuptools==65.5.0 pip==21 wheel==0.38.0
+RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install torch --index-url https://download.pytorch.org/whl/cu118
+
+# Instalar rSim
+RUN pip install git+https://github.com/Pequi-Mecanico-SSL/rSim.git
+
+# Cria diretório para vídeos
+RUN mkdir videos
+
+# Copia os arquivos de gravação de vídeo
+COPY record_video.py ../usr/local/lib/python3.10/site-packages/gymnasium/wrappers/record_video.py
+COPY video_recorder.py ../usr/local/lib/python3.10/site-packages/gymnasium/wrappers/monitoring/video_recorder.py
+
+# Copia os arquivos do ambiente rsoccer_gym
+RUN mkdir /rsoccer_gym
+COPY rsoccer_gym rsoccer_gym
+
+# Copia apenas os arquivos necessários para a Arena Serra Dourada
+COPY action_dists.py .
+COPY custom_torch_model.py .
+COPY config.yaml .
+COPY render_episode.py .
+COPY sim2real /ws/sim2real
+COPY sim2real.py .
+COPY src /ws/src
+COPY serra_dourada_arena.py .
+COPY config_serra_dourada.yaml .
+
+# Cria diretório para volume (necessário para os checkpoints)
+RUN mkdir /ws/volume
+RUN mkdir /ws/scripts
+
+# Iniciar o contêiner com o bash
+CMD ["/bin/bash"]
