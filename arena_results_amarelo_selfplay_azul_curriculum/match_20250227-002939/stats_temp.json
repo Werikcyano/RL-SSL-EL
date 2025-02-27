@@ -1,0 +1,934 @@
+{
+    "placar": {
+        "azul": 9,
+        "amarelo": 0
+    },
+    "posse_de_bola": {
+        "azul": 0,
+        "amarelo": 0
+    },
+    "chutes": {
+        "azul": 0,
+        "amarelo": 0
+    },
+    "resets": {
+        "total": 1,
+        "lateral": 0,
+        "endline": 1
+    },
+    "tempo_total": 596.4816331863403,
+    "historico": [
+        {
+            "tempo": 10.102999210357666,
+            "placar": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 0,
+                "lateral": 0,
+                "endline": 0
+            }
+        },
+        {
+            "tempo": 20.623886585235596,
+            "placar": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 0,
+                "lateral": 0,
+                "endline": 0
+            }
+        },
+        {
+            "tempo": 30.666887760162354,
+            "placar": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 0,
+                "lateral": 0,
+                "endline": 0
+            }
+        },
+        {
+            "tempo": 40.85637331008911,
+            "placar": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 0,
+                "lateral": 0,
+                "endline": 0
+            }
+        },
+        {
+            "tempo": 51.23361349105835,
+            "placar": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 0,
+                "lateral": 0,
+                "endline": 0
+            }
+        },
+        {
+            "tempo": 61.530232429504395,
+            "placar": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 0,
+                "lateral": 0,
+                "endline": 0
+            }
+        },
+        {
+            "tempo": 71.60680294036865,
+            "placar": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 0,
+                "lateral": 0,
+                "endline": 0
+            }
+        },
+        {
+            "tempo": 82.3190689086914,
+            "placar": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 0,
+                "lateral": 0,
+                "endline": 0
+            }
+        },
+        {
+            "tempo": 92.47491359710693,
+            "placar": {
+                "azul": 1,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 1,
+                "lateral": 0,
+                "endline": 1
+            }
+        },
+        {
+            "tempo": 102.65958309173584,
+            "placar": {
+                "azul": 1,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 1,
+                "lateral": 0,
+                "endline": 1
+            }
+        },
+        {
+            "tempo": 112.6771092414856,
+            "placar": {
+                "azul": 1,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 1,
+                "lateral": 0,
+                "endline": 1
+            }
+        },
+        {
+            "tempo": 122.76448011398315,
+            "placar": {
+                "azul": 1,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 1,
+                "lateral": 0,
+                "endline": 1
+            }
+        },
+        {
+            "tempo": 132.94554948806763,
+            "placar": {
+                "azul": 2,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 0,
+                "lateral": 0,
+                "endline": 0
+            }
+        },
+        {
+            "tempo": 143.13313961029053,
+            "placar": {
+                "azul": 2,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 0,
+                "lateral": 0,
+                "endline": 0
+            }
+        },
+        {
+            "tempo": 153.28458547592163,
+            "placar": {
+                "azul": 2,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 0,
+                "lateral": 0,
+                "endline": 0
+            }
+        },
+        {
+            "tempo": 163.55148553848267,
+            "placar": {
+                "azul": 2,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 0,
+                "lateral": 0,
+                "endline": 0
+            }
+        },
+        {
+            "tempo": 176.81405544281006,
+            "placar": {
+                "azul": 3,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 0,
+                "lateral": 0,
+                "endline": 0
+            }
+        },
+        {
+            "tempo": 186.96006536483765,
+            "placar": {
+                "azul": 3,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 0,
+                "lateral": 0,
+                "endline": 0
+            }
+        },
+        {
+            "tempo": 197.56110906600952,
+            "placar": {
+                "azul": 3,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 0,
+                "lateral": 0,
+                "endline": 0
+            }
+        },
+        {
+            "tempo": 207.76530504226685,
+            "placar": {
+                "azul": 3,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 0,
+                "lateral": 0,
+                "endline": 0
+            }
+        },
+        {
+            "tempo": 218.17470788955688,
+            "placar": {
+                "azul": 3,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 0,
+                "lateral": 0,
+                "endline": 0
+            }
+        },
+        {
+            "tempo": 228.28046083450317,
+            "placar": {
+                "azul": 3,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 0,
+                "lateral": 0,
+                "endline": 0
+            }
+        },
+        {
+            "tempo": 238.57152462005615,
+            "placar": {
+                "azul": 3,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 0,
+                "lateral": 0,
+                "endline": 0
+            }
+        },
+        {
+            "tempo": 248.6519455909729,
+            "placar": {
+                "azul": 3,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 0,
+                "lateral": 0,
+                "endline": 0
+            }
+        },
+        {
+            "tempo": 258.8840365409851,
+            "placar": {
+                "azul": 3,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 0,
+                "lateral": 0,
+                "endline": 0
+            }
+        },
+        {
+            "tempo": 269.18760538101196,
+            "placar": {
+                "azul": 3,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 0,
+                "lateral": 0,
+                "endline": 0
+            }
+        },
+        {
+            "tempo": 279.7456622123718,
+            "placar": {
+                "azul": 3,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 0,
+                "lateral": 0,
+                "endline": 0
+            }
+        },
+        {
+            "tempo": 289.8259401321411,
+            "placar": {
+                "azul": 3,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 0,
+                "lateral": 0,
+                "endline": 0
+            }
+        },
+        {
+            "tempo": 300.0719904899597,
+            "placar": {
+                "azul": 3,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 0,
+                "lateral": 0,
+                "endline": 0
+            }
+        },
+        {
+            "tempo": 310.68639755249023,
+            "placar": {
+                "azul": 3,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 0,
+                "lateral": 0,
+                "endline": 0
+            }
+        },
+        {
+            "tempo": 322.01077938079834,
+            "placar": {
+                "azul": 4,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 3,
+                "lateral": 0,
+                "endline": 3
+            }
+        },
+        {
+            "tempo": 332.2105646133423,
+            "placar": {
+                "azul": 4,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 3,
+                "lateral": 0,
+                "endline": 3
+            }
+        },
+        {
+            "tempo": 342.26057529449463,
+            "placar": {
+                "azul": 4,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 3,
+                "lateral": 0,
+                "endline": 3
+            }
+        },
+        {
+            "tempo": 352.56028175354004,
+            "placar": {
+                "azul": 4,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 3,
+                "lateral": 0,
+                "endline": 3
+            }
+        },
+        {
+            "tempo": 364.79344367980957,
+            "placar": {
+                "azul": 5,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 0,
+                "lateral": 0,
+                "endline": 0
+            }
+        },
+        {
+            "tempo": 375.1965284347534,
+            "placar": {
+                "azul": 5,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 0,
+                "lateral": 0,
+                "endline": 0
+            }
+        },
+        {
+            "tempo": 385.6340527534485,
+            "placar": {
+                "azul": 5,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 0,
+                "lateral": 0,
+                "endline": 0
+            }
+        },
+        {
+            "tempo": 396.0039734840393,
+            "placar": {
+                "azul": 5,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 0,
+                "lateral": 0,
+                "endline": 0
+            }
+        },
+        {
+            "tempo": 406.1035394668579,
+            "placar": {
+                "azul": 6,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 0,
+                "lateral": 0,
+                "endline": 0
+            }
+        },
+        {
+            "tempo": 416.5323257446289,
+            "placar": {
+                "azul": 6,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 0,
+                "lateral": 0,
+                "endline": 0
+            }
+        },
+        {
+            "tempo": 427.05771923065186,
+            "placar": {
+                "azul": 6,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 0,
+                "lateral": 0,
+                "endline": 0
+            }
+        },
+        {
+            "tempo": 437.13200092315674,
+            "placar": {
+                "azul": 6,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 0,
+                "lateral": 0,
+                "endline": 0
+            }
+        },
+        {
+            "tempo": 447.76889085769653,
+            "placar": {
+                "azul": 7,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 0,
+                "lateral": 0,
+                "endline": 0
+            }
+        },
+        {
+            "tempo": 457.9944372177124,
+            "placar": {
+                "azul": 7,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 0,
+                "lateral": 0,
+                "endline": 0
+            }
+        },
+        {
+            "tempo": 468.0499076843262,
+            "placar": {
+                "azul": 7,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 0,
+                "lateral": 0,
+                "endline": 0
+            }
+        },
+        {
+            "tempo": 478.3729314804077,
+            "placar": {
+                "azul": 7,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 0,
+                "lateral": 0,
+                "endline": 0
+            }
+        },
+        {
+            "tempo": 489.12718296051025,
+            "placar": {
+                "azul": 8,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 0,
+                "lateral": 0,
+                "endline": 0
+            }
+        },
+        {
+            "tempo": 499.2477297782898,
+            "placar": {
+                "azul": 8,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 0,
+                "lateral": 0,
+                "endline": 0
+            }
+        },
+        {
+            "tempo": 509.2972755432129,
+            "placar": {
+                "azul": 8,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 0,
+                "lateral": 0,
+                "endline": 0
+            }
+        },
+        {
+            "tempo": 519.4144368171692,
+            "placar": {
+                "azul": 8,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 0,
+                "lateral": 0,
+                "endline": 0
+            }
+        },
+        {
+            "tempo": 529.8482656478882,
+            "placar": {
+                "azul": 8,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 0,
+                "lateral": 0,
+                "endline": 0
+            }
+        },
+        {
+            "tempo": 540.1794075965881,
+            "placar": {
+                "azul": 8,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 0,
+                "lateral": 0,
+                "endline": 0
+            }
+        },
+        {
+            "tempo": 550.4127025604248,
+            "placar": {
+                "azul": 8,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 0,
+                "lateral": 0,
+                "endline": 0
+            }
+        },
+        {
+            "tempo": 560.7438206672668,
+            "placar": {
+                "azul": 8,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 0,
+                "lateral": 0,
+                "endline": 0
+            }
+        },
+        {
+            "tempo": 570.8370804786682,
+            "placar": {
+                "azul": 8,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 0,
+                "lateral": 0,
+                "endline": 0
+            }
+        },
+        {
+            "tempo": 581.2585830688477,
+            "placar": {
+                "azul": 8,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 0,
+                "lateral": 0,
+                "endline": 0
+            }
+        },
+        {
+            "tempo": 596.4816331863403,
+            "placar": {
+                "azul": 9,
+                "amarelo": 0
+            },
+            "posse_de_bola": {
+                "azul": 0,
+                "amarelo": 0
+            },
+            "resets": {
+                "total": 1,
+                "lateral": 0,
+                "endline": 1
+            }
+        }
+    ]
+}

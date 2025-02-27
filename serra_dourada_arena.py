@@ -48,8 +48,12 @@ class SerraDouradaArena:
         self.yellow_agent = self._load_agent("yellow")
         
         # Inicializa contadores
-        self.blue_score = 0
-        self.yellow_score = 0
+        self.blue_score = 0  # Score do ambiente
+        self.yellow_score = 0  # Score do ambiente
+        self.real_blue_score = 0  # Contador independente
+        self.real_yellow_score = 0  # Contador independente
+        self.last_blue_score = 0  # Para detectar mudanças
+        self.last_yellow_score = 0  # Para detectar mudanças
         self.match_time = self.config["arena"]["match_time"]
         self.speed_up = self.config["arena"]["speed_up"]
         
@@ -79,48 +83,62 @@ class SerraDouradaArena:
         return agent
     
     def _process_observation(self, obs):
-        """Processa as observações para garantir que estejam no dispositivo correto"""
-        if isinstance(obs, dict):
-            return {k: self._process_observation(v) for k, v in obs.items()}
-        elif isinstance(obs, np.ndarray):
-            return torch.FloatTensor(obs).to(self.device)
-        return obs
+        """Processa as observações seguindo o mesmo padrão do treinamento"""
+        if not isinstance(obs, dict):
+            return obs
+        
+        processed_obs = {}
+        for agent_id, agent_obs in obs.items():
+            # Garante que a observação seja um array numpy
+            if isinstance(agent_obs, torch.Tensor):
+                agent_obs = agent_obs.cpu().numpy()
+            elif not isinstance(agent_obs, np.ndarray):
+                agent_obs = np.array(agent_obs)
+            
+            processed_obs[agent_id] = agent_obs
+        
+        return processed_obs
     
     def _get_actions(self, obs, team="blue"):
-        """Obtém ações para todos os robôs de um time"""
+        """Obtém ações para todos os robôs de um time usando o mesmo processamento do treinamento"""
         agent = self.blue_agent if team == "blue" else self.yellow_agent
         num_robots = self.num_blue if team == "blue" else self.num_yellow
         
-        actions = {}
-        for i in range(num_robots):
-            agent_id = f"{team}_{i}"
-            if agent_id in obs:
-                # Converte o tensor para CPU e depois para numpy antes de passar para o agente
-                if isinstance(obs[agent_id], torch.Tensor):
-                    obs_np = obs[agent_id].cpu().numpy()
-                else:
-                    obs_np = obs[agent_id]
-                
-                # Obtém a ação do agente
-                action = agent.compute_single_action(obs_np)
-                if isinstance(action, tuple):
-                    action = action[0]  # Pega apenas a ação, descarta extras
-                
-                # Garante que a ação seja um array numpy com 4 valores
-                if not isinstance(action, np.ndarray):
-                    action = np.array(action)
-                
-                # Aplica o sinal correto para cada time
-                if team == "yellow":
-                    action = np.array([-action[0], action[1], -action[2], action[3]])
-                
-                print(f"Ações para {agent_id}: {action} (tipo: {type(action)})")
-                actions[agent_id] = action
-            else:
-                # Se não houver observação para este robô, use uma ação nula
-                actions[agent_id] = np.zeros(4)  # 4 é o tamanho da ação (vx, vy, w, kick)
+        # Prepara as observações por time
+        team_obs = {f"{team}_{i}": obs[f"{team}_{i}"] for i in range(num_robots) if f"{team}_{i}" in obs}
         
-        return actions
+        # Computa ações usando o método do agente (igual ao treinamento)
+        if team_obs:
+            actions = agent.compute_actions(team_obs, policy_id=f'policy_{team}', full_fetch=False)
+            
+            # Se as ações vierem em uma tupla, pega apenas o primeiro elemento (as ações)
+            if isinstance(actions, tuple):
+                actions = actions[0]
+            
+            # Processa as ações para cada robô
+            processed_actions = {}
+            for i in range(num_robots):
+                agent_id = f"{team}_{i}"
+                if agent_id in actions:
+                    action = actions[agent_id]
+                    
+                    # Garante que a ação seja um array numpy
+                    if not isinstance(action, np.ndarray):
+                        action = np.array(action)
+                    
+                    # Aplica o sinal correto para o time amarelo
+                    if team == "yellow":
+                        action = np.array([-action[0], action[1], -action[2], action[3]])
+                    
+                    processed_actions[agent_id] = action
+                else:
+                    # Se não houver ação para este robô, use ação nula
+                    processed_actions[agent_id] = np.zeros(4)
+            
+            return processed_actions
+        
+        # Se não houver observações, retorna ações nulas para todos os robôs
+        return {f"{team}_{i}": np.zeros(4) for i in range(num_robots)}
     
     def run_match(self):
         print(f"\n=== Iniciando partida na Arena Serra Dourada ===")
@@ -133,6 +151,12 @@ class SerraDouradaArena:
         elapsed_time = 0
         last_save_time = 0  # Tempo da última vez que salvamos as estatísticas
         save_interval = 10  # Intervalo em segundos para salvar estatísticas
+        
+        # Reset dos contadores
+        self.real_blue_score = 0
+        self.real_yellow_score = 0
+        self.last_blue_score = 0
+        self.last_yellow_score = 0
         
         # Cria diretório para a partida atual
         timestamp = time.strftime("%Y%m%d-%H%M%S")
@@ -167,24 +191,39 @@ class SerraDouradaArena:
             self.env.render()
             
             # Atualiza estatísticas se houver informações disponíveis
-            if "blue_0" in infos and "score" in infos["blue_0"]:
-                self.blue_score = infos["blue_0"]["score"]["blue"]
-                self.yellow_score = infos["blue_0"]["score"]["yellow"]
-                match_stats['placar']['azul'] = self.blue_score
-                match_stats['placar']['amarelo'] = self.yellow_score
+            if "blue_0" in infos:
+                info = infos["blue_0"]
+                
+                # Verifica se houve gol (quando o episódio termina)
+                if dones.get("__all__", False):
+                    # Verifica a posição da bola para determinar qual time marcou
+                    ball_x = self.env.frame.ball.x
+                    field_half_length = self.env.field.length/2
+                    
+                    if abs(ball_x) >= field_half_length:  # Confirma que é um gol
+                        if ball_x > 0:  # Gol do time azul
+                            self.real_blue_score += 1
+                            print(f"\nGOL DO TIME AZUL! Placar: Azul {self.real_blue_score} x {self.real_yellow_score} Amarelo")
+                        else:  # Gol do time amarelo
+                            self.real_yellow_score += 1
+                            print(f"\nGOL DO TIME AMARELO! Placar: Azul {self.real_blue_score} x {self.real_yellow_score} Amarelo")
+                else:
+                    # Atualização normal do tempo
+                    print(f"\rTempo: {elapsed_time/60:.1f} min | "
+                          f"Placar: Azul {self.real_blue_score} x {self.real_yellow_score} Amarelo", end="")
+                
+                # Atualiza as estatísticas com o placar real
+                match_stats['placar']['azul'] = self.real_blue_score
+                match_stats['placar']['amarelo'] = self.real_yellow_score
                 
                 # Atualiza métricas de continuidade se disponíveis
-                if "continuity_metrics" in infos["blue_0"]:
-                    metrics = infos["blue_0"]["continuity_metrics"]
+                if "continuity_metrics" in info:
+                    metrics = info["continuity_metrics"]
                     match_stats['resets']['total'] = metrics.get('total_resets', 0)
                     match_stats['resets']['lateral'] = metrics.get('lateral_resets', 0)
                     match_stats['resets']['endline'] = metrics.get('endline_resets', 0)
                     match_stats['posse_de_bola']['azul'] = metrics.get('ball_possession_blue', 0)
                     match_stats['posse_de_bola']['amarelo'] = metrics.get('ball_possession_yellow', 0)
-                
-                # Mostra placar quando há alteração
-                print(f"\rPlacar: Azul {self.blue_score} x {self.yellow_score} Amarelo | "
-                      f"Tempo: {elapsed_time/60:.1f} min", end="")
             
             # Atualiza o tempo
             elapsed_time = (time.time() - start_time) * self.speed_up
@@ -195,7 +234,7 @@ class SerraDouradaArena:
                 # Adiciona snapshot atual ao histórico
                 snapshot = {
                     'tempo': elapsed_time,
-                    'placar': match_stats['placar'].copy(),
+                    'placar': {'azul': self.real_blue_score, 'amarelo': self.real_yellow_score},
                     'posse_de_bola': match_stats['posse_de_bola'].copy(),
                     'resets': match_stats['resets'].copy()
                 }
@@ -214,9 +253,9 @@ class SerraDouradaArena:
         
         # Resultado final
         print("\n\n=== Fim de Jogo ===")
-        print(f"Placar Final: Azul {self.blue_score} x {self.yellow_score} Amarelo")
+        print(f"Placar Final: Azul {self.real_blue_score} x {self.real_yellow_score} Amarelo")
         
-        winner = "Azul" if self.blue_score > self.yellow_score else "Amarelo" if self.yellow_score > self.blue_score else "Empate"
+        winner = "Azul" if self.real_blue_score > self.real_yellow_score else "Amarelo" if self.real_yellow_score > self.real_blue_score else "Empate"
         
         # Adiciona configurações e resultado final
         match_stats['vencedor'] = winner
@@ -253,6 +292,10 @@ class SerraDouradaArena:
             self.env.reset()
             self.blue_score = 0
             self.yellow_score = 0
+            self.real_blue_score = 0
+            self.real_yellow_score = 0
+            self.last_blue_score = 0
+            self.last_yellow_score = 0
         
         # Estatísticas do torneio
         blue_wins = sum(1 for r in results if r == "Azul")
