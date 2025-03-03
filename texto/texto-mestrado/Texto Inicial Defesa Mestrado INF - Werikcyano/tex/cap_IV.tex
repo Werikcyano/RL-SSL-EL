@@ -43,21 +43,31 @@ No caso específico do curriculum learning, foram configurados dois estágios pr
 
 \subsection{Tempo de Treinamento}
 
-O tempo total de treinamento para cada experimento foi estabelecido em 160 milhões de timesteps, equivalente a aproximadamente 222 horas (9,25 dias) de treinamento contínuo na configuração de hardware utilizada. Este valor foi definido com base em experimentos preliminares que demonstraram ser suficiente para observar convergência nas políticas treinadas.
+O tempo total de treinamento para cada experimento foi medido em termos de horas de execução na configuração de hardware utilizada. A Figura \ref{fig:tempo_treinamento} apresenta uma comparação dos tempos de treinamento para as diferentes abordagens implementadas.
 
-A distribuição do tempo total de treinamento seguiu esta configuração:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{fig/graficos_trabalho/graficos_experimentos/graficos_tempo_treino/tempo_treinamento.png}
+    \caption{Comparação do tempo total de treinamento em horas para cada abordagem experimental}
+    \label{fig:tempo_treinamento}
+\end{figure}
+
+A análise dos tempos de treinamento revela diferenças significativas entre as abordagens:
 
 \begin{itemize}
-    \item \textbf{Abordagem self-play tradicional (baseline)}: 160 milhões de timesteps (100\% do tempo no modo competitivo)
-    \item \textbf{Abordagem com curriculum learning}: 
-    \begin{itemize}
-        \item 15 milhões de timesteps para o Curriculum Task 0 (9,38\%)
-        \item 15 milhões de timesteps para o Curriculum Task 1 (9,38\%)
-        \item 130 milhões de timesteps para self-play após curriculum (81,24\%)
-    \end{itemize}
+    \item \textbf{Apenas curriculum (tasks 0 e 1)}: Aproximadamente 0,4 horas (24 minutos)
+    \item \textbf{Curriculum + Self-play}: Aproximadamente 7,4 horas
+    \item \textbf{Full Self-play (lado amarelo)}: Aproximadamente 12,1 horas
+    \item \textbf{Full Self-play (lado azul)}: Aproximadamente 12,4 horas
 \end{itemize}
 
-Esta distribuição de tempo foi projetada para garantir uma comparação justa entre as abordagens, permitindo que ambas tivessem o mesmo orçamento computacional total.
+Estas diferenças nos tempos de treinamento refletem a complexidade e a natureza de cada abordagem. O treinamento exclusivo com curriculum tasks é significativamente mais rápido, pois envolve ambientes mais simples e objetivos bem definidos. A abordagem combinada (curriculum + self-play) apresenta um tempo de treinamento intermediário, demonstrando uma vantagem de eficiência em relação ao self-play tradicional.
+
+É interessante notar que a abordagem de full self-play para ambos os lados (azul e amarelo) exige aproximadamente o mesmo tempo de treinamento, com uma pequena variação que pode ser atribuída a flutuações nas condições de execução. No entanto, ambas requerem aproximadamente 66\% mais tempo que a abordagem combinada (curriculum + self-play).
+
+Esta é uma observação particularmente relevante do ponto de vista prático, pois indica que além de proporcionar resultados superiores (conforme demonstrado nas seções anteriores), a abordagem combinada também oferece uma vantagem significativa em termos de eficiência computacional, reduzindo o tempo necessário para desenvolver agentes com desempenho competitivo.
+
+A maior eficiência da abordagem combinada pode ser atribuída ao fato de que as habilidades fundamentais desenvolvidas durante o curriculum permitem que o agente aproveite melhor a fase de self-play, convergindo mais rapidamente para políticas efetivas.
 
 \section{Análise Comparativa}
 \label{sec:analise_comparativa}
@@ -81,18 +91,38 @@ Nota-se também que o modelo proposto apresenta menor variabilidade na curva de 
 
 \subsection{Desempenho Ofensivo}
 
-O desempenho ofensivo dos agentes foi avaliado principalmente através da análise da média de gols marcados por episódio. A Figura \ref{fig:goals_blue} apresenta a evolução desta métrica ao longo do treinamento.
+O desempenho ofensivo dos agentes foi avaliado principalmente através da análise da média de gols marcados por episódio. A Figura \ref{fig:goals_blue_comparison} apresenta a evolução desta métrica ao longo do treinamento para ambas as abordagens.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{fig/graficos_trabalho/graficos_experimentos/geral/custom_metricsgoals_blue_mean.png}
-    \caption{Evolução da média de gols marcados pelo time azul por episódio}
-    \label{fig:goals_blue}
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{fig/media_gols_full_selfplay.png}
+        \caption{Full Selfplay}
+        \label{fig:goals_full_selfplay}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{fig/media_gols_selfplay_apos_curriculum.png}
+        \caption{Selfplay após Curriculum}
+        \label{fig:goals_selfplay_curriculum}
+    \end{subfigure}
+    \caption{Comparação da evolução da média de gols marcados pelo time azul por episódio entre as abordagens Full Selfplay e Selfplay após Curriculum}
+    \label{fig:goals_blue_comparison}
 \end{figure}
 
-Ambas as abordagens apresentam uma progressão crescente na capacidade de marcar gols, com o baseline atingindo uma média final de aproximadamente 2,1 gols por episódio, enquanto o modelo proposto alcançou 1,9 gols por episódio. Embora o baseline apresente uma leve superioridade nesta métrica específica, a diferença não é estatisticamente significativa (p = 0,183).
+A análise comparativa dos gráficos revela padrões interessantes na evolução da capacidade ofensiva dos agentes. Ambas as abordagens apresentam uma progressão crescente na capacidade de marcar gols, atingindo valores próximos a 1 gol por episódio. No entanto, observam-se diferenças significativas no processo de aprendizado:
 
-É importante observar que, apesar da ligeira diferença na média de gols, o modelo proposto demonstra maior consistência, com menor variação entre episódios, o que pode ser interpretado como um comportamento mais estável e previsível.
+\begin{itemize}
+    \item \textbf{Convergência}: Embora ambas abordagens atinjam valores similares ao final do treinamento, o Selfplay após Curriculum demonstra uma convergência mais estável, com menos oscilações nas fases finais.
+    
+    \item \textbf{Fase inicial}: O Full Selfplay parte do zero e desenvolve gradualmente sua capacidade ofensiva, enquanto o Selfplay após Curriculum já inicia em um patamar elevado (aproximadamente 0,93 gols por episódio), beneficiando-se das habilidades adquiridas durante a fase de curriculum.
+    
+    \item \textbf{Estabilidade}: O Selfplay após Curriculum apresenta oscilações de menor amplitude, principalmente após a iteração 200, indicando uma política mais estável e robusta para a tarefa ofensiva.
+\end{itemize}
+
+Esta comparação evidencia uma vantagem significativa da abordagem proposta: ao iniciar o self-play com agentes já treinados em tarefas fundamentais através do curriculum, obtém-se uma aceleração substancial no desenvolvimento de capacidades ofensivas eficazes. Esta característica é particularmente valiosa em cenários com restrições de tempo computacional, onde a convergência mais rápida para políticas de alta qualidade representa uma vantagem considerável.
 
 \subsection{Eficiência e Continuidade do Jogo}
 
