@@ -4,7 +4,7 @@
 \section{Ambiente de Simulação}
 \label{sec:ambiente_simulacao}
 
-O ambiente de simulação utilizado neste trabalho é o RL-SSL-EL (Reinforcement Learning - Small Size League - Easy Learning), uma plataforma de simulação específica para o futebol de robôs na categoria \textit{Small Size League}. Esta plataforma foi projetada para simplificar o processo de aprendizado por reforço aplicado ao futebol de robôs, oferecendo uma abstração adequada dos desafios físicos e técnicos inerentes a este domínio.
+O ambiente de simulação utilizado neste trabalho é o RL-SSL-EL\footnote{\url{https://github.com/Werikcyano/RL-SSL-EL}} na versão de implementação da equipe de robótica Pequi Mecânico. RL-SSL-EL é uma plataforma de simulação específica para o futebol de robôs na categoria \textit{Small Size League - Entry League (SSL-EL)}. Esta plataforma foi projetada para simplificar o processo de aprendizado por reforço aplicado ao futebol de robôs, oferecendo uma abstração adequada dos desafios físicos e técnicos básicos que são inerentes a este domínio.
 
 \subsection{Características e Limitações}
 
@@ -84,7 +84,7 @@ O pipeline de treinamento implementado neste trabalho integra o curriculum learn
     \item \textbf{Refinamento com Self-play}: Os agentes continuam o treinamento no ambiente competitivo, com atualizações periódicas da política dos oponentes quando alcançam níveis de desempenho predefinidos.
 \end{enumerate}
 
-A implementação deste pipeline é realizada através do arquivo \texttt{rllib\_multiagent.py}, que configura os ambientes, modelos e políticas de acordo com o modo de treinamento selecionado. A transição entre as fases é gerenciada por parâmetros de configuração, permitindo ajustes flexíveis no processo de treinamento.
+A implementação deste processo de treinamento é feita através de um arquivo central que organiza e coordena todas as etapas necessárias. Este arquivo é responsável por configurar o ambiente de treinamento e definir como os robôs devem se comportar em cada fase. A mudança entre as diferentes fases do treinamento pode ser facilmente ajustada através de configurações específicas, permitindo maior flexibilidade durante todo o processo.
 
 \section{Implementação do Curriculum Learning}
 \label{sec:implementacao_cl}
@@ -106,7 +106,7 @@ O fluxo do processo inicia com a definição dos estágios e seus respectivos pa
 
 \subsection{Estrutura dos Estágios}
 
-O curriculum implementado neste trabalho é estruturado em três estágios principais, cada um representando um nível distinto de complexidade no aprendizado do futebol de robôs. Estes estágios são designados como tarefas (tasks) e numerados de 0 a 2, com cada tarefa apresentando configurações e objetivos específicos.
+O curriculum implementado neste trabalho é estruturado em três estágios principais, cada um representando um nível distinto de complexidade no aprendizado do futebol de robôs. Estes estágios são designados como tarefas (tasks) e numerados de 0 a 1, com cada tarefa apresentando configurações e objetivos específicos.
 
 \subsubsection{Estágio 1 (Task 0): Fundamentos Básicos}
 \label{subsubsec:estagio1}
@@ -117,7 +117,7 @@ O Estágio 1 representa o nível mais básico do curriculum, focado no desenvolv
 
 No Estágio 1, o ambiente é configurado com as seguintes características:
 \begin{itemize}
-    \item Três robôs da equipe azul, posicionados em locais predefinidos
+    \item Um robô da equipe azul, posicionado em local predefinido
     \item Ausência de robôs oponentes (equipe amarela)
     \item Bola posicionada no centro do campo
     \item Limite de 300 passos por episódio
@@ -261,8 +261,7 @@ Para avaliar a eficácia da integração entre curriculum learning e self-play, 
     \item Taxa de vitória da equipe azul contra a equipe amarela
     \item Diferença média de pontuação entre as equipes
     \item Tempo médio dos episódios
-    \item Número de gols marcados por episódio
-    \item Métricas de continuidade do jogo (resets, posse de bola)
+    \item Métricas de continuidade do jogo (resets)
 \end{itemize}
 
 Estas métricas permitem uma avaliação objetiva do impacto do curriculum learning sobre o desempenho dos agentes no ambiente competitivo, fornecendo insights sobre os benefícios potenciais desta abordagem em comparação com o self-play puro.
@@ -288,44 +287,44 @@ As principais estruturas de dados utilizadas na implementação incluem:
 
 Estas estruturas são implementadas utilizando classes e dicionários do Python, com suporte para serialização e desserialização através da biblioteca YAML, facilitando a configuração e o ajuste dos parâmetros do treinamento.
 
-\subsubsection{Parâmetros de Configuração}
+%\subsubsection{Parâmetros de Configuração}
 
-Os parâmetros de configuração do curriculum são definidos no arquivo \texttt{config.yaml}, utilizando uma estrutura hierárquica que permite especificar detalhadamente as características de cada estágio. Os principais parâmetros incluem:
+%Os parâmetros de configuração do curriculum são definidos no arquivo \texttt{config.yaml}, utilizando uma estrutura hierárquica que permite especificar detalhadamente as características de cada estágio. Os principais parâmetros incluem:
 
-\begin{itemize}
-    \item \texttt{enabled}: Flag para ativar ou desativar o curriculum learning
-    \item \texttt{initial\_task}: Estágio inicial do curriculum (0, 1, ou 2)
-    \item \texttt{promotion\_threshold}: Taxa de sucesso necessária para avançar para o próximo estágio (padrão: 0.8)
-    \item \texttt{evaluation\_window}: Número de episódios para avaliar o desempenho (padrão: 100)
-    \item \texttt{tasks}: Dicionário contendo as configurações específicas de cada estágio:
-    \begin{itemize}
-        \item \texttt{max\_steps}: Limite de passos por episódio
-        \item \texttt{num\_agents\_blue} e \texttt{num\_agents\_yellow}: Número de agentes em cada equipe
-        \item \texttt{init\_pos}: Posições iniciais dos robôs e da bola
-        \item \texttt{reward\_weights}: Pesos das diferentes componentes da recompensa
-        \item \texttt{success\_criteria}: Critérios para considerar um episódio bem-sucedido
-    \end{itemize}
-\end{itemize}
+%\begin{itemize}
+%    \item \texttt{enabled}: Flag para ativar ou desativar o curriculum learning
+%    \item \texttt{initial\_task}: Estágio inicial do curriculum (0, 1, ou 2)
+%    \item \texttt{promotion\_threshold}: Taxa de sucesso necessária para avançar para o próximo estágio (padrão: 0.8)
+%    \item \texttt{evaluation\_window}: Número de episódios para avaliar o desempenho (padrão: 100)
+%    \item \texttt{tasks}: Dicionário contendo as configurações específicas de cada estágio:
+%    \begin{itemize}
+%        \item \texttt{max\_steps}: Limite de passos por episódio
+%        \item \texttt{num\_agents\_blue} e \texttt{num\_agents\_yellow}: Número de agentes em cada equipe
+%        \item \texttt{init\_pos}: Posições iniciais dos robôs e da bola
+%        \item \texttt{reward\_weights}: Pesos das diferentes componentes da recompensa
+%        \item \texttt{success\_criteria}: Critérios para considerar um episódio bem-sucedido
+%    \end{itemize}
+%\end{itemize}
 
-Esta estrutura de configuração oferece grande flexibilidade para ajustar o curriculum de acordo com necessidades específicas, permitindo experimentação com diferentes progressões de aprendizado.
+%Esta estrutura de configuração oferece grande flexibilidade para ajustar o curriculum de acordo com necessidades específicas, permitindo experimentação com diferentes progressões de aprendizado.
 
 \section{Métricas de Avaliação}
 \label{sec:metricas_avaliacao}
 
 Para avaliar o desempenho dos agentes e comparar a eficácia das abordagens de treinamento, foi desenvolvido um conjunto abrangente de métricas que captura diferentes aspectos do comportamento dos agentes. Estas métricas são coletadas durante o treinamento e utilizadas para análises comparativas.
 
-\subsection{Número de Gols}
+%\subsection{Número de Gols}
 
-O número de gols marcados representa uma das métricas mais diretas de desempenho no futebol de robôs. Esta métrica é registrada tanto por episódio quanto de forma acumulada ao longo do treinamento, permitindo avaliar a evolução da capacidade ofensiva dos agentes. As submétrias relacionadas incluem:
+%O número de gols marcados representa uma das métricas mais diretas de desempenho no futebol de robôs. Esta métrica é registrada tanto por episódio quanto de forma acumulada ao longo do treinamento, permitindo avaliar a evolução da capacidade ofensiva dos agentes. As submétrias relacionadas incluem:
 
-\begin{itemize}
-    \item Gols marcados por episódio
-    \item Gols sofridos por episódio
-    \item Percentual de episódios com pelo menos um gol
-    \item Diferença líquida de gols
-\end{itemize}
+%\begin{itemize}
+%    \item Gols marcados por episódio
+%    \item Gols sofridos por episódio
+%    \item Percentual de episódios com pelo menos um gol
+%    \item Diferença líquida de gols
+%\end{itemize}
 
-Estas métricas fornecem insights sobre a eficácia ofensiva e defensiva dos agentes, aspectos fundamentais do desempenho no futebol de robôs.
+%Estas métricas fornecem insights sobre a eficácia ofensiva e defensiva dos agentes, aspectos fundamentais do desempenho no futebol de robôs.
 
 \subsection{Tempo dos Episódios}
 
@@ -335,7 +334,6 @@ O tempo dos episódios é uma métrica importante para avaliar a eficiência do 
     \item Duração média dos episódios (em passos)
     \item Evolução da duração ao longo do treinamento
     \item Distribuição dos tempos de episódio
-    \item Correlação entre duração e resultado (gols)
 \end{itemize}
 
 Um aspecto particularmente relevante desta métrica é sua relação com a progressão do treinamento. Tipicamente, espera-se que episódios mais curtos indiquem agentes mais eficientes na realização de seus objetivos.
@@ -353,18 +351,18 @@ As métricas de continuidade foram desenvolvidas especificamente para este traba
 
 Estas métricas são particularmente importantes para avaliar a qualidade do jogo produzido pelos agentes, uma vez que um jogo com menos interrupções tende a ser mais dinâmico e interessante.
 
-\subsection{Posse de Bola}
+%\subsection{Posse de Bola}
 
-A posse de bola é uma métrica táctica importante que reflete a capacidade dos agentes de controlar o jogo. Para esta análise, são considerados os seguintes aspectos:
+%A posse de bola é uma métrica táctica importante que reflete a capacidade dos agentes de controlar o jogo. Para esta análise, são considerados os seguintes aspectos:
 
-\begin{itemize}
-    \item Percentual de posse de bola por equipe
-    \item Duração média das sequências de posse
-    \item Correlação entre posse e resultados (gols)
-    \item Distribuição espacial da posse no campo
-\end{itemize}
+%\begin{itemize}
+%    \item Percentual de posse de bola por equipe
+%    \item Duração média das sequências de posse
+%    \item Correlação entre posse e resultados (gols)
+%    \item Distribuição espacial da posse no campo
+%\end{itemize}
 
-A análise desta métrica permite compreender as estratégias emergentes dos agentes e sua eficácia em diferentes contextos do jogo.
+%A análise desta métrica permite compreender as estratégias emergentes dos agentes e sua eficácia em diferentes contextos do jogo.
 
 \subsection{Recompensa Acumulada}
 
@@ -373,8 +371,30 @@ A recompensa acumulada representa a métrica fundamental do aprendizado por refo
 \begin{itemize}
     \item Recompensa média por episódio
     \item Evolução da recompensa ao longo do treinamento
-    \item Decomposição da recompensa em seus componentes
-    \item Variância da recompensa entre episódios
 \end{itemize}
 
 A análise da recompensa acumulada permite avaliar a convergência do treinamento e comparar diretamente diferentes abordagens em termos de sua eficácia em otimizar o comportamento dos agentes.
+
+\subsection{Avaliação em Torneio}
+
+Para uma avaliação mais abrangente e objetiva do desempenho dos modelos, será realizado um torneio competitivo entre o modelo baseline (treinado com self-play padrão) e o modelo proposto (incorporando curriculum learning). Este torneio permitirá:
+
+\begin{itemize}
+    \item Comparação direta do desempenho em condições controladas
+    \item Avaliação da robustez das estratégias aprendidas
+    \item Análise da consistência dos resultados em múltiplas partidas
+    \item Identificação de possíveis vantagens táticas específicas
+\end{itemize}
+
+O formato do torneio será estruturado para garantir uma avaliação estatisticamente significativa, com múltiplas partidas entre os modelos. Os resultados deste torneio fornecerão evidências importantes sobre a eficácia prática das modificações propostas no processo de treinamento.
+
+
+Além das métricas específicas descritas anteriormente, também serão utilizadas algumas métricas padrão do aprendizado por reforço:
+
+\begin{itemize}
+    \item Entropy - Mede a aleatoriedade das ações selecionadas pela política, indicando o nível de exploração do agente
+    \item Policy Loss - Quantifica o erro na política atual em relação à política ótima estimada
+    \item VF Explained - Indica quanto da variância nas recompensas é explicada pelo modelo de valor, medindo a qualidade das estimativas do valor
+\end{itemize}
+
+
