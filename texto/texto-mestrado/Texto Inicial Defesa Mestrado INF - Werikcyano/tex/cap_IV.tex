@@ -21,7 +21,7 @@ A utilização de hardware especializado foi fundamental para viabilizar o trein
 
 \subsection{Parâmetros de Treinamento}
 
-Os parâmetros de treinamento foram cuidadosamente selecionados para garantir um equilíbrio entre eficiência computacional e qualidade do aprendizado. Os principais parâmetros utilizados incluem:
+Os parâmetros de treinamento foram cuidadosamente selecionados para garantir um equilíbrio entre eficiência computacional e qualidade do aprendizado, tentando mater o mais próximo possível do padrão utilizado no artigo original. Os principais parâmetros utilizados incluem:
 
 \begin{itemize}
     \item \textbf{Algoritmo}: Proximal Policy Optimization (PPO)
@@ -34,7 +34,7 @@ Os parâmetros de treinamento foram cuidadosamente selecionados para garantir um
     \item \textbf{Ambientes por workers}: 2
 \end{itemize}
 
-No caso específico do curriculum learning, foram configurados três estágios progressivos, com parâmetros específicos para cada um, conforme detalhado no Capítulo 3. A taxa de promoção entre estágios foi estabelecida em 80\% de sucesso em uma janela de 100 episódios.
+No caso específico do curriculum learning, foram configurados dois estágios progressivos, com parâmetros específicos para cada um, conforme detalhado no Capítulo 3. A taxa de promoção entre estágios foi estabelecida em 80\% de sucesso em uma janela de 100 episódios.
 
 \subsection{Tempo de Treinamento}
 
@@ -80,7 +80,7 @@ O modelo proposto, treinado com a combinação de curriculum learning seguido po
 
 O modelo proposto demonstrou maior estabilidade na manutenção da posse de bola e menos resets de jogo, indicando um estilo de jogo mais controlado. Embora tenha apresentado uma taxa de gols ligeiramente inferior ao baseline, a redução no número de resets sugere um jogo mais fluido e tecnicamente refinado.
 
-\subsection{Confronto Direto}
+\subsection{Confronto Direto: torneio com 500 partidas}
 
 Para uma comparação direta entre as abordagens, foram realizados torneios controlados utilizando o sistema Arena Serra Dourada, implementado especificamente para este trabalho. Este sistema permitiu a realização de partidas completas entre agentes treinados por diferentes métodos.
 

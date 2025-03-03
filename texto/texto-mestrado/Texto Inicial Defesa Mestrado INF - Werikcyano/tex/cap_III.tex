@@ -173,30 +173,30 @@ A progressão para o próximo estágio requer habilidades táticas mais avançad
     \item O sucesso neste estágio é definido como marcar pelo menos um gol durante o episódio
 \end{itemize}
 
-\subsubsection{Estágio 3 (Task 2): Jogo Completo com Oponentes Ativos}
-\label{subsubsec:estagio3}
+%\subsubsection{Estágio 3 (Task 2): Jogo Completo com Oponentes Ativos}
+%\label{subsubsec:estagio3}
 
-O Estágio 3 representa o nível mais avançado do curriculum, introduzindo múltiplos oponentes ativos e aproximando-se das condições reais de jogo. Neste estágio, os agentes precisam demonstrar capacidades táticas complexas e coordenação de equipe.
+%O Estágio 3 representa o nível mais avançado do curriculum, introduzindo múltiplos oponentes ativos e aproximando-se das condições reais de jogo. Neste estágio, os agentes precisam demonstrar capacidades táticas complexas e coordenação de equipe.
 
-\paragraph{Configuração do Ambiente}
+%\paragraph{Configuração do Ambiente}
 
-O ambiente neste estágio apresenta complexidade máxima:
-\begin{itemize}
-    \item Três robôs da equipe azul, com posicionamento tático
-    \item Três robôs oponentes (equipe amarela), distribuídos estrategicamente pelo campo
-    \item Posições iniciais configuradas para simular situações táticas realistas
-    \item Limite de 500 passos por episódio
-\end{itemize}
+%O ambiente neste estágio apresenta complexidade máxima:
+%\begin{itemize}
+%    \item Três robôs da equipe azul, com posicionamento tático
+%    \item Três robôs oponentes (equipe amarela), distribuídos estrategicamente pelo campo
+%    \item Posições iniciais configuradas para simular situações táticas realistas
+%    \item Limite de 500 passos por episódio
+%\end{itemize}
 
-\paragraph{Sistema de Recompensas}
+%\paragraph{Sistema de Recompensas}
 
-O sistema de recompensas é refinado para valorizar aspectos estratégicos do jogo:
-\begin{itemize}
-    \item Manutenção das recompensas por proximidade à bola e ao gol
-    \item Valorização adicional de comportamentos defensivos quando necessário
-    \item Penalizações por violações das regras (saída da bola, faltas)
-    \item Recompensas por posicionamento tático eficiente
-\end{itemize}
+%O sistema de recompensas é refinado para valorizar aspectos estratégicos do jogo:
+%\begin{itemize}
+%    \item Manutenção das recompensas por proximidade à bola e ao gol
+%    \item Valorização adicional de comportamentos defensivos quando necessário
+%    \item Penalizações por violações das regras (saída da bola, faltas)
+%    \item Recompensas por posicionamento tático eficiente
+%\end{itemize}
 
 \paragraph{Transição para Self-play}
 
@@ -215,7 +215,7 @@ O monitoramento de desempenho é realizado através de um conjunto de métricas 
     \item Indicadores de sucesso específicos para o estágio atual (toque na bola, gols marcados)
     \item Tempo necessário para concluir as tarefas
     \item Eficiência das trajetórias e ações
-    \item Métricas de continuidade (resets, posse de bola)
+    \item Métricas de continuidade (resets)
 \end{itemize}
 
 Estas métricas são armazenadas em uma janela deslizante de episódios recentes, permitindo a avaliação do desempenho atual com base em um histórico significativo. A implementação utiliza a estrutura \texttt{deque} do Python para manter esta janela de forma eficiente, com um tamanho configurável (padrão de 100 episódios).
@@ -259,7 +259,6 @@ Para avaliar a eficácia da integração entre curriculum learning e self-play, 
 
 \begin{itemize}
     \item Taxa de vitória da equipe azul contra a equipe amarela
-    \item Diferença média de pontuação entre as equipes
     \item Tempo médio dos episódios
     \item Métricas de continuidade do jogo (resets)
 \end{itemize}
