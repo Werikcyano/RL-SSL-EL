@@ -95,27 +95,22 @@ O desempenho ofensivo dos agentes foi avaliado principalmente através da análi
 
 \begin{figure}[H]
     \centering
-    \begin{minipage}{0.49\textwidth}
-        \includegraphics[width=\textwidth]{fig/graficos_trabalho/graficos_experimentos/Full Selfplay/custom_metricsgoals_blue_mean.png}
-    \end{minipage}
-    \begin{minipage}{0.49\textwidth}
-        \includegraphics[width=\textwidth]{fig/graficos_trabalho/graficos_experimentos/Selfplay Após Curriculum/custom_metricsgoals_blue_mean.png}
-    \end{minipage}
-    \caption{Comparação da evolução da média de gols marcados pelo time azul por episódio entre as abordagens Full Selfplay (esquerda) e Selfplay após Curriculum (direita)}
+    \includegraphics[width=0.95\textwidth]{fig/graficos_trabalho/graficos_experimentos/geral/comparativo_gols_azul_alinhado.png}
+    \caption{Comparativo da média de gols do time azul por episódio com iterações alinhadas entre as abordagens Selfplay após Curriculum e Full Selfplay}
     \label{fig:goals_blue_comparison}
 \end{figure}
 
-A análise comparativa dos gráficos revela padrões interessantes na evolução da capacidade ofensiva dos agentes. Ambas as abordagens apresentam uma progressão crescente na capacidade de marcar gols, atingindo valores próximos a 1 gol por episódio. No entanto, observam-se diferenças significativas no processo de aprendizado:
+A análise comparativa do gráfico revela padrões interessantes na evolução da capacidade ofensiva dos agentes. Ambas as abordagens apresentam uma progressão crescente na capacidade de marcar gols, atingindo valores próximos a 1 gol por episódio. No entanto, observam-se diferenças significativas no processo de aprendizado:
 
 \begin{itemize}
-    \item \textbf{Convergência}: Embora ambas abordagens atinjam valores similares ao final do treinamento, o Selfplay após Curriculum demonstra uma convergência mais estável, com menos oscilações nas fases finais.
+    \item \textbf{Velocidade de convergência}: O Selfplay após Curriculum (linha azul) atinge o patamar de 1 gol por episódio muito mais rapidamente, convergindo em aproximadamente 100 iterações, enquanto o Full Selfplay (linha laranja) requer cerca de 150 iterações para alcançar o mesmo desempenho.
     
-    \item \textbf{Fase inicial}: O Full Selfplay parte do zero e desenvolve gradualmente sua capacidade ofensiva, enquanto o Selfplay após Curriculum já inicia em um patamar elevado (aproximadamente 0,93 gols por episódio), beneficiando-se das habilidades adquiridas durante a fase de curriculum.
+    \item \textbf{Fase inicial}: Nas primeiras iterações, o Selfplay após Curriculum já começa com uma vantagem significativa, demonstrando que as habilidades adquiridas durante a fase de curriculum proporcionam um ponto de partida mais avançado para o desenvolvimento ofensivo.
     
-    \item \textbf{Estabilidade}: O Selfplay após Curriculum apresenta oscilações de menor amplitude, principalmente após a iteração 200, indicando uma política mais estável e robusta para a tarefa ofensiva.
+    \item \textbf{Estabilidade}: Ambas as abordagens eventualmente atingem estabilidade na média de gols, mas o Selfplay após Curriculum apresenta menor variabilidade na fase de convergência, indicando um processo de aprendizado mais consistente.
 \end{itemize}
 
-Esta comparação evidencia uma vantagem significativa da abordagem proposta: ao iniciar o self-play com agentes já treinados em tarefas fundamentais através do curriculum, obtém-se uma aceleração substancial no desenvolvimento de capacidades ofensivas eficazes. Esta característica é particularmente valiosa em cenários com restrições de tempo computacional, onde a convergência mais rápida para políticas de alta qualidade representa uma vantagem considerável.
+Esta comparação com iterações alinhadas evidencia de forma clara uma vantagem significativa da abordagem proposta: ao iniciar o self-play com agentes já treinados em tarefas fundamentais através do curriculum, obtém-se uma aceleração substancial no desenvolvimento de capacidades ofensivas eficazes. Esta característica é particularmente valiosa em cenários com restrições de tempo computacional, onde a convergência mais rápida para políticas de alta qualidade representa uma vantagem considerável.
 
 \subsection{Eficiência e Continuidade do Jogo}
 
