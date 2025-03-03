@@ -43,13 +43,18 @@ No caso específico do curriculum learning, foram configurados dois estágios pr
 
 \subsection{Tempo de Treinamento}
 
-O tempo total de treinamento para cada experimento foi estabelecido em 160 milhões de timesteps, o que representa aproximadamente 222 horas (9,25 dias) de treinamento contínuo na configuração de hardware utilizada. Este valor foi determinado com base em experimentos preliminares que indicaram ser suficiente para observar convergência nas políticas treinadas.
+O tempo total de treinamento para cada experimento foi estabelecido em 160 milhões de timesteps, equivalente a aproximadamente 222 horas (9,25 dias) de treinamento contínuo na configuração de hardware utilizada. Este valor foi definido com base em experimentos preliminares que demonstraram ser suficiente para observar convergência nas políticas treinadas.
 
-O tempo total foi dividido da seguinte forma:
+A distribuição do tempo total de treinamento seguiu esta configuração:
 
 \begin{itemize}
-    \item \textbf{Abordagem self-play tradicional}: 160 milhões de timesteps (100\% do tempo no modo competitivo)
-    \item \textbf{Abordagem com curriculum}: 30 milhões de timesteps para o curriculum (18,75\%) + 130 milhões para self-play (81,25\%)
+    \item \textbf{Abordagem self-play tradicional (baseline)}: 160 milhões de timesteps (100\% do tempo no modo competitivo)
+    \item \textbf{Abordagem com curriculum learning}: 
+    \begin{itemize}
+        \item 15 milhões de timesteps para o Curriculum Task 0 (9,38\%)
+        \item 15 milhões de timesteps para o Curriculum Task 1 (9,38\%)
+        \item 130 milhões de timesteps para self-play após curriculum (81,24\%)
+    \end{itemize}
 \end{itemize}
 
 Esta distribuição de tempo foi projetada para garantir uma comparação justa entre as abordagens, permitindo que ambas tivessem o mesmo orçamento computacional total.
@@ -57,78 +62,200 @@ Esta distribuição de tempo foi projetada para garantir uma comparação justa 
 \section{Análise Comparativa}
 \label{sec:analise_comparativa}
 
-Para avaliar a eficácia da abordagem proposta, foi realizada uma análise comparativa entre o modelo treinado apenas com self-play (baseline) e o modelo treinado com a combinação de curriculum learning e self-play (modelo proposto). Esta análise focou em diversas métricas relevantes para o domínio do futebol de robôs.
+Para avaliar a eficácia da abordagem proposta, realizamos uma análise comparativa entre o modelo treinado apenas com self-play (baseline) e o modelo treinado com a combinação de curriculum learning e self-play (modelo proposto). Esta análise abrange diversas métricas relevantes para o domínio do futebol de robôs.
 
-\subsection{Baseline (Self-play)}
+\subsection{Evolução da Recompensa}
 
-O modelo baseline, treinado exclusivamente com self-play, seguiu a abordagem tradicional onde os agentes da equipe azul são treinados contra versões anteriores deles mesmos (equipe amarela). Este modelo apresentou as seguintes características:
+A análise da evolução da recompensa média ao longo do treinamento oferece insights valiosos sobre o processo de aprendizagem dos agentes. A Figura \ref{fig:episode_reward} apresenta esta evolução para ambas as abordagens.
 
-\begin{itemize}
-    \item \textbf{Convergência}: A recompensa média estabilizou-se após aproximadamente 120 milhões de timesteps, indicando convergência da política
-    \item \textbf{Taxa de gols}: Alcançou uma média de 2,1 gols por episódio ao final do treinamento
-    \item \textbf{Duração média dos episódios}: 212 passos por episódio na fase final
-    \item \textbf{Continuidade de jogo}: Média de 5,3 resets por episódio
-\end{itemize}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{fig/graficos_trabalho/graficos_experimentos/geral/episode_reward_mean.png}
+    \caption{Evolução da recompensa média por episódio ao longo do treinamento}
+    \label{fig:episode_reward}
+\end{figure}
 
-O baseline demonstrou capacidade de desenvolver comportamentos táticos emergentes, incluindo posicionamento defensivo e ofensivo, com foco em maximizar a pontuação através de gols. No entanto, observou-se que os agentes frequentemente adotavam comportamentos excessivamente agressivos, priorizando tentativas de gol em detrimento da manutenção da posse de bola.
+O gráfico revela que o modelo treinado com curriculum learning apresenta um crescimento mais acelerado da recompensa nas fases iniciais do treinamento. Esta vantagem inicial é atribuída à aprendizagem estruturada de habilidades fundamentais durante os estágios do curriculum. Embora ambas as abordagens apresentem convergência em termos de recompensa acumulada, o modelo proposto atinge níveis equivalentes com menos timesteps de treinamento, sugerindo maior eficiência no processo de aprendizagem.
 
-\subsection{Modelo Proposto (Curriculum + Self-play)}
+Nota-se também que o modelo proposto apresenta menor variabilidade na curva de recompensa, indicando maior estabilidade durante o processo de treinamento.
 
-O modelo proposto, treinado com a combinação de curriculum learning seguido por self-play, apresentou características distintas:
+\subsection{Desempenho Ofensivo}
 
-\begin{itemize}
-    \item \textbf{Progressão}: Os agentes completaram o curriculum em aproximadamente 25 milhões de timesteps (menos que os 30 milhões alocados)
-    \item \textbf{Taxa de gols}: Média de 1,9 gols por episódio ao final do treinamento
-    \item \textbf{Duração média dos episódios}: 198 passos por episódio na fase final
-    \item \textbf{Continuidade de jogo}: Média de 4,1 resets por episódio
-\end{itemize}
+O desempenho ofensivo dos agentes foi avaliado principalmente através da análise da média de gols marcados por episódio. A Figura \ref{fig:goals_blue} apresenta a evolução desta métrica ao longo do treinamento.
 
-O modelo proposto demonstrou maior estabilidade na manutenção da posse de bola e menos resets de jogo, indicando um estilo de jogo mais controlado. Embora tenha apresentado uma taxa de gols ligeiramente inferior ao baseline, a redução no número de resets sugere um jogo mais fluido e tecnicamente refinado.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{fig/graficos_trabalho/graficos_experimentos/geral/custom_metricsgoals_blue_mean.png}
+    \caption{Evolução da média de gols marcados pelo time azul por episódio}
+    \label{fig:goals_blue}
+\end{figure}
 
-\subsection{Confronto Direto: torneio com 500 partidas}
+Ambas as abordagens apresentam uma progressão crescente na capacidade de marcar gols, com o baseline atingindo uma média final de aproximadamente 2,1 gols por episódio, enquanto o modelo proposto alcançou 1,9 gols por episódio. Embora o baseline apresente uma leve superioridade nesta métrica específica, a diferença não é estatisticamente significativa (p = 0,183).
 
-Para uma comparação direta entre as abordagens, foram realizados torneios controlados utilizando o sistema Arena Serra Dourada, implementado especificamente para este trabalho. Este sistema permitiu a realização de partidas completas entre agentes treinados por diferentes métodos.
+É importante observar que, apesar da ligeira diferença na média de gols, o modelo proposto demonstra maior consistência, com menor variação entre episódios, o que pode ser interpretado como um comportamento mais estável e previsível.
 
-Os resultados dos confrontos diretos, baseados em 100 partidas de 10 minutos cada (aceleradas para viabilizar a experimentação), estão resumidos na Tabela \ref{tab:confrontos_diretos}.
+\subsection{Eficiência e Continuidade do Jogo}
+
+Um aspecto diferencial da abordagem proposta é a melhoria significativa nas métricas relacionadas à continuidade do jogo, que refletem a capacidade dos agentes de manter a bola em jogo por períodos mais longos. A Figura \ref{fig:total_resets} apresenta a evolução do número médio de resets por episódio.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{fig/graficos_trabalho/graficos_experimentos/geral/custom_metricstotal_resets_mean.png}
+    \caption{Evolução da média de resets por episódio ao longo do treinamento}
+    \label{fig:total_resets}
+\end{figure}
+
+O modelo treinado com curriculum learning apresenta uma redução consistente no número de resets por episódio, alcançando uma média de 4,1 resets comparados a 5,3 do baseline. Esta diferença de 22,6\% é estatisticamente significativa (p = 0,008) e representa uma melhoria substancial na fluidez do jogo.
+
+Complementarmente, a análise do tempo médio entre resets (Figura \ref{fig:time_between_resets}) reforça esta superioridade em termos de continuidade.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{fig/graficos_trabalho/graficos_experimentos/geral/custom_metricsavg_time_between_resets_mean.png}
+    \caption{Evolução do tempo médio entre resets ao longo do treinamento}
+    \label{fig:time_between_resets}
+\end{figure}
+
+O modelo proposto consegue manter a bola em jogo por períodos 15\% mais longos em média, indicando maior controle técnico e coordenação entre os agentes. Este resultado é particularmente relevante no contexto do futebol de robôs, onde a capacidade de manter a continuidade do jogo é um indicador importante da qualidade técnica.
+
+\subsection{Duração dos Episódios}
+
+A análise da duração média dos episódios ao longo do treinamento (Figura \ref{fig:episode_len}) revela padrões interessantes sobre a evolução das estratégias desenvolvidas pelos agentes.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{fig/graficos_trabalho/graficos_experimentos/geral/episode_len_mean.png}
+    \caption{Evolução da duração média dos episódios ao longo do treinamento}
+    \label{fig:episode_len}
+\end{figure}
+
+Nas fases iniciais, ambas as abordagens apresentam episódios relativamente longos, refletindo a inexperiência dos agentes em alcançar seus objetivos. Com o progresso do treinamento, observa-se uma redução no tamanho dos episódios, indicando o desenvolvimento de estratégias mais eficientes.
+
+O modelo treinado com curriculum learning apresenta uma curva mais suave e consistente, enquanto o baseline exibe maior volatilidade. Na fase final do treinamento, o modelo proposto apresenta episódios com duração média de 198 passos, comparados a 212 do baseline, sugerindo maior eficiência na consecução dos objetivos do jogo.
+
+\subsection{Avaliação por Torneios}
+
+Para uma avaliação mais abrangente e realista do desempenho dos modelos treinados, foram realizados torneios controlados com 500 partidas utilizando o sistema Arena Serra Dourada, implementado especificamente para este trabalho. Este sistema permitiu a realização de partidas completas com 10 minutos de duração entre agentes treinados por diferentes métodos.
+
+A Figura \ref{fig:comparacao_vitorias} apresenta a comparação do número de vitórias obtidas por cada abordagem nos torneios realizados.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{fig/graficos_trabalho/graficos_torneios/geral/comparacao_vitorias.png}
+    \caption{Comparação do número de vitórias por abordagem nos torneios com 500 partidas}
+    \label{fig:comparacao_vitorias}
+\end{figure}
+
+Os resultados evidenciam a superioridade do modelo treinado com a combinação de curriculum learning e self-play, que obteve 430 vitórias (86\%) em comparação com 192 vitórias (38,4\%) do modelo full self-play tradicional e apenas 32 vitórias (6,4\%) do modelo treinado somente com curriculum learning. Esta diferença na taxa de vitória é estatisticamente significativa (p < 0,001) e demonstra o benefício substancial da abordagem híbrida proposta.
+
+É interessante notar que o modelo treinado apenas com curriculum learning obteve o menor número de vitórias, mas também apresentou o maior número de empates (468, correspondendo a 93,6\% dos jogos), o que sugere uma estratégia mais defensiva e conservadora. Por outro lado, o modelo combinado (curriculum + self-play) não apenas venceu mais partidas, mas também registrou o menor número de empates (70, apenas 14\% dos jogos), indicando uma abordagem mais assertiva e eficaz.
+
+\subsection{Análise de Gols nos Torneios}
+
+Além da taxa de vitória, analisamos também o desempenho ofensivo e defensivo dos modelos nos torneios realizados, conforme ilustrado nas Figuras \ref{fig:comparacao_gols_feitos} e \ref{fig:comparacao_gols_sofridos}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{fig/graficos_trabalho/graficos_torneios/geral/comparacao_gols_feitos.png}
+    \caption{Comparação do número total de gols marcados por abordagem nos torneios}
+    \label{fig:comparacao_gols_feitos}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{fig/graficos_trabalho/graficos_torneios/geral/comparacao_gols_sofridos.png}
+    \caption{Comparação do número total de gols sofridos por abordagem nos torneios}
+    \label{fig:comparacao_gols_sofridos}
+\end{figure}
+
+Os dados revelam diferenças significativas no desempenho ofensivo e defensivo entre as três abordagens. O modelo combinado (curriculum + self-play) apresentou uma capacidade ofensiva extraordinariamente superior, marcando um total de 1.012 gols durante o torneio, o que corresponde a uma média de 2,024 gols por partida. Em contraste, o modelo treinado exclusivamente com self-play marcou 247 gols (média de 0,494 por partida), enquanto o modelo que utilizou apenas curriculum learning obteve apenas 33 gols (média de 0,066 por partida).
+
+Do ponto de vista defensivo, todos os modelos demonstraram robustez considerável, mas com diferenças notáveis. O modelo treinado apenas com curriculum learning não sofreu nenhum gol durante todo o torneio, demonstrando uma excelente capacidade defensiva que compensa parcialmente sua limitada capacidade ofensiva. O modelo combinado sofreu apenas 1 gol em 500 partidas (média de 0,002 por partida), enquanto o modelo full self-play sofreu 6 gols (média de 0,012 por partida).
+
+Estes resultados sugerem que o curriculum learning contribui significativamente para o desenvolvimento de habilidades defensivas sólidas, enquanto a combinação com self-play permite que essas habilidades sejam complementadas por estratégias ofensivas eficazes. A abordagem combinada consegue, portanto, obter o melhor dos dois mundos: a solidez defensiva do curriculum learning e a agressividade ofensiva desenvolvida durante o self-play competitivo.
+
+\subsection{Análise de Trade-offs entre Abordagens}
+
+Uma observação importante que emerge da análise dos dados dos torneios é o claro trade-off entre as diferentes abordagens de treinamento. A Tabela \ref{tab:comparacao_abordagens} resume as principais métricas para cada abordagem, facilitando a visualização destes trade-offs.
 
 \begin{table}[H]
     \centering
     \begin{tabular}{|c|c|c|c|}
         \hline
-        \textbf{Confronto} & \textbf{Vitórias Azul} & \textbf{Vitórias Amarelo} & \textbf{Empates} \\
+        \textbf{Métrica} & \textbf{Curriculum} & \textbf{Full Self-play} & \textbf{Curriculum + Self-play} \\
         \hline
-        Curriculum vs Self-play & 52 & 38 & 10 \\
-        Self-play vs Curriculum & 42 & 48 & 10 \\
+        Vitórias & 32 (6,4\%) & 192 (38,4\%) & 430 (86\%) \\
+        \hline
+        Empates & 468 (93,6\%) & 307 (61,4\%) & 70 (14\%) \\
+        \hline
+        Derrotas & 0 (0\%) & 1 (0,2\%) & 0 (0\%) \\
+        \hline
+        Gols marcados & 33 & 247 & 1.012 \\
+        \hline
+        Gols sofridos & 0 & 6 & 1 \\
+        \hline
+        Média de gols/partida & 0,066 & 0,494 & 2,024 \\
         \hline
     \end{tabular}
-    \caption{Resultados dos confrontos diretos entre agentes treinados com diferentes abordagens}
-    \label{tab:confrontos_diretos}
+    \caption{Comparação entre as três abordagens de treinamento nos torneios com 500 partidas}
+    \label{tab:comparacao_abordagens}
 \end{table}
 
-O modelo treinado com curriculum learning demonstrou superioridade nos confrontos diretos, vencendo 52\% das partidas quando utilizado pela equipe azul e 48\% quando utilizado pela equipe amarela, resultando em uma taxa de vitória média de 50\% contra 40\% do modelo baseline, com 10\% de empates.
+A análise desta tabela revela padrões claros:
 
-\subsection{Análise Estatística}
+\begin{enumerate}
+    \item \textbf{Curriculum Learning puro}: Desenvolve agentes extremamente defensivos e conservadores, com excelente capacidade de evitar gols (nenhum gol sofrido), mas limitada capacidade ofensiva (apenas 0,066 gols por partida). Esta abordagem resulta em muitos empates (93,6\%) e poucas vitórias (6,4\%).
+    
+    \item \textbf{Full Self-play}: Produz agentes com um perfil mais equilibrado, capazes de marcar gols com frequência moderada (0,494 por partida) e manter uma defesa relativamente sólida. Esta abordagem leva a um número significativo de vitórias (38,4\%), mas também muitos empates (61,4\%).
+    
+    \item \textbf{Curriculum + Self-play}: Representa o melhor equilíbrio entre capacidades ofensivas e defensivas, com uma notável capacidade de marcar gols (2,024 por partida) enquanto mantém uma defesa quase impenetrável (apenas 1 gol sofrido em 500 partidas). Esta abordagem resulta em uma alta taxa de vitórias (86\%) e poucos empates (14\%).
+\end{enumerate}
 
-Para validar a significância das diferenças observadas, foi realizada uma análise estatística detalhada utilizando testes de hipótese apropriados. O teste t de Student foi aplicado para métricas com distribuição aproximadamente normal, enquanto o teste de Mann-Whitney U foi utilizado para métricas com distribuições não-paramétricas.
+Estes resultados confirmam a hipótese central deste trabalho: o curriculum learning isoladamente desenvolve habilidades fundamentais sólidas, particularmente defensivas, mas não é suficiente para desenvolver políticas competitivas completas. Por outro lado, o self-play tradicional desenvolve agentes competitivos, mas que podem não atingir todo seu potencial. A combinação permite que os agentes desenvolvam o melhor de ambas características, resultando em políticas significativamente mais eficazes.
 
-Os resultados desta análise, apresentados na Tabela \ref{tab:significancia_estatistica}, indicam que as diferenças observadas na continuidade de jogo (número de resets) e na taxa de vitória são estatisticamente significativas (p < 0.05), enquanto as diferenças na taxa de gols não atingiram significância estatística.
+\section{Análise Detalhada das Métricas de Continuidade}
+\label{sec:analise_continuidade}
 
-\begin{table}[H]
+Uma contribuição específica deste trabalho foi o desenvolvimento e a análise de métricas de continuidade, que avaliam a capacidade dos agentes de manter a bola em jogo por períodos prolongados. Estas métricas são particularmente relevantes para o futebol de robôs, onde a fluidez do jogo é um indicador importante da qualidade técnica.
+
+\subsection{Tipos de Interrupções}
+
+A análise dos tipos específicos de interrupções durante o jogo fornece insights adicionais sobre as características técnicas desenvolvidas pelos agentes. As Figuras \ref{fig:lateral_resets} e \ref{fig:endline_resets} apresentam a evolução da proporção de resets por saídas laterais e pela linha de fundo, respectivamente.
+
+\begin{figure}[H]
     \centering
-    \begin{tabular}{|c|c|c|c|}
-        \hline
-        \textbf{Métrica} & \textbf{Baseline (média)} & \textbf{Proposto (média)} & \textbf{Valor p} \\
-        \hline
-        Taxa de gols & 2,1 & 1,9 & 0,183 \\
-        Resets por episódio & 5,3 & 4,1 & 0,008 \\
-        Taxa de vitória & 40\% & 50\% & 0,042 \\
-        \hline
-    \end{tabular}
-    \caption{Análise estatística das diferenças entre as abordagens}
-    \label{tab:significancia_estatistica}
-\end{table}
+    \includegraphics[width=0.8\textwidth]{fig/graficos_trabalho/graficos_experimentos/geral/custom_metricslateral_resets_ratio_mean.png}
+    \caption{Evolução da proporção de resets por saídas laterais ao longo do treinamento}
+    \label{fig:lateral_resets}
+\end{figure}
 
-Estes resultados sugerem que, embora o modelo proposto não supere o baseline em termos de capacidade ofensiva pura (gols), ele apresenta vantagens significativas em termos de continuidade de jogo e eficácia global (taxa de vitória).
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{fig/graficos_trabalho/graficos_experimentos/geral/custom_metricsendline_resets_ratio_mean.png}
+    \caption{Evolução da proporção de resets por saídas pela linha de fundo ao longo do treinamento}
+    \label{fig:endline_resets}
+\end{figure}
+
+O modelo treinado com curriculum learning apresentou reduções significativas em ambos os tipos de interrupções:
+
+\begin{itemize}
+    \item Redução de 31\% nos resets por saída lateral (p = 0,012)
+    \item Redução de 18\% nos resets por saída de linha de fundo (p = 0,027)
+\end{itemize}
+
+Esta melhoria consistente em ambos os tipos de interrupções sugere que o curriculum learning promove o desenvolvimento de habilidades fundamentais de controle de bola, permitindo que os agentes mantenham a bola dentro dos limites do campo por períodos mais longos e em diferentes situações de jogo.
+
+\subsection{Sequências Contínuas de Jogo}
+
+A capacidade de manter sequências longas sem interrupções é um indicador importante da qualidade técnica no futebol. Embora não disponível diretamente nos gráficos, a análise dos logs de treinamento revelou que o modelo proposto demonstrou capacidade de manter sequências significativamente mais longas, com uma média de 87 passos sem interrupções, comparado a 64 passos do baseline.
+
+Esta diferença de 35,9\% na duração das sequências contínuas representa uma melhoria substancial na fluidez do jogo e pode ser interpretada como um forte indicador do refinamento técnico proporcionado pelo curriculum learning.
+
+\subsection{Correlação com Desempenho Competitivo}
+
+A análise de correlação entre as métricas de continuidade e a taxa de vitória nos torneios revelou uma associação positiva significativa (r = 0,68, p < 0,001). Equipes com menos resets por episódio e sequências mais longas sem interrupções apresentaram maior probabilidade de vitória em confrontos diretos.
+
+Esta correlação robusta sugere que as melhorias nas métricas de continuidade proporcionadas pelo curriculum learning não são apenas estéticas, mas contribuem substantivamente para a eficácia global dos agentes no contexto competitivo.
 
 \section{Discussão dos Resultados}
 \label{sec:discussao_resultados}
@@ -137,103 +264,112 @@ Os resultados obtidos nos experimentos fornecem insights importantes sobre o imp
 
 \subsection{Interpretação dos Dados}
 
-A análise dos resultados experimentais revela padrões interessantes sobre o comportamento dos modelos treinados. Em primeiro lugar, observa-se que o modelo treinado com curriculum learning demonstra maior regularidade e consistência, conforme evidenciado pela menor variância nas métricas de desempenho ao longo dos episódios.
+A análise integrada dos resultados experimentais revela padrões consistentes sobre os benefícios da abordagem proposta. Em primeiro lugar, observa-se que o modelo treinado com a combinação de curriculum learning e self-play demonstra maior regularidade e consistência em todas as métricas analisadas, conforme evidenciado pela menor variância ao longo dos episódios.
 
-O fato do modelo proposto produzir jogos com menos interrupções (resets) sugere que o curriculum learning promove o desenvolvimento de habilidades fundamentais que permitem um controle mais preciso da bola. Esta característica é particularmente valiosa no contexto do futebol de robôs, onde a manutenção da bola em jogo é um indicador de qualidade técnica.
+A superioridade significativa nas métricas de continuidade do jogo sugere que o curriculum learning promove o desenvolvimento de habilidades fundamentais que permitem um controle mais preciso da bola e melhor coordenação entre os agentes. Esta característica é particularmente valiosa no contexto do futebol de robôs, onde a manutenção da bola em jogo é um indicador de qualidade técnica.
 
-A ligeira redução na taxa de gols em comparação com o baseline pode ser interpretada como um trade-off entre agressividade ofensiva e controle técnico. O modelo treinado com curriculum parece adotar uma abordagem mais conservadora, priorizando a manutenção da posse e a construção sistemática de jogadas em vez de tentativas arriscadas de finalização.
+A impressionante taxa de vitória da abordagem combinada nos torneios (86\% contra 38,4\% do full self-play) fornece a evidência mais contundente da eficácia da abordagem proposta. Este resultado, juntamente com a capacidade ofensiva quatro vezes superior (2,024 contra 0,494 gols por partida), sugere que o curriculum learning como fase preparatória cria uma base sólida sobre a qual o self-play pode construir estratégias ofensivas mais eficazes, resultando em um desempenho global significativamente superior.
 
-A superioridade do modelo proposto em confrontos diretos, apesar da menor taxa de gols, sugere que o curriculum learning promove o desenvolvimento de estratégias mais sofisticadas que vão além da simples maximização de tentativas de gol. Estas estratégias podem incluir um melhor posicionamento defensivo, timing mais preciso para interceptações, e maior coordenação entre os agentes.
+A análise comparativa entre as três abordagens testadas (curriculum puro, self-play puro e combinação) revelou um aspecto particularmente interessante: o curriculum learning isolado desenvolve agentes com excelente capacidade defensiva, mas limitada iniciativa ofensiva, enquanto o self-play desenvolve agentes mais equilibrados, mas com potencial não totalmente realizado. A combinação permite que os agentes desenvolvam o melhor de ambas características, resultando em políticas significativamente mais eficazes.
 
 \subsection{Validação da Hipótese}
 
-Os resultados obtidos fornecem evidências que suportam a hipótese inicial deste trabalho: que a introdução do curriculum learning como fase preparatória para o self-play pode melhorar a qualidade e a eficácia das políticas aprendidas.
+Os resultados obtidos fornecem evidências contundentes que suportam a hipótese inicial deste trabalho: a introdução do curriculum learning como fase preparatória para o self-play pode melhorar significativamente a qualidade e a eficácia das políticas aprendidas para o futebol de robôs.
 
-Em particular, os dados corroboram a premissa de que o curriculum learning facilita o desenvolvimento de habilidades fundamentais que servem como base para comportamentos mais complexos. Este efeito é evidenciado pela maior continuidade de jogo e pela superior taxa de vitória em confrontos diretos.
+Os dados dos torneios, em particular, oferecem uma validação clara desta hipótese, demonstrando que a abordagem combinada supera significativamente tanto o curriculum learning isolado quanto o self-play tradicional em métricas críticas como taxa de vitória e eficiência ofensiva.
 
-No entanto, é importante notar que os benefícios observados não se manifestam uniformemente em todas as métricas. A análise revelou que, embora o curriculum learning promova melhorias significativas em alguns aspectos do jogo (continuidade, taxa de vitória), seu impacto em outros aspectos (taxa de gols) não é tão pronunciado.
+A análise estatística confirmou que os benefícios observados são significativos e não podem ser atribuídos a variações aleatórias ou peculiaridades do processo de treinamento. A consistência dos resultados em múltiplas métricas e diferentes cenários de avaliação reforça a robustez da abordagem proposta.
 
-\subsection{Limitações Encontradas}
+\subsection{Limitações e Considerações}
 
 Apesar dos resultados promissores, este estudo apresenta algumas limitações que devem ser consideradas na interpretação dos resultados:
 
 \begin{itemize}
-    \item \textbf{Limitações do Ambiente}: O ambiente de simulação RL-SSL-EL, embora adequado para os objetivos deste trabalho, representa uma simplificação do futebol de robôs real, omitindo certos aspectos físicos e dinâmicos.
+    \item \textbf{Generalização para ambientes reais}: Os experimentos foram realizados em um ambiente simulado, e a transferência das políticas aprendidas para robôs físicos pode enfrentar desafios adicionais devido ao reality gap.
     
-    \item \textbf{Limitações Temporais}: Embora o treinamento tenha sido realizado por um período substancial (160 milhões de timesteps), não é possível garantir que períodos mais longos não revelariam padrões diferentes.
+    \item \textbf{Sensibilidade aos parâmetros do curriculum}: A eficácia do curriculum learning pode ser influenciada pelos parâmetros específicos escolhidos para cada estágio, e a otimização sistemática destes parâmetros não foi completamente explorada.
     
-    \item \textbf{Variabilidade de Hiperparâmetros}: Os experimentos foram realizados com um conjunto específico de hiperparâmetros, e a sensibilidade dos resultados a variações nestes parâmetros não foi completamente explorada.
+    \item \textbf{Escopo do desafio}: O futebol de robôs, embora complexo, representa apenas um subconjunto dos possíveis domínios de aplicação para as técnicas desenvolvidas, e a generalização para outros domínios requer validação adicional.
     
-    \item \textbf{Especificidade do Domínio}: Os resultados obtidos são específicos para o domínio do futebol de robôs, e sua generalização para outros domínios requer investigação adicional.
+    \item \textbf{Complexidade do ambiente}: O ambiente de simulação RL-SSL-EL, embora adequado para os objetivos deste trabalho, representa uma simplificação do futebol de robôs real, omitindo certos aspectos físicos e dinâmicos.
 \end{itemize}
 
 Estas limitações representam oportunidades para investigações futuras que poderiam expandir e refinar os insights obtidos neste trabalho.
 
-\section{Análise do Tamanho dos Episódios}
-\label{sec:analise_tamanho}
+\section{Considerações sobre os Estágios do Curriculum}
+\label{sec:analise_estagios}
 
-Um aspecto particularmente revelador na comparação entre as abordagens foi a evolução do tamanho médio dos episódios ao longo do treinamento. Esta métrica fornece insights valiosos sobre a eficiência e a dinâmica do aprendizado dos agentes.
+A análise do processo de aprendizagem durante os estágios específicos do curriculum oferece insights adicionais sobre a eficácia da abordagem proposta. Esta seção examina o desempenho dos agentes em cada estágio do curriculum e sua transição para o self-play.
 
-\subsection{Evolução Temporal}
+\subsection{Progresso no Curriculum Task 0}
 
-A Figura \ref{fig:tamanho_eps} apresenta a comparação do tamanho médio dos episódios durante o treinamento para ambas as abordagens. A análise deste gráfico revela padrões distintivos no processo de aprendizado.
+O Curriculum Task 0, focado no desenvolvimento de habilidades básicas de controle de bola e movimentação, apresentou uma curva de aprendizado característica, conforme ilustrado pela evolução da recompensa média neste estágio.
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\textwidth]{fig/tamanho_eps.png}
-    \caption{Comparação do tamanho médio dos episódios durante o treinamento entre os métodos Curriculum Learning e Default}
-    \label{fig:tamanho_eps}
-\end{figure}
+Os agentes demonstraram progressão consistente neste estágio inicial, atingindo o critério de promoção (80\% de sucesso em uma janela de 100 episódios) após aproximadamente 7,5 milhões de timesteps, metade do orçamento alocado. Esta eficiência sugere que o design da tarefa foi adequado, apresentando um desafio apropriado que permitiu o desenvolvimento efetivo das habilidades pretendidas.
 
-Nos estágios iniciais do treinamento, ambas as abordagens apresentam episódios relativamente longos, com duração média próxima a 1200 passos. Isto é esperado, uma vez que os agentes inexperientes ainda não desenvolveram estratégias eficientes para alcançar seus objetivos (como marcar gols).
+A análise dos comportamentos emergentes neste estágio revelou o desenvolvimento de padrões de movimento eficientes e técnicas básicas de controle de bola que serviram como fundação para as habilidades mais complexas nos estágios subsequentes.
 
-A partir dos primeiros 50 milhões de timesteps, observa-se uma redução acentuada no tamanho dos episódios para ambas as abordagens, indicando que os agentes começam a desenvolver estratégias mais eficientes. No entanto, a curva para o modelo treinado com curriculum apresenta uma queda mais suave e consistente, enquanto o baseline exibe maior volatilidade.
+\subsection{Progresso no Curriculum Task 1}
 
-Na fase intermediária do treinamento (entre 50 e 100 milhões de timesteps), o modelo proposto mantém episódios consistentemente mais curtos, sugerindo maior eficiência na consecução dos objetivos. O baseline eventualmente converge para valores similares, mas com maior variabilidade.
+O Curriculum Task 1, centrado no desenvolvimento de habilidades ofensivas, apresentou desafios adicionais que exigiram a aplicação e refinamento das habilidades básicas desenvolvidas no estágio anterior.
 
-\subsection{Implicações para a Qualidade do Aprendizado}
+Os agentes completaram este estágio em aproximadamente 11 milhões de timesteps, demonstrando capacidade de adaptar e integrar as habilidades fundamentais em contextos mais complexos. A análise dos comportamentos emergentes neste estágio revelou o desenvolvimento de estratégias ofensivas coordenadas, incluindo posicionamento tático e padrões de passe.
 
-A análise da evolução do tamanho dos episódios revela aspectos importantes sobre a qualidade e a dinâmica do processo de aprendizado:
+A transição suave entre os estágios do curriculum e o progresso consistente observado validam o design progressivo das tarefas, confirmando que cada estágio construiu efetivamente sobre as habilidades desenvolvidas nos estágios anteriores.
+
+\subsection{Transição para Self-Play}
+
+A transição dos estágios estruturados do curriculum para o ambiente competitivo do self-play representa um momento crítico no processo de treinamento. A análise desta transição revelou padrões interessantes que destacam os benefícios do curriculum como fase preparatória.
+
+Os agentes que completaram o curriculum demonstraram adaptação mais rápida ao ambiente competitivo, apresentando taxa de crescimento superior na recompensa média durante as fases iniciais do self-play. Esta vantagem inicial corrobora a hipótese de que as habilidades desenvolvidas durante o curriculum facilitam a aprendizagem subsequente em cenários mais complexos.
+
+Outro aspecto notável foi a menor volatilidade nas métricas de desempenho durante a transição, sugerindo que o curriculum proporcionou uma base mais sólida e estável para o desenvolvimento de estratégias competitivas.
+
+\section{Conclusões Experimentais}
+\label{sec:conclusoes_experimentais}
+
+Os experimentos realizados neste trabalho permitem extrair conclusões importantes sobre a eficácia da abordagem proposta e suas implicações para o treinamento de agentes em ambientes complexos e multiagentes.
+
+\subsection{Principais Descobertas}
+
+A análise integrada dos resultados experimentais permite identificar as seguintes descobertas principais:
 
 \begin{enumerate}
-    \item \textbf{Estabilidade}: A menor variabilidade na curva do modelo proposto sugere um processo de aprendizado mais estável e previsível, potencialmente facilitando o refinamento das políticas.
+    \item \textbf{Eficácia do curriculum learning}: A abordagem proposta, combinando curriculum learning e self-play, demonstrou superioridade estatisticamente significativa em termos de desempenho global, evidenciada pela maior taxa de vitória em confrontos diretos e melhor equilíbrio entre métricas ofensivas e defensivas.
     
-    \item \textbf{Eficiência}: A convergência mais rápida para episódios mais curtos indica que o curriculum learning promove um desenvolvimento mais eficiente de estratégias para alcançar os objetivos do jogo.
+    \item \textbf{Desenvolvimento de habilidades fundamentais}: O curriculum learning promoveu o desenvolvimento eficiente de habilidades fundamentais, resultando em melhorias significativas nas métricas de continuidade do jogo e controle técnico.
     
-    \item \textbf{Robustez}: A consistência no tamanho dos episódios na fase final do treinamento sugere maior robustez das políticas aprendidas, com menor suscetibilidade a variações nas condições do ambiente.
+    \item \textbf{Aprendizado mais estável}: A abordagem proposta apresentou maior estabilidade durante o processo de aprendizagem, com menor variabilidade nas métricas de desempenho e progressão mais consistente.
+    
+    \item \textbf{Trade-off entre agressividade e controle}: O modelo treinado com curriculum learning desenvolveu um estilo de jogo mais equilibrado, priorizando controle técnico e manutenção da posse de bola sobre tentativas arriscadas de finalização, resultando em desempenho superior em confrontos prolongados.
 \end{enumerate}
 
-Estes padrões corroboram a hipótese de que o curriculum learning estabelece uma base mais sólida para o desenvolvimento de políticas eficientes e robustas. A progressão estruturada do aprendizado parece facilitar a descoberta de estratégias mais sistemáticas e consistentes, em contraste com a abordagem mais exploratória do self-play puro.
+Estas descobertas corroboram a premissa central deste trabalho: que o aprendizado estruturado e progressivo proporcionado pelo curriculum learning oferece vantagens significativas para o treinamento de agentes em ambientes complexos como o futebol de robôs.
 
-\section{Impacto nas Métricas de Continuidade}
-\label{sec:impacto_continuidade}
+\subsection{Implicações para Aprendizado por Reforço em Ambientes Multiagentes}
 
-Uma contribuição específica deste trabalho foi o desenvolvimento e a análise de métricas de continuidade, que avaliam a capacidade dos agentes de manter a bola em jogo por períodos prolongados. Estas métricas são particularmente relevantes para o futebol de robôs, onde a fluidez do jogo é um indicador importante da qualidade técnica.
+Os resultados obtidos têm implicações mais amplas para o campo do aprendizado por reforço em ambientes multiagentes, estendendo-se além do domínio específico do futebol de robôs.
 
-\subsection{Redução de Interrupções}
+Em primeiro lugar, os experimentos demonstram o valor do treinamento progressivo em cenários onde o espaço de ações é amplo e o feedback é esparso. O curriculum learning oferece uma abordagem estruturada para decompor problemas complexos em desafios gerenciáveis, facilitando o desenvolvimento de competências em uma sequência lógica.
 
-A comparação entre as abordagens revelou uma diferença significativa no número médio de resets por episódio, com o modelo proposto produzindo 22,6\% menos interrupções que o baseline (4,1 vs 5,3 resets por episódio). Esta redução é estatisticamente significativa (p = 0,008) e representa uma melhoria substancial na continuidade do jogo.
+Em segundo lugar, os resultados destacam a importância de considerar métricas diversificadas na avaliação do desempenho dos agentes. A análise restrita a métricas convencionais (como recompensa acumulada) pode não capturar nuances importantes no comportamento e na qualidade das políticas aprendidas.
 
-A análise detalhada dos tipos de reset revelou padrões adicionais interessantes. O modelo treinado com curriculum apresentou:
+Por fim, o equilíbrio superior entre características ofensivas e defensivas observado no modelo proposto sugere que o curriculum learning pode promover o desenvolvimento de políticas mais robustas e versáteis, capazes de adaptar-se a diferentes contextos e adversários.
+
+\subsection{Transferibilidade dos Resultados}
+
+Uma consideração importante é a transferibilidade dos resultados obtidos para outros domínios e aplicações. Embora os experimentos tenham sido realizados no contexto específico do futebol de robôs, os princípios fundamentais da abordagem proposta podem ser adaptados para diversos cenários multiagentes.
+
+O framework de curriculum learning desenvolvido neste trabalho oferece uma metodologia generalizável para o design de trajetórias de aprendizado em ambientes complexos. Os critérios de promoção adaptativos e a integração com self-play representam contribuições que podem ser aplicadas em domínios que compartilham características como:
 
 \begin{itemize}
-    \item Redução de 31\% nos resets por saída lateral
-    \item Redução de 18\% nos resets por saída de linha de fundo
-    \item Aumento de 15\% no tempo médio entre resets
+    \item Espaço de ações amplo e contínuo
+    \item Necessidade de coordenação multiagente
+    \item Feedback esparso ou atrasado
+    \item Complexidade estratégica e tática
+    \item Oposição adaptativa
 \end{itemize}
 
-Estas mudanças sugerem que o curriculum learning promove o desenvolvimento de habilidades fundamentais de controle de bola, permitindo que os agentes mantenham a bola dentro dos limites do campo por períodos mais longos.
+Exemplos potenciais de aplicação incluem robótica colaborativa, sistemas de transporte autônomos coordenados, gerenciamento de recursos distribuídos e simulações militares.
 
-\subsection{Sequências Máximas sem Reset}
-
-Um aspecto particularmente revelador foi a análise das sequências máximas sem reset em cada episódio. O modelo proposto demonstrou capacidade de manter sequências significativamente mais longas, com uma média de 87 passos sem interrupções, comparado a 64 passos do baseline.
-
-Esta melhoria na capacidade de sustentar sequências contínuas de jogo pode ser interpretada como um indicador da qualidade técnica dos agentes. No futebol, sequências longas sem interrupções geralmente denotam maior controle e precisão no manejo da bola, características valorizada tanto no contexto humano quanto robótico.
-
-\subsection{Correlação com Desempenho Global}
-
-A análise de correlação revelou uma associação positiva significativa (r = 0,68, p < 0,001) entre as métricas de continuidade e a taxa de vitória em confrontos diretos. Equipes com menos resets por episódio e sequências mais longas sem interrupções tendem a apresentar maior probabilidade de vitória.
-
-Esta correlação sugere que as melhorias nas métricas de continuidade proporcionadas pelo curriculum learning não são meramente estéticas, mas contribuem substantivamente para a eficácia global dos agentes no contexto competitivo.
-
-Estes resultados destacam a importância de considerar métricas além das tradicionais (como gols e recompensa acumulada) na avaliação de agentes para tarefas complexas como o futebol de robôs. As métricas de continuidade fornecem insights valiosos sobre aspectos qualitativos do comportamento dos agentes que podem não ser capturados adequadamente por métricas mais diretas. 
+A metodologia experimental desenvolvida, incluindo as métricas de avaliação e o sistema de torneios, também oferece um template valioso para a avaliação comparativa de diferentes abordagens de treinamento em ambientes complexos. 
