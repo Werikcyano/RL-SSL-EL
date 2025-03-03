@@ -118,23 +118,29 @@ Um aspecto diferencial da abordagem proposta é a melhoria significativa nas mé
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{fig/graficos_trabalho/graficos_experimentos/geral/custom_metricstotal_resets_mean.png}
-    \caption{Evolução da média de resets por episódio ao longo do treinamento}
+    \includegraphics[width=0.95\textwidth]{fig/graficos_trabalho/graficos_experimentos/geral/comparativo_resets_episodio_alinhado.png}
+    \caption{Comparativo da média de resets por episódio com iterações alinhadas entre as abordagens Selfplay após Curriculum e Full Selfplay}
     \label{fig:total_resets}
 \end{figure}
 
-O modelo treinado com curriculum learning apresenta uma redução consistente no número de resets por episódio, alcançando uma média de 4,1 resets comparados a 5,3 do baseline. Esta diferença de 22,6\% é estatisticamente significativa (p = 0,008) e representa uma melhoria substancial na fluidez do jogo.
+A análise do gráfico revela diferenças significativas nos padrões de aprendizado relacionados à continuidade do jogo. Inicialmente, o Selfplay após Curriculum (linha azul) apresenta um pico maior de resets por episódio, mas rapidamente consegue reduzir esse número. O Full Selfplay (linha laranja) mostra um comportamento diferente, com um aumento gradual seguido por uma redução mais lenta.
 
-Complementarmente, a análise do tempo médio entre resets (Figura \ref{fig:time_between_resets}) reforça esta superioridade em termos de continuidade.
+Após aproximadamente 200 iterações, ambas as abordagens convergem para valores similares, com ligeira vantagem para o Full Selfplay nas iterações finais. No entanto, é notável que o Selfplay após Curriculum consegue reduzir o número de resets de forma mais rápida nas fases iniciais do treinamento, evidenciando a transferência positiva das habilidades adquiridas durante o curriculum.
+
+Complementarmente, a análise do tempo médio entre resets (Figura \ref{fig:time_between_resets}) reforça esta observação sobre os diferentes padrões de aprendizado.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{fig/graficos_trabalho/graficos_experimentos/geral/custom_metricsavg_time_between_resets_mean.png}
-    \caption{Evolução do tempo médio entre resets ao longo do treinamento}
+    \includegraphics[width=0.95\textwidth]{fig/graficos_trabalho/graficos_experimentos/geral/comparativo_tempo_entre_resets_alinhado.png}
+    \caption{Comparativo do tempo médio entre resets com iterações alinhadas entre as abordagens Selfplay após Curriculum e Full Selfplay}
     \label{fig:time_between_resets}
 \end{figure}
 
-O modelo proposto consegue manter a bola em jogo por períodos 15\% mais longos em média, indicando maior controle técnico e coordenação entre os agentes. Este resultado é particularmente relevante no contexto do futebol de robôs, onde a capacidade de manter a continuidade do jogo é um indicador importante da qualidade técnica.
+O gráfico de tempo médio entre resets mostra tendências inversamente relacionadas ao número de resets, como esperado. Interessantemente, enquanto o Full Selfplay (linha laranja) apresenta inicialmente picos mais altos, indicando períodos mais longos sem interrupções, sua curva de aprendizado para esta métrica é mais lenta e volátil.
+
+O Selfplay após Curriculum demonstra uma curva de aprendizado mais estável, sem os picos extremos, mas com uma progressão mais consistente. Após a iteração 200, ambas as abordagens convergem para valores similares.
+
+Esta análise comparativa com iterações alinhadas demonstra que, embora ambas as abordagens eventualmente atinjam desempenhos similares em termos de continuidade do jogo em suas fases finais, o Selfplay após Curriculum oferece um processo de aprendizado mais eficiente e estável, especialmente durante as fases iniciais e intermediárias do treinamento.
 
 \subsection{Duração dos Episódios}
 
