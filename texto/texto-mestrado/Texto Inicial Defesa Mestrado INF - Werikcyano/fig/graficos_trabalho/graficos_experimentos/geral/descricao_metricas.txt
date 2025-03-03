@@ -1,0 +1,28 @@
+1. **Métricas de Recompensa e Desempenho Geral**:
+   - `episode_reward_mean`: Média da recompensa por episódio
+   - `episode_len_mean`: Duração média dos episódios
+   - `custom_metrics/score`: Score geral do agente (diferença entre gols marcados e sofridos)
+
+2. **Métricas de Gols**:
+   - `custom_metrics/goals_blue_mean`: Média de gols marcados pelo time azul
+   - `custom_metrics/goals_yellow_mean`: Média de gols sofridos
+   - `custom_metrics/goals_per_episode_mean`: Média de gols por episódio
+
+3. **Métricas de Continuidade do Jogo**:
+   - `custom_metrics/total_resets_mean`: Média de resets por episódio
+   - `custom_metrics/avg_time_between_resets_mean`: Tempo médio entre resets
+   - `custom_metrics/lateral_resets_ratio_mean`: Proporção de saídas pela lateral
+   - `custom_metrics/endline_resets_ratio_mean`: Proporção de saídas pela linha de fundo
+
+4. **Métricas de Aprendizado**:
+   - `info/learner/policy_blue/learner_stats/entropy`: Entropia da política (indica exploração)
+   - `info/learner/policy_blue/learner_stats/policy_loss`: Perda da política
+   - `info/learner/policy_blue/learner_stats/vf_explained_var`: Variância explicada da função valor
+
+Estas métricas são suficientes para:
+1. Avaliar o desempenho geral (recompensas e scores)
+2. Analisar a efetividade ofensiva e defensiva (gols)
+3. Verificar a qualidade do jogo (continuidade)
+4. Monitorar o processo de aprendizagem
+
+

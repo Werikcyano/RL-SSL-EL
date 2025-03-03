@@ -1,0 +1,18 @@
+{
+    "PPO_Soccer_e92a4_00000_0_2025-02-25_21-46-03": {
+        "descricao": "Apenas curriculum task 0 e 1",
+        "tempo_total_segundos": 1445.7644925117493
+    },
+    "PPO_Soccer_1a942_00000_0_2025-02-26_01-50-49": {
+        "descricao": "Curriculum + Selfplay",
+        "tempo_total_segundos": 26540.21523475647
+    },
+    "PPO_Soccer_30eba_00000_0_2025-03-01_17-32-47": {
+        "descricao": "Full Selfplay - Lado amarelo",
+        "tempo_total_segundos": 43517.631693124771
+    },
+    "PPO_Soccer_6671b_00000_0_2025-02-26_13-34-27": {
+        "descricao": "Full Selfplay - Lado azul",
+        "tempo_total_segundos": 44716.26698184013
+    }
+}

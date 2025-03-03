@@ -1,0 +1,107 @@
+{
+    "vitorias": {
+        "metrica": "Vit\u00f3rias",
+        "dados": {
+            "nomes": [
+                "Curriculum",
+                "Full Selfplay",
+                "Curriculum + Selfplay"
+            ],
+            "valores": [
+                32,
+                192,
+                430
+            ]
+        }
+    },
+    "empates": {
+        "metrica": "Empates",
+        "dados": {
+            "nomes": [
+                "Curriculum",
+                "Full Selfplay",
+                "Curriculum + Selfplay"
+            ],
+            "valores": [
+                468,
+                307,
+                70
+            ]
+        }
+    },
+    "derrotas": {
+        "metrica": "Derrotas",
+        "dados": {
+            "nomes": [
+                "Curriculum",
+                "Full Selfplay",
+                "Curriculum + Selfplay"
+            ],
+            "valores": [
+                0,
+                1,
+                0
+            ]
+        }
+    },
+    "gols_feitos": {
+        "metrica": "Total de Gols Feitos",
+        "dados": {
+            "nomes": [
+                "Curriculum",
+                "Full Selfplay",
+                "Curriculum + Selfplay"
+            ],
+            "valores": [
+                33,
+                247,
+                1012
+            ]
+        }
+    },
+    "gols_sofridos": {
+        "metrica": "Total de Gols Sofridos",
+        "dados": {
+            "nomes": [
+                "Curriculum",
+                "Full Selfplay",
+                "Curriculum + Selfplay"
+            ],
+            "valores": [
+                0,
+                6,
+                1
+            ]
+        }
+    },
+    "media_gols_feitos": {
+        "metrica": "M\u00e9dia de Gols Feitos por Partida",
+        "dados": {
+            "nomes": [
+                "Curriculum",
+                "Full Selfplay",
+                "Curriculum + Selfplay"
+            ],
+            "valores": [
+                0.066,
+                0.494,
+                2.024
+            ]
+        }
+    },
+    "media_gols_sofridos": {
+        "metrica": "M\u00e9dia de Gols Sofridos por Partida",
+        "dados": {
+            "nomes": [
+                "Curriculum",
+                "Full Selfplay",
+                "Curriculum + Selfplay"
+            ],
+            "valores": [
+                0.0,
+                0.012,
+                0.002
+            ]
+        }
+    }
+}
