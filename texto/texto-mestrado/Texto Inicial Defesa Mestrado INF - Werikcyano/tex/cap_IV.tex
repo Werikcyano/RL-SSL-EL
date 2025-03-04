@@ -198,48 +198,106 @@ Ao longo do treinamento, ambas as abordagens apresentam uma redução gradual na
 
 \subsection{Avaliação por Torneios}
 
-Para uma avaliação mais abrangente e realista do desempenho dos modelos treinados, foram realizados torneios controlados com 500 partidas utilizando o sistema Arena Serra Dourada, implementado especificamente para este trabalho. Este sistema permitiu a realização de partidas completas com 10 minutos de duração entre agentes treinados por diferentes métodos.
+Para uma avaliação mais abrangente e realista do desempenho dos modelos treinados, foram realizados torneios controlados com 500 partidas cada, utilizando o sistema Arena Serra Dourada, implementado especificamente para este trabalho. Este sistema permitiu a realização de partidas completas com 10 minutos de duração entre agentes treinados por diferentes métodos.
 
-A Figura \ref{fig:comparacao_vitorias} apresenta a comparação do número de vitórias obtidas por cada abordagem nos torneios realizados.
+Os torneios foram organizados em dois confrontos distintos:
+\begin{itemize}
+    \item \textbf{Torneio 1}: Full Selfplay vs Curriculum - 500 partidas entre agentes treinados apenas com self-play e agentes treinados apenas com curriculum learning.
+    \item \textbf{Torneio 2}: Full Selfplay vs Curriculum + Selfplay - 500 partidas entre agentes treinados apenas com self-play e agentes treinados com a abordagem combinada (curriculum seguido por self-play).
+\end{itemize}
+
+Cada partida tinha duração de 10 minutos e seguia as regras básicas do futebol de robôs, como cobrança de laterais, faltas e contabilização de gols. Esta configuração experimental permitiu avaliar não apenas a eficácia em marcar gols, mas também a estabilidade das políticas aprendidas em jogos completos e a capacidade de adaptação a diferentes situações de jogo.
+
+A Tabela \ref{tab:resultados_torneios} apresenta um resumo dos resultados dos dois torneios realizados.
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|c|c|c|c|}
+        \hline
+        \textbf{Torneio} & \textbf{Partidas} & \textbf{Equipe} & \textbf{Vitórias} & \textbf{Gols} & \textbf{Empates} \\
+        \hline
+        \multirow{2}{*}{Torneio 1} & \multirow{2}{*}{500} & Full Selfplay & 247 (49,4\%) & 503 & \multirow{2}{*}{220 (44\%)} \\
+        \cline{3-5}
+        & & Curriculum & 33 (6,6\%) & 58 & \\
+        \hline
+        \multirow{2}{*}{Torneio 2} & \multirow{2}{*}{500} & Full Selfplay & 7 (1,4\%) & 9 & \multirow{2}{*}{63 (12,6\%)} \\
+        \cline{3-5}
+        & & Curriculum + Selfplay & 430 (86\%) & 1012 & \\
+        \hline
+    \end{tabular}
+    \caption{Resumo dos resultados dos torneios realizados com 500 partidas cada}
+    \label{tab:resultados_torneios}
+\end{table}
+
+Os resultados revelam padrões interessantes sobre o desempenho de cada abordagem. No Torneio 1 (Full Selfplay vs Curriculum), observamos uma clara superioridade do modelo treinado apenas com self-play, que obteve 247 vitórias (49,4\%) contra apenas 33 vitórias (6,6\%) do modelo treinado somente com curriculum learning. É notável também o alto número de empates (220, correspondendo a 44\% dos jogos), sugerindo que o modelo de curriculum, apesar de seu desempenho inferior em termos de vitórias, desenvolveu capacidades defensivas significativas.
+
+No Torneio 2 (Full Selfplay vs Curriculum + Selfplay), os resultados evidenciam a esmagadora superioridade do modelo treinado com a combinação de curriculum learning e self-play, que obteve 430 vitórias (86\%) em comparação com apenas 7 vitórias (1,4\%) do modelo full self-play. O número de empates foi significativamente menor (63, apenas 12,6\% dos jogos), indicando partidas mais decisivas e menos equilibradas.
+
+Esta diferença dramática no desempenho destaca o poderoso efeito sinérgico obtido ao combinar as duas abordagens. Enquanto o curriculum learning isolado apresenta limitações significativas em um cenário competitivo completo, sua integração com o self-play resulta em políticas substancialmente mais eficazes do que aquelas desenvolvidas apenas com self-play.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{fig/graficos_trabalho/graficos_torneios/geral/comparacao_vitorias.png}
-    \caption{Comparação do número de vitórias por abordagem nos torneios com 500 partidas}
-    \label{fig:comparacao_vitorias}
+    \includegraphics[width=0.8\textwidth]{fig/graficos_trabalho/graficos_torneios/torneios/vitorias_full_selfplay_vs_curriculum.png}
+    \caption{Distribuição de resultados no Torneio 1: Full Selfplay vs Curriculum}
+    \label{fig:vitorias_torneio1}
 \end{figure}
 
-Os resultados evidenciam a superioridade do modelo treinado com a combinação de curriculum learning e self-play, que obteve 430 vitórias (86\%) em comparação com 192 vitórias (38,4\%) do modelo full self-play tradicional e apenas 32 vitórias (6,4\%) do modelo treinado somente com curriculum learning. Esta diferença na taxa de vitória é estatisticamente significativa e demonstra o benefício substancial da abordagem híbrida proposta.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{fig/graficos_trabalho/graficos_torneios/torneios/vitorias_full_selfplay_vs_curriculum_+_selfplay.png}
+    \caption{Distribuição de resultados no Torneio 2: Full Selfplay vs Curriculum + Selfplay}
+    \label{fig:vitorias_torneio2}
+\end{figure}
 
-É interessante notar que o modelo treinado apenas com curriculum learning obteve o menor número de vitórias, mas também apresentou o maior número de empates (468, correspondendo a 93,6\% dos jogos), o que sugere uma estratégia mais defensiva e conservadora. Por outro lado, o modelo combinado (curriculum + self-play) não apenas venceu mais partidas, mas também registrou o menor número de empates (70, apenas 14\% dos jogos), indicando uma abordagem mais assertiva e eficaz.
+A comparação visual das Figuras \ref{fig:vitorias_torneio1} e \ref{fig:vitorias_torneio2} evidencia claramente a inversão de desempenho entre os torneios e o impacto transformador da abordagem combinada.
 
 \subsection{Análise de Gols nos Torneios}
 
-Além da taxa de vitória, analisamos também o desempenho ofensivo e defensivo dos modelos nos torneios realizados, conforme ilustrado nas Figuras \ref{fig:comparacao_gols_feitos} e \ref{fig:comparacao_gols_sofridos}.
+Além da taxa de vitória, analisamos também o desempenho ofensivo dos modelos nos torneios realizados, com foco na capacidade de marcar gols, que representa um indicador fundamental de eficácia no futebol de robôs.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{fig/graficos_trabalho/graficos_torneios/geral/comparacao_gols_feitos.png}
-    \caption{Comparação do número total de gols marcados por abordagem nos torneios}
-    \label{fig:comparacao_gols_feitos}
+    \includegraphics[width=0.8\textwidth]{fig/graficos_trabalho/graficos_torneios/torneios/gols_full_selfplay_vs_curriculum.png}
+    \caption{Comparação de gols marcados no Torneio 1: Full Selfplay vs Curriculum}
+    \label{fig:gols_torneio1}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{fig/graficos_trabalho/graficos_torneios/geral/comparacao_gols_sofridos.png}
-    \caption{Comparação do número total de gols sofridos por abordagem nos torneios}
-    \label{fig:comparacao_gols_sofridos}
+    \includegraphics[width=0.8\textwidth]{fig/graficos_trabalho/graficos_torneios/torneios/gols_full_selfplay_vs_curriculum_+_selfplay.png}
+    \caption{Comparação de gols marcados no Torneio 2: Full Selfplay vs Curriculum + Selfplay}
+    \label{fig:gols_torneio2}
 \end{figure}
 
-Os dados revelam diferenças significativas no desempenho ofensivo e defensivo entre as três abordagens. O modelo combinado (curriculum + self-play) apresentou uma capacidade ofensiva superior, marcando um total de 1.012 gols durante o torneio, o que corresponde a uma média de 2,024 gols por partida. Em contraste, o modelo treinado exclusivamente com self-play marcou 247 gols (média de 0,494 por partida), enquanto o modelo que utilizou apenas curriculum learning obteve apenas 33 gols (média de 0,066 por partida).
+A análise dos gols marcados em cada torneio revela padrões consistentes com os resultados gerais das partidas, mas com diferenças de magnitude ainda mais pronunciadas.
 
-Do ponto de vista defensivo, todos os modelos demonstraram robustez considerável, mas com diferenças notáveis. O modelo treinado apenas com curriculum learning não sofreu nenhum gol durante todo o torneio, demonstrando uma excelente capacidade defensiva que compensa parcialmente sua limitada capacidade ofensiva. O modelo combinado sofreu apenas 1 gol em 500 partidas (média de 0,002 por partida), enquanto o modelo full self-play sofreu 6 gols (média de 0,012 por partida).
+No Torneio 1 (Full Selfplay vs Curriculum), o modelo treinado apenas com self-play demonstrou capacidade ofensiva significativamente superior, marcando 503 gols durante as 500 partidas, o que corresponde a uma média de 1,006 gols por partida. Em contraste, o modelo treinado exclusivamente com curriculum learning marcou apenas 58 gols (média de 0,116 por partida), aproximadamente 11,5\% do desempenho ofensivo do Full Selfplay.
 
-Estes resultados sugerem que o curriculum learning contribui significativamente para o desenvolvimento de habilidades defensivas sólidas, enquanto a combinação com self-play permite que essas habilidades sejam complementadas por estratégias ofensivas eficazes. A abordagem combinada consegue, portanto, obter o melhor dos dois mundos: a solidez defensiva do curriculum learning e a agressividade ofensiva desenvolvida durante o self-play competitivo.
+Esta disparidade sugere que, embora o curriculum learning desenvolva habilidades fundamentais, ele não é suficiente para criar agentes com capacidade ofensiva efetiva em um cenário competitivo completo. A limitação ofensiva explica o alto número de empates e a baixa taxa de vitórias do modelo Curriculum.
+
+No Torneio 2 (Full Selfplay vs Curriculum + Selfplay), observamos uma inversão dramática deste padrão. O modelo combinado (curriculum + self-play) apresentou uma capacidade ofensiva extraordinária, marcando 1.012 gols durante as 500 partidas, o que corresponde a uma impressionante média de 2,024 gols por partida. Em contraste, o modelo Full Selfplay marcou apenas 9 gols (média de 0,018 por partida), menos de 1\% do desempenho ofensivo do modelo combinado.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{fig/graficos_trabalho/graficos_torneios/torneios/percentual_gols_full_selfplay_vs_curriculum.png}
+    \caption{Percentual de gols no Torneio 1: Full Selfplay vs Curriculum}
+    \label{fig:percentual_gols_torneio1}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{fig/graficos_trabalho/graficos_torneios/torneios/percentual_gols_full_selfplay_vs_curriculum_+_selfplay.png}
+    \caption{Percentual de gols no Torneio 2: Full Selfplay vs Curriculum + Selfplay}
+    \label{fig:percentual_gols_torneio2}
+\end{figure}
+
+As Figuras \ref{fig:percentual_gols_torneio1} e \ref{fig:percentual_gols_torneio2} ilustram a distribuição percentual dos gols marcados em cada torneio, evidenciando a magnitude da transformação no desempenho ofensivo. No Torneio 1, o Full Selfplay foi responsável por 89,7\% dos gols marcados, enquanto no Torneio 2, o Curriculum + Selfplay marcou impressionantes 99,1\% dos gols.
+
+Esta disparidade extrema na capacidade ofensiva pode ser atribuída ao efeito sinérgico da abordagem combinada. O curriculum learning proporciona uma base sólida de habilidades fundamentais que, quando refinadas através do self-play, resultam em estratégias ofensivas excepcionalmente eficazes. O contraste entre o desempenho do Full Selfplay nos dois torneios sugere que o modelo combinado não apenas desenvolve políticas superiores, mas também consegue neutralizar efetivamente as estratégias do Full Selfplay, limitando drasticamente sua capacidade ofensiva.
 
 \subsection{Análise de Trade-offs entre Abordagens}
 
-Uma observação importante que emerge da análise dos dados dos torneios é o claro trade-off entre as diferentes abordagens de treinamento. A Tabela \ref{tab:comparacao_abordagens} resume as principais métricas para cada abordagem, facilitando a visualização destes trade-offs.
+Uma observação importante que emerge da análise dos dados dos torneios é o claro trade-off entre as diferentes abordagens de treinamento. A Tabela \ref{tab:comparacao_abordagens_detalhada} resume as principais métricas para cada abordagem nos confrontos diretos, facilitando a visualização destes trade-offs.
 
 \begin{table}[H]
     \centering
@@ -247,34 +305,42 @@ Uma observação importante que emerge da análise dos dados dos torneios é o c
         \hline
         \textbf{Métrica} & \textbf{Curriculum} & \textbf{Full Self-play} & \textbf{Curriculum + Self-play} \\
         \hline
-        Vitórias & 32 (6,4\%) & 192 (38,4\%) & 430 (86\%) \\
+        Vitórias vs Full Self-play & 33 (6,6\%) & - & 430 (86\%) \\
         \hline
-        Empates & 468 (93,6\%) & 307 (61,4\%) & 70 (14\%) \\
+        Empates vs Full Self-play & 220 (44\%) & - & 63 (12,6\%) \\
         \hline
-        Derrotas & 0 (0\%) & 1 (0,2\%) & 0 (0\%) \\
+        Derrotas vs Full Self-play & 247 (49,4\%) & - & 7 (1,4\%) \\
         \hline
-        Gols marcados & 33 & 247 & 1.012 \\
+        Gols marcados vs Full Self-play & 58 & - & 1.012 \\
         \hline
-        Gols sofridos & 0 & 6 & 1 \\
+        Gols sofridos vs Full Self-play & 503 & - & 9 \\
         \hline
-        Média de gols/partida & 0,066 & 0,494 & 2,024 \\
+        Média de gols/partida & 0,116 & 0,512* & 2,024 \\
+        \hline
+        \multicolumn{4}{|l|}{* Média calculada considerando os dois torneios (512 gols em 1000 partidas)} \\
         \hline
     \end{tabular}
-    \caption{Comparação entre as três abordagens de treinamento nos torneios com 500 partidas}
-    \label{tab:comparacao_abordagens}
+    \caption{Comparação detalhada entre as três abordagens de treinamento nos torneios}
+    \label{tab:comparacao_abordagens_detalhada}
 \end{table}
 
-A análise desta tabela revela padrões claros:
+A análise desta tabela revela padrões claros que caracterizam cada abordagem:
 
 \begin{enumerate}
-    \item \textbf{Curriculum Learning puro}: Desenvolve agentes extremamente defensivos e conservadores, com excelente capacidade de evitar gols (nenhum gol sofrido), mas limitada capacidade ofensiva (apenas 0,066 gols por partida). Esta abordagem resulta em muitos empates (93,6\%) e poucas vitórias (6,4\%).
+    \item \textbf{Curriculum Learning puro}: Desenvolve agentes com capacidades defensivas significativas, evidenciadas pelo alto número de empates (44\%) mesmo contra o Full Self-play. No entanto, apresenta limitações severas na capacidade ofensiva, com apenas 0,116 gols por partida e baixa taxa de vitórias (6,6\%). Sua estratégia parece focada na neutralização do adversário, mas com dificuldades para criar situações ofensivas efetivas.
     
-    \item \textbf{Full Self-play}: Produz agentes com um perfil mais equilibrado, capazes de marcar gols com frequência moderada (0,494 por partida) e manter uma defesa relativamente sólida. Esta abordagem leva a um número significativo de vitórias (38,4\%), mas também muitos empates (61,4\%).
+    \item \textbf{Full Self-play}: Produz agentes com capacidades ofensivas e defensivas moderadamente equilibradas, conseguindo dominar o Curriculum puro (49,4\% de vitórias), mas sendo completamente superado pela abordagem combinada (apenas 1,4\% de vitórias). Esta abordagem baseia-se na exploração auto-dirigida do espaço de estados, resultando em políticas funcionais, mas subótimas.
     
-    \item \textbf{Curriculum + Self-play}: Representa o melhor equilíbrio entre capacidades ofensivas e defensivas, com uma notável capacidade de marcar gols (2,024 por partida) enquanto mantém uma defesa quase impenetrável (apenas 1 gol sofrido em 500 partidas). Esta abordagem resulta em uma alta taxa de vitórias (86\%) e poucos empates (14\%).
+    \item \textbf{Curriculum + Self-play}: Representa uma síntese poderosa que maximiza os benefícios de ambas as abordagens anteriores. Demonstra capacidade ofensiva extraordinária (2,024 gols por partida) combinada com defesa quase impenetrável (apenas 9 gols sofridos em 500 partidas). O resultado é uma dominância esmagadora sobre o Full Self-play, com 86\% de vitórias e mais de 100 vezes mais gols marcados.
 \end{enumerate}
 
-Estes resultados confirmam a hipótese central deste trabalho: o curriculum learning isoladamente desenvolve habilidades fundamentais sólidas, particularmente defensivas, mas não é suficiente para desenvolver políticas competitivas completas. Por outro lado, o self-play tradicional desenvolve agentes competitivos, mas que podem não atingir todo seu potencial. A combinação permite que os agentes desenvolvam o melhor de ambas características, resultando em políticas significativamente mais eficazes.
+Estes resultados confirmam a hipótese central deste trabalho: o curriculum learning proporciona fundamentos sólidos que, quando refinados através do self-play competitivo, resultam em políticas significativamente superiores às desenvolvidas por qualquer uma das abordagens isoladamente.
+
+A análise dos torneios revela aspectos particularmente interessantes sobre a transferência de conhecimento entre fases de treinamento. O modelo Curriculum puro, embora limitado ofensivamente, demonstra capacidades defensivas substanciais, como evidenciado pelo alto número de empates contra o Full Self-play. Quando estas capacidades defensivas são combinadas com o refinamento tático proporcionado pelo self-play, o resultado é um agente com defesa sólida e ataque extremamente eficaz.
+
+Um aspecto notável é a diferença no desempenho do Full Self-play entre os dois torneios. Contra o Curriculum puro, ele demonstra dominância clara, mas contra o Curriculum + Self-play, seu desempenho colapsa. Isto sugere que a abordagem combinada não apenas desenvolve políticas eficazes, mas também consegue neutralizar estrategicamente as políticas aprendidas pelo Full Self-play, explorando suas vulnerabilidades de forma sistemática.
+
+Em síntese, a abordagem combinada Curriculum + Self-play demonstra o melhor equilíbrio entre capacidades ofensivas e defensivas, com uma superioridade que transcende a simples soma das vantagens individuais de cada método. Este efeito sinérgico valida a importância do desenvolvimento estruturado de habilidades fundamentais antes da exposição a cenários competitivos complexos, estabelecendo um paradigma promissor para o treinamento de agentes em ambientes multiagente como o futebol de robôs.
 
 \section{Análise das Métricas de Aprendizado por Reforço}
 \label{sec:analise_metricas_aprendizado}

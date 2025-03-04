@@ -1,0 +1,31 @@
+{
+    "torneios": [
+      {
+        "nome": "Full Selfplay vs Curriculum",
+        "partidas": 500,
+        "gols": {
+          "Full Selfplay": 503,
+          "Curriculum": 58
+        },
+        "vitorias": {
+          "Full Selfplay": 247,
+          "Curriculum": 33,
+          "Empates": 220
+        }
+      },
+      {
+        "nome": "Full Selfplay vs Curriculum + Selfplay",
+        "partidas": 500,
+        "gols": {
+          "Full Selfplay": 9,
+          "Curriculum + Selfplay": 1012
+        },
+        "vitorias": {
+          "Full Selfplay": 7,
+          "Curriculum + Selfplay": 430,
+          "Empates": 63
+        }
+      }
+    ]
+  }
+  
