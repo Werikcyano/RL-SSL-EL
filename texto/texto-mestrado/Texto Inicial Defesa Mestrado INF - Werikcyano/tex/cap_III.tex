@@ -74,14 +74,23 @@ Estas adaptações permitem uma transição suave do treinamento estruturado par
 
 \subsection{Pipeline de Treinamento}
 
-O pipeline de treinamento implementado neste trabalho integra o curriculum learning e o self-play em uma sequência coerente, permitindo que os agentes progridam de forma gradual de tarefas simples até o jogo completo. Este pipeline é composto por três estágios principais:
+O pipeline de treinamento implementado neste trabalho integra o curriculum learning e o self-play em uma sequência coerente, permitindo que os agentes progridam de forma gradual de tarefas simples até o jogo completo. A Figura \ref{fig:fluxograma_treino} apresenta uma visão geral deste processo, ilustrando a estrutura do pipeline e a interação entre seus componentes.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{fig/fluxograma_treino_mestrado.png}
+    \caption{Fluxograma do pipeline de treinamento, destacando a integração entre Curriculum Learning e Self-play. O processo inicia com a inicialização e configuração dos componentes, seguido pela divisão entre as abordagens de Curriculum Learning e Self-play direto. A fase de Curriculum Learning inclui tarefas progressivas (Task 0 ou 1) seguidas por ciclos de tentativas até conclusão do critério de promoção, resultando em um modelo treinado que serve como base para o Self-play subsequente.}
+    \label{fig:fluxograma_treino}
+\end{figure}
+
+Como ilustrado no fluxograma, este pipeline é composto por três estágios principais:
 
 \begin{enumerate}
-    \item \textbf{Treinamento com Curriculum Learning}: Os agentes iniciam o treinamento em um ambiente simplificado, com tarefas específicas de complexidade progressiva. Este estágio utiliza o \texttt{CurriculumCallback} para monitorar o desempenho e controlar a progressão.
+    \item \textbf{Treinamento com Curriculum Learning}: Os agentes iniciam o treinamento em um ambiente simplificado, com tarefas específicas de complexidade progressiva (Task 0 ou 1). Este estágio utiliza o \texttt{CurriculumCallback} para monitorar o desempenho e controlar a progressão através de ciclos de tentativas até que os critérios de conclusão sejam atingidos.
     
     \item \textbf{Transição para Self-play}: Após completar os estágios do curriculum, os agentes são transferidos para o ambiente de self-play, onde enfrentam versões anteriores de si mesmos como oponentes.
     
-    \item \textbf{Refinamento com Self-play}: Os agentes continuam o treinamento no ambiente competitivo, com atualizações periódicas da política dos oponentes quando alcançam níveis de desempenho predefinidos.
+    \item \textbf{Refinamento com Self-play}: Os agentes continuam o treinamento no ambiente competitivo, com atualizações periódicas da política dos oponentes quando alcançam níveis de desempenho predefinidos, através de partidas contra a última melhor versão.
 \end{enumerate}
 
 A implementação deste processo de treinamento é feita através de um arquivo central que organiza e coordena todas as etapas necessárias. Este arquivo é responsável por configurar o ambiente de treinamento e definir como os robôs devem se comportar em cada fase. A mudança entre as diferentes fases do treinamento pode ser facilmente ajustada através de configurações específicas, permitindo maior flexibilidade durante todo o processo.
