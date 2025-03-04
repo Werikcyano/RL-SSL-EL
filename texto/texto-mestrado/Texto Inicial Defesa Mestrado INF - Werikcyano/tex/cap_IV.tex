@@ -237,7 +237,7 @@ A análise desta tabela revela padrões claros:
 
 Estes resultados confirmam a hipótese central deste trabalho: o curriculum learning isoladamente desenvolve habilidades fundamentais sólidas, particularmente defensivas, mas não é suficiente para desenvolver políticas competitivas completas. Por outro lado, o self-play tradicional desenvolve agentes competitivos, mas que podem não atingir todo seu potencial. A combinação permite que os agentes desenvolvam o melhor de ambas características, resultando em políticas significativamente mais eficazes.
 
-\section{Análise Detalhada das Métricas de Aprendizado por Reforço}
+\section{Análise das Métricas de Aprendizado por Reforço}
 \label{sec:analise_metricas_aprendizado}
 
 Além das métricas específicas do domínio do futebol de robôs, uma análise detalhada das métricas básicas de aprendizado por reforço fornece insights valiosos sobre os processos internos dos algoritmos durante o treinamento. Esta seção explora três métricas fundamentais: entropia da política, perda da política e variância explicada da função valor, comparando o comportamento dessas métricas entre as abordagens Selfplay após Curriculum e Full Selfplay.
@@ -309,75 +309,75 @@ Por fim, embora ambas as abordagens eventualmente convirjam para valores similar
 
 Estas observações corroboram a hipótese central deste trabalho: o curriculum learning como fase preparatória proporciona um alicerce mais sólido para o desenvolvimento de políticas complexas, resultando em um processo de aprendizado mais eficiente e estável durante o subsequente treinamento competitivo via self-play.
 
-
-%=====================================================
 \section{Discussão dos Resultados}
 \label{sec:discussao_resultados}
 
-Os resultados obtidos nos experimentos fornecem insights importantes sobre o impacto do curriculum learning no treinamento de agentes para o futebol de robôs. Esta seção discute estes resultados, suas implicações e limitações.
+A análise dos resultados experimentais permite estabelecer conclusões substantivas sobre a eficácia da abordagem proposta. Esta seção sintetiza as principais descobertas e suas implicações.
 
-\subsection{Interpretação dos Dados}
+\subsection{Síntese dos Resultados Experimentais}
 
-A análise integrada dos resultados experimentais revela padrões consistentes sobre os benefícios da abordagem proposta. Em primeiro lugar, observa-se que o modelo treinado com a combinação de curriculum learning e self-play demonstra maior regularidade e consistência em todas as métricas analisadas, conforme evidenciado pela menor variância ao longo dos episódios.
+Os experimentos realizados revelam superioridade consistente da abordagem combinada (Curriculum + Self-play) em relação às alternativas. Esta superioridade manifesta-se em três dimensões principais:
 
-A superioridade significativa nas métricas de continuidade do jogo sugere que o curriculum learning promove o desenvolvimento de habilidades fundamentais que permitem um controle mais preciso da bola e melhor coordenação entre os agentes. Esta característica é particularmente valiosa no contexto do futebol de robôs, onde a manutenção da bola em jogo é um indicador de qualidade técnica.
+\begin{enumerate}
+    \item \textbf{Desempenho competitivo}: A taxa de vitória de 86\% nos torneios, contra apenas 38,4\% do Full Self-play, representa evidência inequívoca da eficácia da abordagem proposta. A capacidade de marcar gols também se destaca, com média de 2,024 gols por partida, quatro vezes superior ao Full Self-play.
+    
+    \item \textbf{Eficiência computacional}: A redução de aproximadamente 40\% no tempo total de treinamento (7,4 horas versus 12,1-12,4 horas) demonstra ganho significativo de eficiência, fator crítico para aplicações práticas.
+    
+    \item \textbf{Estabilidade do aprendizado}: As métricas básicas de aprendizado por reforço (entropia da política, perda da política e variância explicada) evidenciam um processo mais estável e consistente, com menor volatilidade durante as fases críticas do treinamento.
+\end{enumerate}
 
-A impressionante taxa de vitória da abordagem combinada nos torneios (86\% contra 38,4\% do full self-play) fornece a evidência mais contundente da eficácia da abordagem proposta. Este resultado, juntamente com a capacidade ofensiva quatro vezes superior (2,024 contra 0,494 gols por partida), sugere que o curriculum learning como fase preparatória cria uma base sólida sobre a qual o self-play pode construir estratégias ofensivas mais eficazes, resultando em um desempenho global significativamente superior.
+Os dados apresentam ainda um padrão claro de complementaridade entre as abordagens. O Curriculum Learning isolado produz agentes defensivamente sólidos mas ofensivamente limitados, enquanto o Self-play puro desenvolve agentes com capacidades mais equilibradas, porém subótimas. A abordagem combinada potencializa as vantagens de ambas estratégias, resultando em agentes tecnicamente refinados e taticamente eficazes.
 
-A análise comparativa entre as três abordagens testadas (curriculum puro, self-play puro e combinação) revelou um aspecto particularmente interessante: o curriculum learning isolado desenvolve agentes com excelente capacidade defensiva, mas limitada iniciativa ofensiva, enquanto o self-play desenvolve agentes mais equilibrados, mas com potencial não totalmente realizado. A combinação permite que os agentes desenvolvam o melhor de ambas características, resultando em políticas significativamente mais eficazes.
+\subsection{Confirmação da Hipótese}
 
-\subsection{Validação da Hipótese}
+Os resultados obtidos confirmam consistentemente a hipótese central deste trabalho: o curriculum learning como fase preparatória para o self-play melhora significativamente as políticas aprendidas, resultando em agentes com desempenho superior.
 
-Os resultados obtidos fornecem evidências contundentes que suportam a hipótese inicial deste trabalho: a introdução do curriculum learning como fase preparatória para o self-play pode melhorar significativamente a qualidade e a eficácia das políticas aprendidas para o futebol de robôs.
+Esta confirmação apoia-se em evidências estatisticamente significativas observadas em múltiplos cenários de avaliação e métricas diversas. O curriculum learning proporciona fundamentos técnicos que permitem ao agente aproveitar melhor a fase competitiva do self-play, acelerando e otimizando o desenvolvimento de políticas eficazes.
 
-Os dados dos torneios, em particular, oferecem uma validação clara desta hipótese, demonstrando que a abordagem combinada supera significativamente tanto o curriculum learning isolado quanto o self-play tradicional em métricas críticas como taxa de vitória e eficiência ofensiva.
+\subsection{Limitações do Estudo}
 
-A análise estatística confirmou que os benefícios observados são significativos e não podem ser atribuídos a variações aleatórias ou peculiaridades do processo de treinamento. A consistência dos resultados em múltiplas métricas e diferentes cenários de avaliação reforça a robustez da abordagem proposta.
-
-\subsection{Limitações e Considerações}
-
-Apesar dos resultados promissores, este estudo apresenta algumas limitações que devem ser consideradas na interpretação dos resultados:
+Apesar dos resultados promissores, algumas limitações devem ser consideradas:
 
 \begin{itemize}
-    \item \textbf{Generalização para ambientes reais}: Os experimentos foram realizados em um ambiente simulado, e a transferência das políticas aprendidas para robôs físicos pode enfrentar desafios adicionais devido ao reality gap.
+    \item \textbf{Generalização para ambientes físicos}: Os experimentos foram conduzidos exclusivamente em simulação, existindo o desafio conhecido do reality gap na transferência para robôs reais.
     
-    \item \textbf{Sensibilidade aos parâmetros do curriculum}: A eficácia do curriculum learning pode ser influenciada pelos parâmetros específicos escolhidos para cada estágio, e a otimização sistemática destes parâmetros não foi completamente explorada.
+    \item \textbf{Sensibilidade paramétrica}: A eficácia do curriculum learning depende do design apropriado das tarefas e critérios de promoção, cuja otimização sistemática não foi completamente explorada.
     
-    \item \textbf{Escopo do desafio}: O futebol de robôs, embora complexo, representa apenas um subconjunto dos possíveis domínios de aplicação para as técnicas desenvolvidas, e a generalização para outros domínios requer validação adicional.
-    
-    \item \textbf{Complexidade do ambiente}: O ambiente de simulação RL-SSL-EL, embora adequado para os objetivos deste trabalho, representa uma simplificação do futebol de robôs real, omitindo certos aspectos físicos e dinâmicos.
+    \item \textbf{Especificidade do domínio}: Embora os princípios sejam potencialmente generalizáveis, os resultados foram validados especificamente no contexto do futebol de robôs.
 \end{itemize}
 
-Estas limitações representam oportunidades para investigações futuras que poderiam expandir e refinar os insights obtidos neste trabalho.
+\subsection{Implicações para Aprendizado por Reforço}
+
+As descobertas deste trabalho têm implicações que transcendem o domínio específico do futebol de robôs:
+
+\begin{enumerate}
+    \item \textbf{Valor do aprendizado estruturado}: Em domínios complexos com espaço de ações amplo e feedback esparso, o treinamento progressivo demonstra benefícios significativos.
+    
+    \item \textbf{Importância de métricas diversificadas}: A análise exclusiva de métricas convencionais (como recompensa acumulada) pode obscurecer nuances importantes no processo de aprendizado e qualidade das políticas.
+    
+    \item \textbf{Complementaridade de abordagens}: Diferentes técnicas de treinamento podem desenvolver habilidades complementares, cuja combinação resulta em agentes com desempenho superior à soma das partes.
+\end{enumerate}
+
+A metodologia desenvolvida neste trabalho oferece um framework transferível para o design de trajetórias de aprendizado em ambientes multiagentes complexos, especialmente aqueles que compartilham características como necessidade de coordenação, feedback esparso e complexidade estratégica.
 
 \section{Considerações sobre os Estágios do Curriculum}
 \label{sec:analise_estagios}
 
-A análise do processo de aprendizagem durante os estágios específicos do curriculum oferece insights adicionais sobre a eficácia da abordagem proposta. Esta seção examina o desempenho dos agentes em cada estágio do curriculum e sua transição para o self-play.
+Esta seção analisa sucintamente o desempenho dos agentes em cada estágio do curriculum e sua transição para o self-play, complementando os resultados já apresentados.
 
 \subsection{Progresso no Curriculum Task 0}
 
-O Curriculum Task 0, focado no desenvolvimento de habilidades básicas de controle de bola e movimentação, apresentou uma curva de aprendizado característica, conforme ilustrado pela evolução da recompensa média neste estágio.
-
-Os agentes demonstraram progressão consistente neste estágio inicial, atingindo o critério de promoção (80\% de sucesso em uma janela de 100 episódios) após aproximadamente 7,5 milhões de timesteps, metade do orçamento alocado. Esta eficiência sugere que o design da tarefa foi adequado, apresentando um desafio apropriado que permitiu o desenvolvimento efetivo das habilidades pretendidas.
-
-A análise dos comportamentos emergentes neste estágio revelou o desenvolvimento de padrões de movimento eficientes e técnicas básicas de controle de bola que serviram como fundação para as habilidades mais complexas nos estágios subsequentes.
+No Curriculum Task 0, os agentes atingiram o critério de promoção (80\% de sucesso em 100 episódios) após aproximadamente 0,15 horas (9 minutos) de treinamento, utilizando menos da metade do orçamento temporal alocado. Essa eficiência indica que o design da tarefa proporcionou um desafio apropriado para o desenvolvimento das habilidades básicas de controle e movimentação, que serviram como fundamento para estágios posteriores.
 
 \subsection{Progresso no Curriculum Task 1}
 
-O Curriculum Task 1, centrado no desenvolvimento de habilidades ofensivas, apresentou desafios adicionais que exigiram a aplicação e refinamento das habilidades básicas desenvolvidas no estágio anterior.
-
-Os agentes completaram este estágio em aproximadamente 11 milhões de timesteps, demonstrando capacidade de adaptar e integrar as habilidades fundamentais em contextos mais complexos. A análise dos comportamentos emergentes neste estágio revelou o desenvolvimento de estratégias ofensivas coordenadas, incluindo posicionamento tático e padrões de passe.
-
-A transição suave entre os estágios do curriculum e o progresso consistente observado validam o design progressivo das tarefas, confirmando que cada estágio construiu efetivamente sobre as habilidades desenvolvidas nos estágios anteriores.
+No Curriculum Task 1, focado em habilidades ofensivas, os agentes completaram o estágio em aproximadamente 0,25 horas (15 minutos) de treinamento. Neste estágio, observou-se o desenvolvimento de estratégias coordenadas, incluindo posicionamento tático e padrões de passe. A transição eficiente entre os estágios validou o design progressivo das tarefas, confirmando a eficácia da sequência de aprendizado.
 
 \subsection{Transição para Self-Play}
 
-A transição dos estágios estruturados do curriculum para o ambiente competitivo do self-play representa um momento crítico no processo de treinamento. A análise desta transição revelou padrões interessantes que destacam os benefícios do curriculum como fase preparatória.
+A transição para o self-play demonstrou a vantagem da preparação via curriculum. Os agentes com treinamento prévio apresentaram adaptação mais rápida ao ambiente competitivo, evidenciada pelo crescimento superior da recompensa nas primeiras horas do self-play e menor volatilidade nas métricas de desempenho. Esta transição mais suave corrobora os resultados apresentados nas seções anteriores, onde a estabilidade do aprendizado foi identificada como uma das principais vantagens da abordagem combinada.
 
-Os agentes que completaram o curriculum demonstraram adaptação mais rápida ao ambiente competitivo, apresentando taxa de crescimento superior na recompensa média durante as fases iniciais do self-play. Esta vantagem inicial corrobora a hipótese de que as habilidades desenvolvidas durante o curriculum facilitam a aprendizagem subsequente em cenários mais complexos.
-
-Outro aspecto notável foi a menor volatilidade nas métricas de desempenho durante a transição, sugerindo que o curriculum proporcionou uma base mais sólida e estável para o desenvolvimento de estratégias competitivas.
+A análise dos estágios do curriculum permite compreender a origem das vantagens observadas na abordagem Selfplay após Curriculum, especialmente a maior eficiência computacional (redução de 40% no tempo total) e estabilidade nas métricas de aprendizado por reforço discutidas anteriormente.
 
 \section{Conclusões Experimentais}
 \label{sec:conclusoes_experimentais}
