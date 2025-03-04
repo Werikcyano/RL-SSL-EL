@@ -148,14 +148,14 @@ A análise da duração média dos episódios ao longo do treinamento (Figura \r
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{fig/graficos_trabalho/graficos_experimentos/geral/episode_len_mean.png}
-    \caption{Evolução da duração média dos episódios ao longo do treinamento}
+    \includegraphics[width=0.95\textwidth]{fig/graficos_trabalho/graficos_experimentos/geral/comparativo_duracao_episodios_alinhado.png}
+    \caption{Comparativo da duração média dos episódios com iterações alinhadas entre as abordagens Selfplay após Curriculum e Full Selfplay}
     \label{fig:episode_len}
 \end{figure}
 
-Nas fases iniciais, ambas as abordagens apresentam episódios relativamente longos, refletindo a inexperiência dos agentes em alcançar seus objetivos. Com o progresso do treinamento, observa-se uma redução no tamanho dos episódios, indicando o desenvolvimento de estratégias mais eficientes.
+A análise do gráfico revela diferenças marcantes no comportamento dos agentes em relação à duração dos episódios. O Full Selfplay (linha laranja) inicia com episódios significativamente mais longos, atingindo aproximadamente 1200 passos nas primeiras iterações, enquanto o Selfplay após Curriculum (linha azul) começa com episódios bem mais curtos, em torno de 400 passos. Esta diferença inicial demonstra que as habilidades adquiridas durante as fases de curriculum proporcionam um ponto de partida mais eficiente, permitindo aos agentes atingir seus objetivos em menos passos desde o início.
 
-O modelo treinado com curriculum learning apresenta uma curva mais suave e consistente, enquanto o baseline exibe maior volatilidade. Na fase final do treinamento, o modelo proposto apresenta episódios com duração média de 198 passos, comparados a 212 do baseline, sugerindo maior eficiência na consecução dos objetivos do jogo.
+Ao longo do treinamento, ambas as abordagens apresentam uma redução gradual na duração dos episódios, convergindo para valores similares após aproximadamente 200 iterações, quando estabilizam em torno de 100 passos por episódio. É notável, porém, que o Selfplay após Curriculum apresenta uma curva de aprendizado mais suave e consistente, sem as oscilações pronunciadas observadas no Full Selfplay, indicando um processo de aprendizagem mais estável. Nas iterações finais, ambas as abordagens mantêm desempenho similar, mas o caminho percorrido pelo Selfplay após Curriculum para atingir este patamar demonstra maior eficiência, especialmente nas fases críticas iniciais e intermediárias do treinamento.
 
 \subsection{Avaliação por Torneios}
 
