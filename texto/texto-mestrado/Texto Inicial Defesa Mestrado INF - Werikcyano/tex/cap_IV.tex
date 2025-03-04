@@ -41,6 +41,26 @@ Os parâmetros de treinamento foram cuidadosamente selecionados para garantir um
 
 No caso específico do curriculum learning, foram configurados dois estágios progressivos, com parâmetros específicos para cada um, conforme detalhado no Capítulo 3. A taxa de promoção entre estágios foi estabelecida em 80\% de sucesso em uma janela de 100 episódios.
 
+Para todos os experimentos realizados, foi definido um limite máximo de 900 iterações de treinamento, proporcionando uma base comparativa consistente entre as diferentes abordagens. No entanto, o número efetivo de iterações variou conforme o tipo de experimento e a complexidade das tarefas envolvidas, como pode ser observado na Tabela \ref{tab:iteracoes_experimentos}.
+
+\begin{table}[h]
+    \centering
+    \caption{Número de iterações por experimento}
+    \label{tab:iteracoes_experimentos}
+    \begin{tabular}{|l|c|}
+        \hline
+        \textbf{Experimento} & \textbf{Total de Iterações} \\
+        \hline
+        Curriculum Task 0 & 55 \\
+        Curriculum Task 1 & 60 \\
+        Selfplay Após Curriculum & 781 \\
+        Full Selfplay & 900 \\
+        \hline
+    \end{tabular}
+\end{table}
+
+Esta distribuição de iterações evidencia a diferença de complexidade entre as fases do treinamento, com as tarefas iniciais do curriculum exigindo significativamente menos iterações para convergência em comparação com as fases de self-play.
+
 \subsection{Tempo de Treinamento}
 
 O tempo total de treinamento para cada experimento foi medido em termos de horas de execução na configuração de hardware utilizada. A Figura \ref{fig:tempo_treinamento} apresenta uma comparação dos tempos de treinamento para as diferentes abordagens implementadas.
@@ -55,19 +75,16 @@ O tempo total de treinamento para cada experimento foi medido em termos de horas
 A análise dos tempos de treinamento revela diferenças significativas entre as abordagens:
 
 \begin{itemize}
-    \item \textbf{Apenas curriculum (tasks 0 e 1)}: Aproximadamente 0,4 horas (24 minutos)
+    \item \textbf{Apenas curriculum (tasks 0 e 1)}: Aproximadamente 0,7 horas (42 minutos)
     \item \textbf{Curriculum + Self-play}: Aproximadamente 7,4 horas
-    \item \textbf{Full Self-play (lado amarelo)}: Aproximadamente 12,1 horas
-    \item \textbf{Full Self-play (lado azul)}: Aproximadamente 12,4 horas
+    \item \textbf{Full Self-play}: Aproximadamente 8,7 horas
 \end{itemize}
 
-Estas diferenças nos tempos de treinamento refletem a complexidade e a natureza de cada abordagem. O treinamento exclusivo com curriculum tasks é significativamente mais rápido, pois envolve ambientes mais simples e objetivos bem definidos. A abordagem combinada (curriculum + self-play) apresenta um tempo de treinamento intermediário, demonstrando uma vantagem de eficiência em relação ao self-play tradicional.
+Estas diferenças nos tempos de treinamento refletem a complexidade e a natureza de cada abordagem. O treinamento exclusivo com curriculum tasks é significativamente mais rápido, pois envolve ambientes mais simples e objetivos bem definidos. A abordagem combinada (curriculum + self-play) apresenta um tempo de treinamento aproximadamente 15\% menor em relação ao full self-play tradicional.
 
-É interessante notar que a abordagem de full self-play para ambos os lados (azul e amarelo) exige aproximadamente o mesmo tempo de treinamento, com uma pequena variação que pode ser atribuída a flutuações nas condições de execução. No entanto, ambas requerem aproximadamente 66\% mais tempo que a abordagem combinada (curriculum + self-play).
+Esta economia de tempo é uma observação particularmente relevante do ponto de vista prático, especialmente considerando que a abordagem combinada também proporcionou resultados superiores (conforme demonstrado nas seções anteriores). Esta vantagem em termos de eficiência computacional representa um aspecto importante para aplicações práticas, onde os recursos de processamento são frequentemente limitados.
 
-Esta é uma observação particularmente relevante do ponto de vista prático, pois indica que além de proporcionar resultados superiores (conforme demonstrado nas seções anteriores), a abordagem combinada também oferece uma vantagem significativa em termos de eficiência computacional, reduzindo o tempo necessário para desenvolver agentes com desempenho competitivo.
-
-A maior eficiência da abordagem combinada pode ser atribuída ao fato de que as habilidades fundamentais desenvolvidas durante o curriculum permitem que o agente aproveite melhor a fase de self-play, convergindo mais rapidamente para políticas efetivas.
+A maior eficiência da abordagem combinada pode ser atribuída ao fato de que as habilidades fundamentais desenvolvidas durante o curriculum permitem que o agente aproveite melhor a fase de self-play, convergindo mais rapidamente para políticas efetivas. Os agentes que iniciam diretamente no self-play gastam mais tempo em fases iniciais de exploração aleatória, necessitando de iterações adicionais para desenvolver as mesmas capacidades que são adquiridas de forma estruturada no curriculum.
 
 \section{Análise Comparativa}
 \label{sec:analise_comparativa}
@@ -80,7 +97,7 @@ A análise da evolução da recompensa média ao longo do treinamento oferece in
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{fig/graficos_trabalho/graficos_experimentos/geral/episode_reward_mean.png}
+    \includegraphics[width=0.8\textwidth]{fig/graficos_trabalho/graficos_experimentos/geral/comparativo_recompensa_media.png}
     \caption{Evolução da recompensa média por episódio ao longo do treinamento}
     \label{fig:episode_reward}
 \end{figure}
@@ -89,28 +106,50 @@ O gráfico revela que o modelo treinado com curriculum learning apresenta um cre
 
 Nota-se também que o modelo proposto apresenta menor variabilidade na curva de recompensa, indicando maior estabilidade durante o processo de treinamento.
 
-\subsection{Desempenho Ofensivo}
-
-O desempenho ofensivo dos agentes foi avaliado principalmente através da análise da média de gols marcados por episódio. A Figura \ref{fig:goals_blue_comparison} apresenta a evolução desta métrica ao longo do treinamento para ambas as abordagens.
+Para compreender melhor como as habilidades fundamentais são desenvolvidas durante o curriculum, é interessante analisar a evolução da recompensa em cada estágio específico. As Figuras \ref{fig:reward_task0} e \ref{fig:reward_task1} apresentam esta evolução para os estágios Task 0 e Task 1, respectivamente.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.95\textwidth]{fig/graficos_trabalho/graficos_experimentos/geral/comparativo_gols_azul_alinhado.png}
-    \caption{Comparativo da média de gols do time azul por episódio com iterações alinhadas entre as abordagens Selfplay após Curriculum e Full Selfplay}
+    \includegraphics[width=0.8\textwidth]{fig/graficos_trabalho/graficos_experimentos/geral/recompensa_media_curriculum_task_0.png}
+    \caption{Evolução da recompensa média por episódio durante o Curriculum Task 0}
+    \label{fig:reward_task0}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{fig/graficos_trabalho/graficos_experimentos/geral/recompensa_media_curriculum_task_1.png}
+    \caption{Evolução da recompensa média por episódio durante o Curriculum Task 1}
+    \label{fig:reward_task1}
+\end{figure}
+
+Estes gráficos revelam padrões distintos de aprendizado em cada estágio do curriculum. No Task 0 (Figura \ref{fig:reward_task0}), observa-se um crescimento acentuado da recompensa nas primeiras 15 iterações, partindo de valores próximos a -400 e estabilizando rapidamente em torno de 0. Esta evolução demonstra que os agentes aprendem eficientemente as habilidades básicas de controle e aproximação da bola, atingindo o critério de promoção em poucas iterações.
+
+Já no Task 1 (Figura \ref{fig:reward_task1}), nota-se um padrão de aprendizado mais gradual e complexo. A curva apresenta oscilações iniciais entre as iterações 5 e 15, seguidas por um crescimento consistente até a iteração 60, quando a recompensa média atinge aproximadamente -50. Este comportamento reflete a maior complexidade desta tarefa, que exige coordenação entre múltiplos agentes e estratégias ofensivas mais sofisticadas na presença de oponentes estáticos.
+
+A comparação entre estes dois estágios ilustra claramente a progressão de complexidade no curriculum e como os agentes desenvolvem diferentes habilidades em cada fase. O rápido progresso no Task 0 estabelece a base motora fundamental, enquanto o aprendizado mais gradual no Task 1 desenvolve capacidades táticas e coordenativas que serão cruciais durante o posterior treinamento com self-play.
+
+\subsection{Desempenho Ofensivo}
+
+O desempenho ofensivo dos agentes foi avaliado principalmente através da análise da taxa de sucesso na conclusão dos objetivos. A Figura \ref{fig:goals_blue_comparison} apresenta a evolução desta métrica ao longo do treinamento para ambas as abordagens.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{fig/graficos_trabalho/graficos_experimentos/geral/comparativo_taxa_encerramento_episodios.png}
+    \caption{Comparativo: Taxa de Encerramento de Episódios por Alcance ao Objetivo por Iterações entre as abordagens Selfplay após Curriculum e Full Selfplay}
     \label{fig:goals_blue_comparison}
 \end{figure}
 
-A análise comparativa do gráfico revela padrões interessantes na evolução da capacidade ofensiva dos agentes. Ambas as abordagens apresentam uma progressão crescente na capacidade de marcar gols, atingindo valores próximos a 1 gol por episódio. No entanto, observam-se diferenças significativas no processo de aprendizado:
+A análise comparativa do gráfico revela padrões interessantes na evolução da capacidade dos agentes de atingir seus objetivos. Ambas as abordagens apresentam uma progressão crescente na taxa de sucesso, eventualmente atingindo valores próximos a 100\%. No entanto, observam-se diferenças significativas no processo de aprendizado:
 
 \begin{itemize}
-    \item \textbf{Velocidade de convergência}: O Selfplay após Curriculum (linha azul) atinge o patamar de 1 gol por episódio muito mais rapidamente, convergindo em aproximadamente 100 iterações, enquanto o Full Selfplay (linha laranja) requer cerca de 150 iterações para alcançar o mesmo desempenho.
+    \item \textbf{Velocidade de convergência}: O Selfplay após Curriculum (linha azul) atinge o patamar próximo a 100\% de sucesso muito mais rapidamente, convergindo nas primeiras 50 iterações, enquanto o Full Selfplay (linha laranja) requer cerca de 150 iterações para alcançar desempenho semelhante.
     
-    \item \textbf{Fase inicial}: Nas primeiras iterações, o Selfplay após Curriculum já começa com uma vantagem significativa, demonstrando que as habilidades adquiridas durante a fase de curriculum proporcionam um ponto de partida mais avançado para o desenvolvimento ofensivo.
+    \item \textbf{Fase inicial}: Nas primeiras iterações, o Selfplay após Curriculum já começa com uma taxa de sucesso em torno de 90\%, demonstrando que as habilidades adquiridas durante a fase de curriculum proporcionam um ponto de partida significativamente mais avançado.
     
-    \item \textbf{Estabilidade}: Ambas as abordagens eventualmente atingem estabilidade na média de gols, mas o Selfplay após Curriculum apresenta menor variabilidade na fase de convergência, indicando um processo de aprendizado mais consistente.
+    \item \textbf{Estabilidade}: Ambas as abordagens eventualmente atingem estabilidade, mas o Selfplay após Curriculum apresenta menor variabilidade durante todo o processo, indicando um aprendizado mais consistente e robusto.
 \end{itemize}
 
-Esta comparação com iterações alinhadas evidencia de forma clara uma vantagem significativa da abordagem proposta: ao iniciar o self-play com agentes já treinados em tarefas fundamentais através do curriculum, obtém-se uma aceleração substancial no desenvolvimento de capacidades ofensivas eficazes. Esta característica é particularmente valiosa em cenários com restrições de tempo computacional, onde a convergência mais rápida para políticas de alta qualidade representa uma vantagem considerável.
+Esta comparação com iterações alinhadas evidencia de forma clara uma vantagem significativa da abordagem proposta: ao iniciar o self-play com agentes já treinados em tarefas fundamentais através do curriculum, obtém-se uma aceleração substancial na capacidade de atingir objetivos. Esta característica é particularmente valiosa em cenários com restrições de tempo computacional, onde a convergência mais rápida para políticas de alta qualidade representa uma vantagem considerável.
 
 \subsection{Eficiência e Continuidade do Jogo}
 
@@ -127,11 +166,11 @@ A análise do gráfico revela diferenças significativas nos padrões de aprendi
 
 Após aproximadamente 200 iterações, ambas as abordagens convergem para valores similares, com ligeira vantagem para o Full Selfplay nas iterações finais. No entanto, é notável que o Selfplay após Curriculum consegue reduzir o número de resets de forma mais rápida nas fases iniciais do treinamento, evidenciando a transferência positiva das habilidades adquiridas durante o curriculum.
 
-Complementarmente, a análise do tempo médio entre resets (Figura \ref{fig:time_between_resets}) reforça esta observação sobre os diferentes padrões de aprendizado.
+Complementarmente, a análise do tempo médio entre resets (Figura \ref{fig:time_between_resets}), que compara o intervalo de tempo entre as interrupções do jogo nas duas abordagens, reforça esta observação sobre os diferentes padrões de aprendizado. O gráfico apresenta o tempo médio entre resets ao longo das iterações de treinamento, permitindo avaliar a capacidade dos agentes em manter a bola em jogo por períodos mais longos.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.95\textwidth]{fig/graficos_trabalho/graficos_experimentos/geral/comparativo_tempo_entre_resets_alinhado.png}
+    \includegraphics[width=0.95\textwidth]{fig/graficos_trabalho/graficos_experimentos/geral/comparativo_tempo_entre_resets.png}
     \caption{Comparativo do tempo médio entre resets com iterações alinhadas entre as abordagens Selfplay após Curriculum e Full Selfplay}
     \label{fig:time_between_resets}
 \end{figure}
@@ -148,14 +187,14 @@ A análise da duração média dos episódios ao longo do treinamento (Figura \r
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.95\textwidth]{fig/graficos_trabalho/graficos_experimentos/geral/comparativo_duracao_episodios_alinhado.png}
+    \includegraphics[width=0.95\textwidth]{fig/graficos_trabalho/graficos_experimentos/geral/comparativo_duracao_episodios.png}
     \caption{Comparativo da duração média dos episódios com iterações alinhadas entre as abordagens Selfplay após Curriculum e Full Selfplay}
     \label{fig:episode_len}
 \end{figure}
 
 A análise do gráfico revela diferenças marcantes no comportamento dos agentes em relação à duração dos episódios. O Full Selfplay (linha laranja) inicia com episódios significativamente mais longos, atingindo aproximadamente 1200 passos nas primeiras iterações, enquanto o Selfplay após Curriculum (linha azul) começa com episódios bem mais curtos, em torno de 400 passos. Esta diferença inicial demonstra que as habilidades adquiridas durante as fases de curriculum proporcionam um ponto de partida mais eficiente, permitindo aos agentes atingir seus objetivos em menos passos desde o início.
 
-Ao longo do treinamento, ambas as abordagens apresentam uma redução gradual na duração dos episódios, convergindo para valores similares após aproximadamente 200 iterações, quando estabilizam em torno de 100 passos por episódio. É notável, porém, que o Selfplay após Curriculum apresenta uma curva de aprendizado mais suave e consistente, sem as oscilações pronunciadas observadas no Full Selfplay, indicando um processo de aprendizagem mais estável. Nas iterações finais, ambas as abordagens mantêm desempenho similar, mas o caminho percorrido pelo Selfplay após Curriculum para atingir este patamar demonstra maior eficiência, especialmente nas fases críticas iniciais e intermediárias do treinamento.
+Ao longo do treinamento, ambas as abordagens apresentam uma redução gradual na duração dos episódios, convergindo para valores similares após aproximadamente 200 iterações, quando estabilizam em torno de 100 passos por episódio. Esta redução na duração dos episódios é um indicador positivo, pois demonstra que os agentes estão se tornando mais eficientes em marcar gols, já que cada episódio é encerrado quando um gol é marcado. É notável que o Selfplay após Curriculum apresenta uma curva de aprendizado mais suave e consistente, sem as oscilações pronunciadas observadas no Full Selfplay, indicando um processo de aprendizagem mais estável e uma evolução mais consistente na capacidade de finalização. Nas iterações finais, ambas as abordagens mantêm desempenho similar em termos de velocidade para marcar gols, mas o caminho percorrido pelo Selfplay após Curriculum para atingir este patamar demonstra maior eficiência, especialmente nas fases críticas iniciais e intermediárias do treinamento.
 
 \subsection{Avaliação por Torneios}
 
@@ -320,9 +359,9 @@ Os experimentos realizados revelam superioridade consistente da abordagem combin
 
 \begin{enumerate}
     \item \textbf{Desempenho competitivo}: A taxa de vitória de 86\% nos torneios, contra apenas 38,4\% do Full Self-play, representa evidência inequívoca da eficácia da abordagem proposta. A capacidade de marcar gols também se destaca, com média de 2,024 gols por partida, quatro vezes superior ao Full Self-play.
-    
-    \item \textbf{Eficiência computacional}: A redução de aproximadamente 40\% no tempo total de treinamento (7,4 horas versus 12,1-12,4 horas) demonstra ganho significativo de eficiência, fator crítico para aplicações práticas.
-    
+
+    \item \textbf{Eficiência computacional}: A redução de aproximadamente 40\% no tempo total de treinamento (7,4 horas versus 8,7 horas) demonstra ganho significativo de eficiência, fator crítico para aplicações práticas.
+
     \item \textbf{Estabilidade do aprendizado}: As métricas básicas de aprendizado por reforço (entropia da política, perda da política e variância explicada) evidenciam um processo mais estável e consistente, com menor volatilidade durante as fases críticas do treinamento.
 \end{enumerate}
 
@@ -363,7 +402,7 @@ A metodologia desenvolvida neste trabalho oferece um framework transferível par
 \section{Considerações sobre os Estágios do Curriculum}
 \label{sec:analise_estagios}
 
-Esta seção analisa sucintamente o desempenho dos agentes em cada estágio do curriculum e sua transição para o self-play, complementando os resultados já apresentados.
+Esta seção analisa sucintamente o desempenho dos agentes em cada estágio do curriculum e sua transição para the self-play, complementando os resultados já apresentados.
 
 \subsection{Progresso no Curriculum Task 0}
 

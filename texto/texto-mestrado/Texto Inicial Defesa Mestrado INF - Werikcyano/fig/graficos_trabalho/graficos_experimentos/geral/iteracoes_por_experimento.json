@@ -1,0 +1,18 @@
+{
+    "PPO_Soccer_899ff_00000_0_2025-02-25_19-27-23": {
+        "nome_experimento": "Curriculum Task 0",
+        "total_iteracoes": 55
+    },
+    "PPO_Soccer_e92a4_00000_0_2025-02-25_21-46-03": {
+        "nome_experimento": "Curriculum Task 1",
+        "total_iteracoes": 60
+    },
+    "PPO_Soccer_1a942_00000_0_2025-02-26_01-50-49": {
+        "nome_experimento": "Selfplay Após Curriculum",
+        "total_iteracoes": 781
+    },
+    "PPO_Soccer_6671b_00000_0_2025-02-26_13-34-27": {
+        "nome_experimento": "Full Selfplay",
+        "total_iteracoes": 900
+    }
+}
