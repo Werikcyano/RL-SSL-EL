@@ -1,28 +1,47 @@
 \chapter{Conclusão}
 \label{cap:conclusao}
 
-Este trabalho investigou a aplicação de Curriculum Learning no contexto do futebol de robôs da categoria SSL-EL, com o objetivo de melhorar o processo de aprendizagem em ambientes complexos multiagente. A abordagem proposta envolveu a decomposição de tarefas complexas em subtarefas mais simples, permitindo um aprendizado gradual e progressivo dos agentes. A implementação foi realizada através de modificações estratégicas no framework existente, com a criação de um ambiente adaptativo capaz de suportar diferentes níveis de complexidade no treinamento.
+Este trabalho investigou a integração de Curriculum Learning com Self-play para aprendizado por reforço no contexto do futebol de robôs da categoria SSL-EL. Os resultados demonstraram claramente a superioridade da abordagem combinada em relação às técnicas isoladas, validando a hipótese central da pesquisa.
 
-Os resultados preliminares, embora apresentando uma recompensa média ligeiramente inferior nas primeiras 300 steps de treinamento (2,813 vs 3,034 do método default), demonstraram aspectos promissores da abordagem proposta. A análise do tamanho dos episódios revelou um processo de aprendizado mais estável e consistente com o Curriculum Learning, com uma curva de aprendizado mais suave e menos variações bruscas. Esta estabilidade sugere um potencial benefício para o desenvolvimento de políticas mais robustas e generalizáveis no longo prazo.
+As principais contribuições deste trabalho incluem:
 
-A implementação do sistema de curriculum através da classe SSLCurriculumEnv e do CurriculumCallback mostrou-se efetiva na gestão da progressão entre níveis de dificuldade. O sistema de recompensas adaptativo e os mecanismos de monitoramento contínuo permitiram uma transição suave entre os diferentes estágios do aprendizado, contribuindo para a formação de uma base sólida de habilidades fundamentais antes da exposição a cenários mais desafiadores.
+\begin{enumerate}
+    \item \textbf{Metodologia estruturada}: Desenvolvimento de um framework para integração de Curriculum Learning e Self-play, com definição clara de estágios progressivos e critérios de transição adaptativos.
+    
+    \item \textbf{Evidência empírica}: Comprovação quantitativa dos benefícios da abordagem combinada, com ganhos de 86\% na taxa de vitória em torneios comparativos e quadruplicação na média de gols por partida em relação ao Full Self-play.
+    
+    \item \textbf{Eficiência computacional}: Redução de aproximadamente 40\% no tempo total de treinamento (7,4 horas versus 12,1-12,4 horas), fator crítico para aplicações práticas.
+    
+    \item \textbf{Estabilidade aprimorada}: Demonstração de um processo de aprendizado mais consistente e menos volátil, evidenciado pelas métricas básicas de RL (entropia da política, perda da política e variância explicada).
+\end{enumerate}
 
-Como trabalhos futuros, sugere-se a extensão do período de treinamento para avaliar os benefícios do Curriculum Learning em horizontes de tempo mais longos, bem como a investigação de estruturas curriculares mais complexas que possam incorporar aspectos táticos e estratégicos do futebol de robôs. Além disso, seria interessante explorar a integração de técnicas de self-play com o curriculum learning para potencializar ainda mais o processo de aprendizagem em cenários competitivos multiagente.
+Os resultados sugerem que o Curriculum Learning proporciona uma base técnica sólida que potencializa os benefícios do Self-play. Agentes treinados com Curriculum desenvolvem inicialmente habilidades defensivas e de controle básico que, quando refinadas através do Self-play, evoluem para comportamentos táticos sofisticados e eficientes.
 
 \section{Limitações}
 
-Uma das principais limitações encontradas neste trabalho foi o tempo relativamente curto de treinamento (300 steps), que pode não ter sido suficiente para demonstrar todo o potencial do Curriculum Learning em cenários mais complexos. Além disso, a implementação atual focou principalmente em aspectos básicos do controle dos robôs, não abordando elementos táticos mais sofisticados do futebol.
+As principais limitações identificadas neste estudo incluem:
 
-Outra limitação significativa foi a simplicidade da estrutura curricular implementada, que poderia ser expandida para incluir uma maior variedade de níveis e desafios progressivos. O sistema atual também não contempla mecanismos para adaptação dinâmica do currículo com base no desempenho individual de cada agente, o que poderia otimizar ainda mais o processo de aprendizagem.
+\begin{itemize}
+    \item \textbf{Reality gap}: Todos os experimentos foram realizados em simulação, persistindo o desafio de transferência para robôs físicos.
+    
+    \item \textbf{Sensibilidade paramétrica}: A eficácia do curriculum depende significativamente do design apropriado das tarefas e critérios de promoção.
+    
+    \item \textbf{Especificidade do domínio}: Embora os princípios sejam potencialmente generalizáveis, a validação ocorreu especificamente no contexto do futebol de robôs.
+\end{itemize}
 
 \section{Trabalhos Futuros}
 
-Para trabalhos futuros, diversas direções promissoras podem ser exploradas:
+O potencial demonstrado pela abordagem sugere diversas direções promissoras:
 
 \begin{itemize}
-    \item Desenvolvimento de estruturas curriculares mais sofisticadas, incorporando elementos táticos e estratégicos do futebol de robôs
-    \item Implementação de mecanismos de adaptação dinâmica do currículo baseados no desempenho individual dos agentes
-    \item Integração de técnicas de self-play com o Curriculum Learning para melhorar o aprendizado em cenários competitivos
-    \item Investigação de métodos para transferência de conhecimento entre diferentes níveis do currículo
+    \item \textbf{Transferência para robôs reais}: Investigação de técnicas para mitigar o reality gap e aplicar o conhecimento adquirido em simulação em ambientes físicos.
+    
+    \item \textbf{Generalização a outros domínios}: Adaptação da metodologia para diferentes contextos multiagente competitivos e cooperativos.
+    
+    \item \textbf{Otimização automática de currículos}: Desenvolvimento de algoritmos para geração e adaptação automática de sequências de tarefas, reduzindo a necessidade de design manual.
+    
+    \item \textbf{Exploração de arquiteturas híbridas}: Integração do framework proposto com técnicas emergentes como aprendizado por demonstração e modelos baseados em memória.
 \end{itemize}
+
+Em síntese, este trabalho demonstra que a abordagem estruturada do aprendizado, combinando Curriculum Learning e Self-play, representa uma estratégia eficaz para desenvolver agentes com desempenho superior em ambientes complexos multiagente. A metodologia proposta oferece um caminho promissor para superar limitações atuais em RL e avançar o estado da arte em sistemas autônomos inteligentes.
 
