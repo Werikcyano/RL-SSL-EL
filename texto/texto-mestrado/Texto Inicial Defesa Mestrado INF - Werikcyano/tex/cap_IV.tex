@@ -170,7 +170,7 @@ A Figura \ref{fig:comparacao_vitorias} apresenta a comparação do número de vi
     \label{fig:comparacao_vitorias}
 \end{figure}
 
-Os resultados evidenciam a superioridade do modelo treinado com a combinação de curriculum learning e self-play, que obteve 430 vitórias (86\%) em comparação com 192 vitórias (38,4\%) do modelo full self-play tradicional e apenas 32 vitórias (6,4\%) do modelo treinado somente com curriculum learning. Esta diferença na taxa de vitória é estatisticamente significativa (p < 0,001) e demonstra o benefício substancial da abordagem híbrida proposta.
+Os resultados evidenciam a superioridade do modelo treinado com a combinação de curriculum learning e self-play, que obteve 430 vitórias (86\%) em comparação com 192 vitórias (38,4\%) do modelo full self-play tradicional e apenas 32 vitórias (6,4\%) do modelo treinado somente com curriculum learning. Esta diferença na taxa de vitória é estatisticamente significativa e demonstra o benefício substancial da abordagem híbrida proposta.
 
 É interessante notar que o modelo treinado apenas com curriculum learning obteve o menor número de vitórias, mas também apresentou o maior número de empates (468, correspondendo a 93,6\% dos jogos), o que sugere uma estratégia mais defensiva e conservadora. Por outro lado, o modelo combinado (curriculum + self-play) não apenas venceu mais partidas, mas também registrou o menor número de empates (70, apenas 14\% dos jogos), indicando uma abordagem mais assertiva e eficaz.
 
@@ -192,7 +192,7 @@ Além da taxa de vitória, analisamos também o desempenho ofensivo e defensivo 
     \label{fig:comparacao_gols_sofridos}
 \end{figure}
 
-Os dados revelam diferenças significativas no desempenho ofensivo e defensivo entre as três abordagens. O modelo combinado (curriculum + self-play) apresentou uma capacidade ofensiva extraordinariamente superior, marcando um total de 1.012 gols durante o torneio, o que corresponde a uma média de 2,024 gols por partida. Em contraste, o modelo treinado exclusivamente com self-play marcou 247 gols (média de 0,494 por partida), enquanto o modelo que utilizou apenas curriculum learning obteve apenas 33 gols (média de 0,066 por partida).
+Os dados revelam diferenças significativas no desempenho ofensivo e defensivo entre as três abordagens. O modelo combinado (curriculum + self-play) apresentou uma capacidade ofensiva superior, marcando um total de 1.012 gols durante o torneio, o que corresponde a uma média de 2,024 gols por partida. Em contraste, o modelo treinado exclusivamente com self-play marcou 247 gols (média de 0,494 por partida), enquanto o modelo que utilizou apenas curriculum learning obteve apenas 33 gols (média de 0,066 por partida).
 
 Do ponto de vista defensivo, todos os modelos demonstraram robustez considerável, mas com diferenças notáveis. O modelo treinado apenas com curriculum learning não sofreu nenhum gol durante todo o torneio, demonstrando uma excelente capacidade defensiva que compensa parcialmente sua limitada capacidade ofensiva. O modelo combinado sofreu apenas 1 gol em 500 partidas (média de 0,002 por partida), enquanto o modelo full self-play sofreu 6 gols (média de 0,012 por partida).
 
@@ -237,50 +237,80 @@ A análise desta tabela revela padrões claros:
 
 Estes resultados confirmam a hipótese central deste trabalho: o curriculum learning isoladamente desenvolve habilidades fundamentais sólidas, particularmente defensivas, mas não é suficiente para desenvolver políticas competitivas completas. Por outro lado, o self-play tradicional desenvolve agentes competitivos, mas que podem não atingir todo seu potencial. A combinação permite que os agentes desenvolvam o melhor de ambas características, resultando em políticas significativamente mais eficazes.
 
-\section{Análise Detalhada das Métricas de Continuidade}
-\label{sec:analise_continuidade}
+\section{Análise Detalhada das Métricas de Aprendizado por Reforço}
+\label{sec:analise_metricas_aprendizado}
 
-Uma contribuição específica deste trabalho foi o desenvolvimento e a análise de métricas de continuidade, que avaliam a capacidade dos agentes de manter a bola em jogo por períodos prolongados. Estas métricas são particularmente relevantes para o futebol de robôs, onde a fluidez do jogo é um indicador importante da qualidade técnica.
+Além das métricas específicas do domínio do futebol de robôs, uma análise detalhada das métricas básicas de aprendizado por reforço fornece insights valiosos sobre os processos internos dos algoritmos durante o treinamento. Esta seção explora três métricas fundamentais: entropia da política, perda da política e variância explicada da função valor, comparando o comportamento dessas métricas entre as abordagens Selfplay após Curriculum e Full Selfplay.
 
-\subsection{Tipos de Interrupções}
+\subsection{Entropia da Política}
 
-A análise dos tipos específicos de interrupções durante o jogo fornece insights adicionais sobre as características técnicas desenvolvidas pelos agentes. As Figuras \ref{fig:lateral_resets} e \ref{fig:endline_resets} apresentam a evolução da proporção de resets por saídas laterais e pela linha de fundo, respectivamente.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\textwidth]{fig/graficos_trabalho/graficos_experimentos/geral/custom_metricslateral_resets_ratio_mean.png}
-    \caption{Evolução da proporção de resets por saídas laterais ao longo do treinamento}
-    \label{fig:lateral_resets}
-\end{figure}
+A entropia da política é uma métrica que quantifica o grau de aleatoriedade ou exploração nas decisões do agente. Valores mais altos (menos negativos) indicam maior exploração, enquanto valores mais baixos (mais negativos) sugerem maior certeza nas ações escolhidas. A Figura \ref{fig:policy_entropy} apresenta a comparação da entropia da política entre as duas abordagens ao longo do treinamento.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{fig/graficos_trabalho/graficos_experimentos/geral/custom_metricsendline_resets_ratio_mean.png}
-    \caption{Evolução da proporção de resets por saídas pela linha de fundo ao longo do treinamento}
-    \label{fig:endline_resets}
+    \includegraphics[width=0.95\textwidth]{fig/graficos_trabalho/graficos_experimentos/geral/comparativo_entropia_politica_alinhado.png}
+    \caption{Comparativo da entropia da política com iterações alinhadas entre as abordagens Selfplay após Curriculum e Full Selfplay}
+    \label{fig:policy_entropy}
 \end{figure}
 
-O modelo treinado com curriculum learning apresentou reduções significativas em ambos os tipos de interrupções:
+A análise do gráfico revela diferenças significativas nos padrões de exploração-explotação entre as duas abordagens. O Full Selfplay (linha laranja) inicia o treinamento com valores de entropia mais altos (próximos a -0,3), indicando uma política mais exploratória, o que é esperado para agentes que começam o aprendizado sem conhecimento prévio. Em contraste, o Selfplay após Curriculum (linha azul) começa com valores de entropia significativamente mais baixos (aproximadamente -1,1), sugerindo uma política já mais determinística.
 
-\begin{itemize}
-    \item Redução de 31\% nos resets por saída lateral (p = 0,012)
-    \item Redução de 18\% nos resets por saída de linha de fundo (p = 0,027)
-\end{itemize}
+Esta diferença inicial é particularmente reveladora: agentes treinados com curriculum learning iniciam a fase de selfplay com políticas mais refinadas e menos aleatórias, evidenciando que o conhecimento adquirido durante os estágios do curriculum proporciona maior certeza nas ações a serem tomadas.
 
-Esta melhoria consistente em ambos os tipos de interrupções sugere que o curriculum learning promove o desenvolvimento de habilidades fundamentais de controle de bola, permitindo que os agentes mantenham a bola dentro dos limites do campo por períodos mais longos e em diferentes situações de jogo.
+Após aproximadamente 150-200 iterações, observa-se uma convergência nas entropias, com ambas as abordagens chegando a valores similares. No entanto, é notável que o Full Selfplay apresenta maior volatilidade ao longo de todo o treinamento, com oscilações mais pronunciadas, enquanto o Selfplay após Curriculum mantém níveis mais estáveis de entropia, sugerindo um processo de aprendizado mais consistente e menos errático.
 
-\subsection{Sequências Contínuas de Jogo}
+\subsection{Perda da Política}
 
-A capacidade de manter sequências longas sem interrupções é um indicador importante da qualidade técnica no futebol. Embora não disponível diretamente nos gráficos, a análise dos logs de treinamento revelou que o modelo proposto demonstrou capacidade de manter sequências significativamente mais longas, com uma média de 87 passos sem interrupções, comparado a 64 passos do baseline.
+A perda da política é uma métrica que reflete a divergência entre a política atual e a política que seria ótima segundo as estimativas atuais da função de valor. Em algoritmos como PPO, a minimização desta perda é um dos objetivos principais do processo de otimização. A Figura \ref{fig:policy_loss} apresenta a evolução desta métrica durante o treinamento.
 
-Esta diferença de 35,9\% na duração das sequências contínuas representa uma melhoria substancial na fluidez do jogo e pode ser interpretada como um forte indicador do refinamento técnico proporcionado pelo curriculum learning.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{fig/graficos_trabalho/graficos_experimentos/geral/comparativo_perda_politica_alinhado.png}
+    \caption{Comparativo da perda da política com iterações alinhadas entre as abordagens Selfplay após Curriculum e Full Selfplay}
+    \label{fig:policy_loss}
+\end{figure}
 
-\subsection{Correlação com Desempenho Competitivo}
+O gráfico de perda da política mostra um comportamento interessante: ambas as abordagens iniciam com valores similares e seguem uma tendência geral de redução da perda ao longo do treinamento, o que indica uma melhoria progressiva nas políticas. No entanto, há diferenças notáveis na trajetória dessa redução.
 
-A análise de correlação entre as métricas de continuidade e a taxa de vitória nos torneios revelou uma associação positiva significativa (r = 0,68, p < 0,001). Equipes com menos resets por episódio e sequências mais longas sem interrupções apresentaram maior probabilidade de vitória em confrontos diretos.
+Observa-se que ambas as abordagens apresentam alta volatilidade, com várias oscilações ao longo do processo. Esta característica é típica de ambientes competitivos como o self-play, onde as mudanças na política de um oponente podem temporariamente aumentar a perda até que o agente se adapte.
 
-Esta correlação robusta sugere que as melhorias nas métricas de continuidade proporcionadas pelo curriculum learning não são apenas estéticas, mas contribuem substantivamente para a eficácia global dos agentes no contexto competitivo.
+Um aspecto particularmente relevante é que o Full Selfplay continua seu treinamento por mais iterações e alcança valores de perda mais negativos nas fases finais. Isto pode indicar que, sem o benefício do curriculum inicial, esta abordagem requer um período mais longo de refinamento para atingir níveis comparáveis de otimização da política.
 
+A análise conjunta com as outras métricas sugere que, embora o Full Selfplay eventualmente alcance valores de perda similares ou até melhores, o caminho para chegar a este ponto é mais longo e menos eficiente comparado ao Selfplay após Curriculum.
+
+\subsection{Variância Explicada da Função Valor}
+
+A variância explicada é uma métrica que avalia a qualidade da função valor aprendida pelo agente, indicando quão bem o modelo consegue prever retornos futuros. Valores próximos a 1 indicam alta precisão nas previsões, enquanto valores mais baixos sugerem maior incerteza. A Figura \ref{fig:explained_variance} apresenta a comparação desta métrica entre as duas abordagens.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{fig/graficos_trabalho/graficos_experimentos/geral/comparativo_variancia_explicada_alinhado.png}
+    \caption{Comparativo da variância explicada da função valor com iterações alinhadas entre as abordagens Selfplay após Curriculum e Full Selfplay}
+    \label{fig:explained_variance}
+\end{figure}
+
+A análise do gráfico de variância explicada revela padrões distintos no desenvolvimento da função valor. O Full Selfplay (linha laranja) apresenta um comportamento curioso nas primeiras iterações, com um pico inicial seguido por uma queda abrupta. Este padrão pode ser atribuído a uma superestimação inicial da capacidade preditiva, seguida por um ajuste à medida que o agente enfrenta situações mais diversificadas.
+
+Em contraste, o Selfplay após Curriculum (linha azul) inicia com valores mais estáveis, sem os extremos observados no Full Selfplay. Esta estabilidade inicial é mais uma evidência dos benefícios do treinamento curricular prévio, que proporciona ao agente uma base mais sólida para estimar recompensas futuras.
+
+Após aproximadamente 200 iterações, ambas as abordagens convergem para valores similares de variância explicada, em torno de 0,85, indicando que ambos os métodos eventualmente desenvolvem funções valor de qualidade comparável. No entanto, o caminho para atingir esta convergência é notavelmente diferente, com o Selfplay após Curriculum demonstrando maior consistência ao longo do processo.
+
+Nas fases finais do treinamento, após a convergência, ambas as abordagens mantêm níveis similares e estáveis de variância explicada, sugerindo que, embora o processo de aprendizado seja diferente, o resultado final em termos de capacidade preditiva da função valor é comparável.
+
+\subsection{Implicações para o Processo de Aprendizagem}
+
+A análise integrada das três métricas básicas de aprendizado por reforço revela padrões consistentes que destacam as diferenças fundamentais entre as abordagens Selfplay após Curriculum e Full Selfplay.
+
+Em primeiro lugar, observa-se que o Selfplay após Curriculum consistentemente demonstra maior estabilidade nas fases iniciais e intermediárias do treinamento. Esta característica é particularmente valiosa em cenários complexos como o futebol de robôs, onde a volatilidade excessiva pode levar a políticas subótimas ou comportamentos indesejados.
+
+Em segundo lugar, a transição mais suave nas métricas de aprendizado do Selfplay após Curriculum sugere que o conhecimento adquirido durante os estágios do curriculum proporciona um ponto de partida mais avançado para o desenvolvimento de políticas competitivas. Esta vantagem inicial se traduz em um processo de aprendizado mais eficiente, requerendo menos iterações para atingir níveis comparáveis de desempenho.
+
+Por fim, embora ambas as abordagens eventualmente convirjam para valores similares nas métricas analisadas, o caminho para esta convergência é significativamente diferente. O Selfplay após Curriculum oferece um processo de aprendizado mais direto e consistente, enquanto o Full Selfplay requer um período mais longo de ajustes e adaptações antes de atingir estabilidade.
+
+Estas observações corroboram a hipótese central deste trabalho: o curriculum learning como fase preparatória proporciona um alicerce mais sólido para o desenvolvimento de políticas complexas, resultando em um processo de aprendizado mais eficiente e estável durante o subsequente treinamento competitivo via self-play.
+
+
+%=====================================================
 \section{Discussão dos Resultados}
 \label{sec:discussao_resultados}
 
