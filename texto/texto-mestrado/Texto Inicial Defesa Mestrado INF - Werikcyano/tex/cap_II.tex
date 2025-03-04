@@ -12,7 +12,7 @@ Dentre os métodos avançados de aprendizado por reforço, destaca-se o \textbf{
 \subsection{Conceitos Básicos}
 \label{subsec:rl_conceitos}
 
-A interação entre o agente e o ambiente é representada esquematicamente na Figura \ref{fig/MDP.png}. O agente observa o estado atual \( S_t \) do ambiente e, com base em sua política de decisão, escolhe uma ação \( A_t \). Após a execução dessa ação, o ambiente evolui para um novo estado \( S_{t+1} \) e retorna ao agente uma recompensa \( R_{t+1} \) associada a essa transição.
+A interação entre o agente e o ambiente é representada esquematicamente na Figura \ref{fig:agent_env_interaction}. O agente observa o estado atual \( S_t \) do ambiente e, com base em sua política de decisão, escolhe uma ação \( A_t \). Após a execução dessa ação, o ambiente evolui para um novo estado \( S_{t+1} \) e retorna ao agente uma recompensa \( R_{t+1} \) associada a essa transição.
 
 \begin{figure}[h]
     \centering
@@ -31,7 +31,7 @@ A interação entre o agente e o ambiente é representada esquematicamente na Fi
 
 \subsubsection*{Exploração vs. Intensificação:}
 %O dilema entre exploração e intensificação é um aspecto fundamental do aprendizado por reforço, especialmente em contextos de PPO e aprendizado multiagente \cite{sutton}. No PPO, este equilíbrio é gerenciado através da regularização de entropia e objetivos surrogate limitados, que previnem a convergência prematura para políticas subótimas enquanto mantêm a estabilidade do aprendizado. Em sistemas multiagente, este dilema torna-se ainda mais complexo devido à não-estacionariedade do ambiente, onde os agentes precisam explorar enquanto se adaptam aos comportamentos em evolução de outros agentes. Técnicas como aprendizado centralizado com execução descentralizada (CTDE) e modelagem de oponentes são empregadas para gerenciar eficientemente este compromisso, permitindo que os agentes compartilhem experiências de exploração enquanto mantêm estratégias eficazes de intensificação.
-O dilema entre exploração e intensificação é um aspecto fundamental do aprendizado por reforço, especialmente em de aprendizado multiagente \cite{PPO}. Em sistemas multiagente, este dilema torna-se complexo devido à não-estacionariedade do ambiente, onde os agentes precisam explorar enquanto se adaptam aos comportamentos em evolução de outros agentes \cite{bruno}. Técnicas como aprendizado centralizado com execução descentralizada (CTDE) e modelagem de oponentes são empregadas para gerenciar eficientemente este compromisso, permitindo que os agentes compartilhem experiências de exploração enquanto mantêm estratégias eficazes de intensificação \cite{ppo_exploration_exploitation}.
+O dilema entre exploração e intensificação é um aspecto fundamental do aprendizado por reforço, especialmente em de aprendizado multiagente \cite{PPO}. Em sistemas multiagente, este dilema torna-se complexo devido à não-estacionariedade do ambiente, onde os agentes precisam explorar enquanto se adaptam aos comportamentos em evolução de outros agentes \cite{bruno_brandao}. Técnicas como aprendizado centralizado com execução descentralizada (CTDE) e modelagem de oponentes são empregadas para gerenciar eficientemente este compromisso, permitindo que os agentes compartilhem experiências de exploração enquanto mantêm estratégias eficazes de intensificação \cite{ppo_exploration_exploitation}.
 
 \subsubsection*{Modelagem por Processos de Decisão de Markov (MDPs)}
 
@@ -246,14 +246,14 @@ A SSL-EL foi estabelecida como uma divisão de entrada da Small Size League, vis
 
 O ambiente de jogo é estruturado em torno de um sistema centralizado de visão (SSL-Vision), que fornece informações em tempo real sobre as posições dos robôs e da bola através de câmeras suspensas \cite{ssl_overview}. Esta arquitetura permite que as equipes foquem no desenvolvimento de estratégias de controle e coordenação, sem a necessidade inicial de implementar sistemas complexos de percepção local.
 
-Os robôs da SSL-EL, embora sujeitos a restrições dimensionais similares às da divisão principal (diâmetro ≤18 cm, altura ≤15 cm), podem ser construídos com soluções mais acessíveis. A equipe TurtleRabbit, por exemplo, demonstrou a viabilidade de construir robôs competitivos com orçamento reduzido, utilizando componentes comerciais e estruturas impressas em 3D \cite{turtlerabbit_tdp_2024}.
+Os robôs da SSL-EL, embora sujeitos a restrições dimensionais similares às da divisão principal (diâmetro $\leq 18$ cm, altura $\leq 15$ cm)\cite{regras_ssl_el_2024}, podem ser construídos com soluções mais acessíveis. A equipe TurtleRabbit, por exemplo, demonstrou a viabilidade de construir robôs competitivos com orçamento reduzido, utilizando componentes comerciais e estruturas impressas em 3D \cite{turtlerabbit_tdp_2024}.
 
 A competição promove desafios técnicos específicos, como o Ball Placement Challenge, que permitem às equipes desenvolverem e testarem capacidades fundamentais de forma isolada \cite{ssl_overview}. Esta abordagem gradual ao desenvolvimento de habilidades tem se mostrado efetiva para a evolução das equipes, como evidenciado pelos resultados de competições recentes \cite{ssl_overview}.
 
 \subsection{Desafios específicos}
 \label{subsec:futebol_desafios}
 
-A SSL-EL apresenta desafios únicos que equilibram complexidade técnica com acessibilidade. Um dos principais desafios é a coordenação multiagente em tempo real, onde os robôs devem operar de forma sincronizada em velocidades consideráveis, tomando decisões em milissegundos \cite{regras_ssl_el_2014}. Esta coordenação torna-se ainda mais complexa devido aos ruídos de percepção e latência de comunicação inerentes ao sistema.
+A SSL-EL apresenta desafios únicos que equilibram complexidade técnica com acessibilidade. Um dos principais desafios é a coordenação multiagente em tempo real, onde os robôs devem operar de forma sincronizada em velocidades consideráveis, tomando decisões em milissegundos \cite{regras_ssl_el_2024}. Esta coordenação torna-se ainda mais complexa devido aos ruídos de percepção e latência de comunicação inerentes ao sistema.
 
 O aspecto financeiro representa outro desafio significativo para equipes iniciantes. No entanto, iniciativas como a da equipe TurtleRabbit demonstram que é possível desenvolver soluções competitivas com orçamento limitado \cite{turtlerabbit_tdp_2024}. Através do uso de componentes comerciais acessíveis e técnicas de manufatura como impressão 3D, equipes podem construir robôs funcionais mantendo os custos controlados.
 
