@@ -1,30 +1,72 @@
 \chapter{Conclusão}
 \label{cap:conclusao}
 
-Este trabalho investigou a integração de Curriculum Learning com Self-play para aprendizado por reforço no contexto do futebol de robôs da categoria SSL-EL. Os resultados demonstraram claramente a superioridade da abordagem combinada em relação às técnicas isoladas, validando a hipótese central da pesquisa.
+Este trabalho investigou a integração de \textit{Curriculum Learning} com \textit{Self-play} para aprendizado por reforço no contexto do futebol de robôs da categoria \textit{SSL-EL}. Os experimentos e análises realizados permitem extrair conclusões importantes sobre a eficácia da abordagem proposta e suas implicações para o treinamento de agentes em ambientes complexos e multiagentes.
 
-As principais contribuições deste trabalho incluem:
+\section{Principais Descobertas e Contribuições}
+
+A análise integrada dos resultados experimentais permitiu identificar as seguintes descobertas e contribuições principais:
 
 \begin{enumerate}
-    \item \textbf{Metodologia estruturada}: Desenvolvimento de um framework para integração de Curriculum Learning e Self-play, com definição clara de estágios progressivos e critérios de transição adaptativos.
+    \item \textbf{Metodologia estruturada}: Desenvolvimento de um \textit{framework} para integração de \textit{Curriculum Learning} e \textit{Self-play}, com definição clara de estágios progressivos e critérios de transição adaptativos.
     
-    \item \textbf{Evidência empírica}: Comprovação quantitativa dos benefícios da abordagem combinada, com ganhos de 86\% na taxa de vitória em torneios comparativos (430 vitórias em 500 partidas) e aumento impressionante na média de gols por partida (2,024 vs 0,018 do Full Self-play, mais de 100 vezes superior).
+    \item \textbf{Eficácia do curriculum learning}: A abordagem proposta, combinando \textit{curriculum learning} e \textit{self-play}, demonstrou superioridade estatisticamente significativa em termos de desempenho global, evidenciada pela maior taxa de vitória em confrontos diretos (86\% de vitórias contra 1,4\% do \textit{Full Self-play}) e melhor equilíbrio entre métricas ofensivas e defensivas.
+    
+    \item \textbf{Evidência empírica}: Comprovação quantitativa dos benefícios da abordagem combinada, com ganhos de 86\% na taxa de vitória em torneios comparativos (430 vitórias em 500 partidas) e aumento impressionante na média de gols por partida (2,024 vs 0,018 do \textit{Full Self-play}, mais de 100 vezes superior).
+    
+    \item \textbf{Desenvolvimento de habilidades fundamentais}: O \textit{curriculum learning} promoveu o desenvolvimento eficiente de habilidades fundamentais em apenas 42 minutos de treinamento, resultando em melhorias significativas nas métricas de continuidade do jogo e controle técnico.
     
     \item \textbf{Eficiência computacional}: Redução de aproximadamente 15\% no tempo total de treinamento (7,4 horas versus 8,7 horas), fator crítico para aplicações práticas.
     
-    \item \textbf{Estabilidade aprimorada}: Demonstração de um processo de aprendizado mais consistente e menos volátil, evidenciado pelas métricas básicas de RL (entropia da política, perda da política e variância explicada).
+    \item \textbf{Estabilidade aprimorada}: A abordagem proposta apresentou maior estabilidade durante o processo de aprendizagem, com menor variabilidade nas métricas de desempenho e progressão mais consistente.
+    
+    \item \textbf{\textit{Trade-off} entre agressividade e controle}: O modelo treinado com \textit{curriculum learning} desenvolveu um estilo de jogo mais equilibrado, priorizando controle técnico e manutenção da posse de bola sobre tentativas arriscadas de finalização.
 \end{enumerate}
 
-Os resultados sugerem que o Curriculum Learning proporciona uma base técnica sólida que potencializa os benefícios do Self-play. Agentes treinados com Curriculum desenvolvem inicialmente habilidades defensivas e de controle básico que, quando refinadas através do Self-play, evoluem para comportamentos táticos sofisticados e eficientes.
+Estas descobertas corroboram a premissa central deste trabalho: o aprendizado estruturado e progressivo proporcionado pelo \textit{curriculum learning} oferece vantagens significativas para o treinamento de agentes em ambientes complexos como o futebol de robôs, proporcionando uma base técnica sólida que potencializa os benefícios do \textit{Self-play}. Agentes treinados com esta abordagem desenvolvem inicialmente habilidades defensivas e de controle básico que, quando refinadas através do \textit{Self-play}, evoluem naturalmente para comportamentos táticos sofisticados e eficientes.
+
+\section{Implicações para Aprendizado por Reforço em Ambientes Multiagentes}
+
+Os resultados obtidos têm implicações mais amplas para o campo do aprendizado por reforço em ambientes multiagentes, estendendo-se além do domínio específico do futebol de robôs:
+
+\begin{enumerate}
+    \item \textbf{Valor do aprendizado estruturado}: Em domínios complexos com espaço de ações amplo e \textit{feedback} esparso, o treinamento progressivo demonstra benefícios significativos. O \textit{curriculum learning} oferece uma abordagem estruturada para decompor problemas complexos em desafios gerenciáveis, facilitando o desenvolvimento de competências em uma sequência lógica.
+    
+    \item \textbf{Importância de métricas diversificadas}: A análise exclusiva de métricas convencionais (como recompensa acumulada) pode obscurecer nuances importantes no processo de aprendizado e qualidade das políticas aprendidas.
+    
+    \item \textbf{Complementaridade de abordagens}: Diferentes técnicas de treinamento podem desenvolver habilidades complementares, cuja combinação resulta em agentes com desempenho superior à soma das partes.
+    
+    \item \textbf{Desenvolvimento de políticas robustas}: O equilíbrio superior entre características ofensivas e defensivas observado no modelo proposto sugere que o \textit{curriculum learning} pode promover o desenvolvimento de políticas mais robustas e versáteis, capazes de adaptar-se a diferentes contextos e adversários.
+\end{enumerate}
+
+A metodologia desenvolvida neste trabalho oferece um \textit{framework} transferível para o design de trajetórias de aprendizado em ambientes multiagentes complexos, especialmente aqueles que compartilham características como necessidade de coordenação, \textit{feedback} esparso e complexidade estratégica.
+
+\section{Transferibilidade dos Resultados}
+
+Uma consideração importante é a transferibilidade dos resultados obtidos para outros domínios e aplicações. Embora os experimentos tenham sido realizados no contexto específico do futebol de robôs, os princípios fundamentais da abordagem proposta podem ser adaptados para diversos cenários multiagentes.
+
+O \textit{framework} de \textit{curriculum learning} desenvolvido neste trabalho oferece uma metodologia generalizável para o design de trajetórias de aprendizado em ambientes complexos. Os critérios de promoção adaptativos e a integração com \textit{self-play} representam contribuições que podem ser aplicadas em domínios que compartilham características como:
+
+\begin{itemize}
+    \item Espaço de ações amplo e contínuo
+    \item Necessidade de coordenação multiagente
+    \item \textit{Feedback} esparso ou atrasado
+    \item Complexidade estratégica e tática
+    \item Oposição adaptativa
+\end{itemize}
+
+Exemplos potenciais de aplicação incluem robótica colaborativa, sistemas de transporte autônomos coordenados, gerenciamento de recursos distribuídos e simulações militares.
+
+A metodologia experimental desenvolvida, incluindo as métricas de avaliação e o sistema de torneios, também oferece um \textit{template} valioso para a avaliação comparativa de diferentes abordagens de treinamento em ambientes complexos.
 
 \section{Limitações}
 
 As principais limitações identificadas neste estudo incluem:
 
 \begin{itemize}
-    \item \textbf{Reality gap}: Todos os experimentos foram realizados em simulação, persistindo o desafio de transferência para robôs físicos.
+    \item \textbf{\textit{Reality gap}}: Todos os experimentos foram realizados em simulação, persistindo o desafio de transferência para robôs físicos.
     
-    \item \textbf{Sensibilidade paramétrica}: A eficácia do curriculum depende significativamente do design apropriado das tarefas e critérios de promoção.
+    \item \textbf{Sensibilidade paramétrica}: A eficácia do \textit{curriculum} depende significativamente do design apropriado das tarefas e critérios de promoção.
     
     \item \textbf{Especificidade do domínio}: Embora os princípios sejam potencialmente generalizáveis, a validação ocorreu especificamente no contexto do futebol de robôs.
 \end{itemize}
@@ -34,14 +76,13 @@ As principais limitações identificadas neste estudo incluem:
 O potencial demonstrado pela abordagem sugere diversas direções promissoras:
 
 \begin{itemize}
-    \item \textbf{Transferência para robôs reais}: Investigação de técnicas para mitigar o reality gap e aplicar o conhecimento adquirido em simulação em ambientes físicos.
+    \item \textbf{Transferência para robôs reais}: Investigação de técnicas para mitigar o \textit{reality gap} e aplicar o conhecimento adquirido em simulação em ambientes físicos.
     
     \item \textbf{Generalização a outros domínios}: Adaptação da metodologia para diferentes contextos multiagente competitivos e cooperativos.
     
     \item \textbf{Otimização automática de currículos}: Desenvolvimento de algoritmos para geração e adaptação automática de sequências de tarefas, reduzindo a necessidade de design manual.
     
-    \item \textbf{Exploração de arquiteturas híbridas}: Integração do framework proposto com técnicas emergentes como aprendizado por demonstração e modelos baseados em memória.
+    \item \textbf{Exploração de arquiteturas híbridas}: Integração do \textit{framework} proposto com técnicas emergentes como aprendizado por demonstração e modelos baseados em memória.
 \end{itemize}
 
-Em síntese, este trabalho demonstra que a abordagem estruturada do aprendizado, combinando Curriculum Learning e Self-play, representa uma estratégia eficaz para desenvolver agentes com desempenho superior em ambientes complexos multiagente. A metodologia proposta oferece um caminho promissor para superar limitações atuais em RL e avançar o estado da arte em sistemas autônomos inteligentes.
-
+Em síntese, este trabalho demonstra que a abordagem estruturada do aprendizado, combinando \textit{Curriculum Learning} e \textit{Self-play}, representa uma estratégia eficaz para desenvolver agentes com desempenho superior em ambientes complexos multiagente. A metodologia proposta oferece um caminho promissor para superar limitações atuais em RL e avançar o estado da arte em sistemas autônomos inteligentes.
