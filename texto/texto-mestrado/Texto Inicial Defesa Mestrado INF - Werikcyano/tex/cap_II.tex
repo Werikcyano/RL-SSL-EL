@@ -112,21 +112,20 @@ Os MDPs constituem o núcleo matemático de muitos algoritmos de aprendizado por
 
 O \textit{Proximal Policy Optimization} (PPO) representa um marco significativo no desenvolvimento de algoritmos de aprendizado por reforço, destacando-se pela sua combinação única de simplicidade de implementação, eficiência computacional e estabilidade durante o treinamento \cite{PPO}. Desenvolvido pela OpenAI, o PPO surgiu como uma evolução do \textit{Trust Region Policy Optimization} (TRPO), introduzindo mecanismos mais eficientes para controlar a magnitude das atualizações de política \cite{openia_ppo_doc}.
 
-O diferencial do PPO está em sua abordagem para otimização de políticas, que utiliza uma \textit{função objetivo substituta recortada} (\textit{clipped surrogate objective}) \cite{PPO} \cite{openia_ppo_doc}. Esta função limita efetivamente as mudanças na política, prevenindo atualizações muito grandes que poderiam desestabilizar o aprendizado. Matematicamente, a função objetivo do PPO é expressa como:
+O diferencial do PPO está em sua abordagem para otimização de políticas, que utiliza uma \textit{função objetivo substituta recortada} (\textit{clipped surrogate objective}) \cite{PPO, openia_ppo_doc}. Esta função limita efetivamente as mudanças na política, prevenindo atualizações muito grandes que poderiam desestabilizar o aprendizado. Matematicamente, a função objetivo do PPO é expressa como:
 
 \begin{equation}
-L^{CLIP}(\theta) = \mathbb{E}_t \left[ \min\left( r_t(\theta) A_t, \text{clip}(r_t(\theta), 1-\epsilon, 1+\epsilon) A_t \right) \right]
+L^{CLIP}(\theta) = \mathbb{E}_t \left[ \min\left( r_t(\theta) A_t, \text{clip}(r_t(\theta), 1-\epsilon, 1+\epsilon) A_t \right) \right],
 \end{equation}
+onde $r_t(\theta) = \frac{\pi_\theta(a_t|s_t)}{\pi_{\theta_{old}}(a_t|s_t)}$ representa a razão entre as probabilidades das políticas nova e antiga, $A_t$ é a estimativa da vantagem, e $\epsilon$ é um hiperparâmetro que controla o tamanho máximo da atualização \cite{stable_baselines3, PPO}.
 
-onde $r_t(\theta) = \frac{\pi_\theta(a_t|s_t)}{\pi_{\theta_{old}}(a_t|s_t)}$ representa a razão entre as probabilidades das políticas nova e antiga, $A_t$ é a estimativa da vantagem, e $\epsilon$ é um hiperparâmetro que controla o tamanho máximo da atualização \cite{stable_baselines3} \cite{PPO}.
+O PPO implementa uma arquitetura \textit{actor-critic}, onde o \textit{actor} é responsável pela política que mapeia estados para ações, enquanto o \textit{critic} estima os valores dos estados para auxiliar no cálculo das vantagens \cite{PPO , pytorch_ppo}. Esta estrutura dual permite um equilíbrio eficiente entre exploração e aproveitamento do conhecimento adquirido. O processo de treinamento ocorre em episódios, onde experiências são coletadas e utilizadas para atualizar tanto a política quanto a função de valor \cite{PPO}.
 
-O PPO implementa uma arquitetura \textit{actor-critic}, onde o \textit{actor} é responsável pela política que mapeia estados para ações, enquanto o \textit{critic} estima os valores dos estados para auxiliar no cálculo das vantagens \cite{PPO} \cite{pytorch_ppo}. Esta estrutura dual permite um equilíbrio eficiente entre exploração e aproveitamento do conhecimento adquirido. O processo de treinamento ocorre em episódios, onde experiências são coletadas e utilizadas para atualizar tanto a política quanto a função de valor \cite{PPO}.
-
-Uma característica fundamental do PPO é sua capacidade de lidar com espaços de ação tanto discretos quanto contínuos, tornando-o particularmente adequado para aplicações em robótica e controle \cite{sutton} \cite{PPO}. O algoritmo mantém um equilíbrio entre exploração e exploração através de um termo de entropia adicional na função objetivo, que incentiva a política a manter um nível apropriado de aleatoriedade nas decisões \cite{PPO}.
+Uma característica fundamental do PPO é sua capacidade de lidar com espaços de ação tanto discretos quanto contínuos, tornando-o particularmente adequado para aplicações em robótica e controle \cite{sutton, PPO}. O algoritmo mantém um equilíbrio entre exploração e exploração através de um termo de entropia adicional na função objetivo, que incentiva a política a manter um nível apropriado de aleatoriedade nas decisões \cite{PPO}.
 
 O PPO tem demonstrado resultados impressionantes em uma variedade de domínios complexos, desde jogos até tarefas de robótica \cite{ppo_env_gym}. Sua eficácia é particularmente notável em ambientes que requerem aprendizado contínuo e adaptação, como no caso do futebol de robôs, onde os agentes precisam constantemente ajustar suas estratégias em resposta a situações dinâmicas \cite{bruno_brandao}.
 
-No contexto do aprendizado multiagente, o PPO pode ser estendido para treinar múltiplos agentes simultaneamente, permitindo o desenvolvimento de comportamentos cooperativos ou competitivos \cite{pytorch_ppo}. Esta característica é especialmente relevante para cenários de equipe, como o futebol de robôs, onde os agentes precisam coordenar suas ações para alcançar objetivos comuns \cite{ppo_env_gym} \cite{bruno_brandao}.
+No contexto do aprendizado multiagente, o PPO pode ser estendido para treinar múltiplos agentes simultaneamente, permitindo o desenvolvimento de comportamentos cooperativos ou competitivos \cite{pytorch_ppo}. Esta característica é especialmente relevante para cenários de equipe, como o futebol de robôs, onde os agentes precisam coordenar suas ações para alcançar objetivos comuns \cite{ppo_env_gym, bruno_brandao}.
 
 \subsection{Multi-agent RL}
 \label{subsec:marl}
@@ -158,7 +157,7 @@ A implementação moderna do \textit{self-play} frequentemente incorpora arquite
 
 No entanto, o \textit{self-play} também apresenta desafios significativos. Como observado em \cite{provable_self_play}, existe o risco de convergência para equilíbrios subótimos, especialmente em jogos com múltiplos equilíbrios de Nash. Para mitigar este problema, técnicas como diversificação de oponentes e regularização de entropia têm sido empregadas com sucesso.
 
-Desenvolvimentos recentes, descritos em \cite{survey_self_play} \cite{survey_self_play_2024}, têm explorado a integração do \textit{self-play} com paradigmas emergentes como meta-aprendizado e modelos de linguagem grandes. Esta convergência tem aberto novos caminhos para o desenvolvimento de agentes mais adaptativos e versáteis.
+Desenvolvimentos recentes, descritos em \cite{survey_self_play, survey_self_play_2024}, têm explorado a integração do \textit{self-play} com paradigmas emergentes como meta-aprendizado e modelos de linguagem grandes. Esta convergência tem aberto novos caminhos para o desenvolvimento de agentes mais adaptativos e versáteis.
 
 A aplicação do \textit{self-play} estende-se além dos jogos tradicionais. Como documentado em \cite{survey_self_play_2024} e \cite{bruno_brandao}, a técnica tem sido aplicada com sucesso em domínios como robótica, simulações financeiras e sistemas de controle autônomo. Em cada caso, o \textit{self-play} permite que os agentes desenvolvam estratégias robustas através da exploração sistemática do espaço de possibilidades.
 
@@ -190,7 +189,7 @@ No contexto específico do \textit{Reinforcement Learning}, o CL se integra natu
 
 No contexto do \textit{Reinforcement Learning}, o \textit{Curriculum Learning} tem se mostrado particularmente eficaz em cenários complexos que apresentam desafios significativos para métodos tradicionais de aprendizagem. Como destacado por \cite{curriculum_reinforcement_learning}, a aplicação de currículos estruturados tem permitido avanços notáveis em domínios que exigem raciocínio hierárquico e planejamento de longo prazo.
 
-Um exemplo significativo é encontrado em ambientes de navegação autônoma, onde \cite{automatic_curriculum_learning_survey} \cite{huggingface_curriculum} demonstra que agentes treinados com CL desenvolvem estratégias mais robustas ao serem expostos gradualmente a ambientes de complexidade crescente. O processo começa com cenários simplificados, como navegação em espaços abertos, e progride para ambientes com obstáculos dinâmicos e restrições temporais, resultando em políticas mais generalizáveis.
+Um exemplo significativo é encontrado em ambientes de navegação autônoma, onde \cite{automatic_curriculum_learning_survey, huggingface_curriculum} demonstra que agentes treinados com CL desenvolvem estratégias mais robustas ao serem expostos gradualmente a ambientes de complexidade crescente. O processo começa com cenários simplificados, como navegação em espaços abertos, e progride para ambientes com obstáculos dinâmicos e restrições temporais, resultando em políticas mais generalizáveis.
 
 Em aplicações de robótica, \cite{curriculum} apresenta uma abordagem onde o CL é utilizado para decompor tarefas motoras complexas em subcomponentes mais gerenciáveis. Os autores demonstram que esta decomposição hierárquica não apenas acelera o aprendizado, mas também melhora significativamente a qualidade das políticas aprendidas, especialmente em tarefas que requerem coordenação motora fina.
 
@@ -200,7 +199,7 @@ Um aspecto crucial na aplicação do CL em RL, conforme destacado por \cite{vari
 
 A eficácia do CL em RL também se estende a domínios com espaços de estado contínuos e de alta dimensionalidade. \cite{curml} demonstra como currículos bem projetados podem guiar a exploração em espaços complexos, reduzindo significativamente o tempo necessário para encontrar políticas ótimas. Esta abordagem tem se mostrado particularmente valiosa em aplicações industriais, onde o custo de exploração aleatória pode ser proibitivo.
 
-Diversos avanços significativos têm sido feitos na área de \textit{Curriculum Learning}, incluindo automatização do design de currículos, integração com aprendizado profundo, \textit{frameworks} baseados em modelos de difusão para geração automática de tarefas, coordenação de currículos paralelos em sistemas multiagente e desenvolvimento de currículos auto-adaptativos baseados em meta-aprendizado \cite{curriculum_reinforcement_learning} \cite{diffusion_based_curriculum_reinforcement_learning} \cite{curriculum_learning_in_rl} \cite{variational_curriculum_rl}. Estas inovações têm contribuido para melhorar a forma como os currículos são estruturados e aplicados, permitindo uma evolução significativa na área.
+Diversos avanços significativos têm sido feitos na área de \textit{Curriculum Learning}, incluindo automatização do design de currículos, integração com aprendizado profundo, \textit{frameworks} baseados em modelos de difusão para geração automática de tarefas, coordenação de currículos paralelos em sistemas multiagente e desenvolvimento de currículos auto-adaptativos baseados em meta-aprendizado \cite{curriculum_reinforcement_learning, diffusion_based_curriculum_reinforcement_learning, curriculum_learning_in_rl, variational_curriculum_rl}. Estas inovações têm contribuido para melhorar a forma como os currículos são estruturados e aplicados, permitindo uma evolução significativa na área.
 
 \subsection{Vantagens e desafios}
 \label{subsec:curriculum_vantagens_desafios}
@@ -252,9 +251,9 @@ A implementação de estratégias de jogo efetivas também representa um desafio
 \subsection{Trabalhos relacionados}
 \label{subsec:futebol_trabalhos}
 
-Diversos trabalhos têm contribuído para o avanço da SSL-EL, focando em diferentes aspectos da competição. As equipes \textit{ITAndroinds} e \textit{OrcaBOT}, por exemplo, desenvolveu uma abordagem inovadora para o \textit{design} de robôs de baixo custo, documentada em seu \textit{TDP} (\textit{Team Description Paper}) \cite{orcabot_tdp_2024} \cite{itandroids_tdp_2023}, demonstrando a viabilidade de construir sistemas competitivos com recursos limitados.
+Diversos trabalhos têm contribuído para o avanço da SSL-EL, focando em diferentes aspectos da competição. As equipes \textit{ITAndroinds} e \textit{OrcaBOT}, por exemplo, desenvolveu uma abordagem inovadora para o \textit{design} de robôs de baixo custo, documentada em seu \textit{TDP} (\textit{Team Description Paper}) \cite{orcabot_tdp_2024, itandroids_tdp_2023}, demonstrando a viabilidade de construir sistemas competitivos com recursos limitados.
 
-No campo do controle e estratégia, trabalhos significativos têm emergido da comunidade acadêmica \cite{bruno_brandao} \cite{robocin_trabalho}. Estas pesquisas demonstram o potencial de algoritmos de aprendizado de máquina para desenvolver estratégias de jogo mais sofisticadas.
+No campo do controle e estratégia, trabalhos significativos têm emergido da comunidade acadêmica \cite{bruno_brandao, robocin_trabalho}. Estas pesquisas demonstram o potencial de algoritmos de aprendizado de máquina para desenvolver estratégias de jogo mais sofisticadas.
 
 A organização da \textit{RoboCup} tem contribuído significativamente através da documentação e padronização de regras e especificações técnicas \cite{regras_ssl_el_2024}. Este trabalho de documentação tem sido fundamental para permitir que novas equipes ingressem na competição com uma compreensão clara dos requisitos e desafios.
 
