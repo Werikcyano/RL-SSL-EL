@@ -30,31 +30,31 @@ A interação entre o agente e o ambiente é representada esquematicamente na Fi
 \end{enumerate}
 
 \subsubsection*{Exploração vs. Intensificação:}
-O dilema entre exploração e intensificação é um aspecto fundamental do aprendizado por reforço, especialmente em de aprendizado multiagente \cite{PPO}. Em sistemas multiagente, este dilema torna-se complexo devido à não-estacionariedade do ambiente, onde os agentes precisam explorar enquanto se adaptam aos comportamentos em evolução de outros agentes \cite{bruno_brandao}. Técnicas como aprendizado centralizado com execução descentralizada (\textit{Centralized Training with Decentralized Execution} - CTDE) e modelagem de oponentes são empregadas para gerenciar eficientemente este compromisso, permitindo que os agentes compartilhem experiências de exploração enquanto mantêm estratégias eficazes de intensificação \cite{ppo_exploration_exploitation}.
+O dilema entre exploração e intensificação é um aspecto fundamental do aprendizado por reforço, especialmente em aprendizado multiagente \cite{PPO}. Em sistemas multiagente, este dilema torna-se complexo devido à não-estacionariedade do ambiente, onde os agentes precisam explorar enquanto se adaptam aos comportamentos em evolução de outros agentes \cite{bruno_brandao}. Técnicas como aprendizado centralizado com execução descentralizada (\textit{Centralized Training with Decentralized Execution} - CTDE) e modelagem de oponentes são empregadas para gerenciar eficientemente este compromisso, permitindo que os agentes compartilhem experiências de exploração enquanto mantêm estratégias eficazes de intensificação \cite{ppo_exploration_exploitation}.
 
 \subsubsection*{Modelagem por Processos de Decisão de Markov (MDPs)}
 
-O aprendizado por reforço é frequentemente modelado por \textbf{Processos de Decisão de Markov} (\textit{Markov Decision Processes} - MDPs) \cite{sutton}, uma estrutura matemática que captura os aspectos estocásticos e sequenciais da tomada de decisão. Um MDP é definido pelo conjunto quádruplo \((S, A, P, R)\), onde:
+O aprendizado por reforço é frequentemente modelado por \textbf{Processos de Decisão de Markov} (\textit{Markov Decision Processes} - MDPs) \cite{sutton}, uma estrutura matemática que captura os aspectos estocásticos e sequenciais da tomada de decisão. Um MDP é definido pela quádrupla \((S, A, P, R)\), onde:
 
 \begin{itemize}
     \item \(S\) é o conjunto de estados possíveis do ambiente.
     \item \(A\) é o conjunto de ações possíveis que o agente pode tomar.
-    \item \(P(s'|s, a)\) é a probabilidade de transição para o estado \(s'\) dado o estado atual \(s\) e a ação \(a\) tomada.
-    \item \(R(s, a)\) é a recompensa esperada ao tomar a ação \(a\) no estado \(s\).
+    \item \(P(s'|s, a)\) é a distribuição de probabilidade de transição para o estado \(s'\) dado o estado atual \(s\) e a ação \(a\) tomada.
+    \item \(R(s, a)\) é a função de recompensa esperada ao tomar a ação \(a\) no estado \(s\).
 \end{itemize}
 
-O agente busca maximizar a soma esperada das recompensas acumuladas ao longo do tempo, definida pelo \textbf{retorno} \(G_t\) \cite{sutton}. No caso de problemas de horizonte finito, o retorno é dado pela Equação \ref{eq:retorno_finito}:
+O agente busca maximizar a soma esperada das recompensas acumuladas ao longo do tempo, definida pelo \textbf{retorno} \(G_t\) \cite{sutton}. No caso de problemas de horizonte finito, o retorno é por 
 
 \begin{equation}
 \label{eq:retorno_finito}
-G_t = \sum_{k=0}^{T} \gamma^k R_{t+k+1}
+G_t = \sum_{k=0}^{T} \gamma^k R_{t+k+1}.
 \end{equation}
 
-No caso de tarefas contínuas, aplica-se a função de desconto, onde \(\gamma \in [0, 1]\) é o fator de desconto que controla o peso das recompensas futuras, como mostrado na Equação \ref{eq:retorno_infinito}:
+Onde \gamma é o fator de desconto, que no caso de tarefas contínuas, aplica-se \(\gamma \in [0, 1]\) que controla o peso das recompensas futuras,
 
 \begin{equation}
 \label{eq:retorno_infinito}
-G_t = R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + \dots = \sum_{k=0}^{\infty} \gamma^k R_{t+k+1}
+G_t = R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + \dots = \sum_{k=0}^{\infty} \gamma^k R_{t+k+1}.
 \end{equation}
 
 A modelagem dos MDPs requer duas funções principais de valor, que capturam a expectativa de recompensas futuras:
