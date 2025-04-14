@@ -60,48 +60,47 @@ G_t = R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + \dots = \sum_{k=0}^{\infty} 
 A modelagem dos MDPs requer duas funções principais de valor, que capturam a expectativa de recompensas futuras:
 
 \paragraph{1. Função de valor de estado (\(v_\pi(s)\)) \cite{sutton}:}
-Define o valor esperado de se estar no estado \(s\) e seguir uma política \(\pi\) a partir desse estado, conforme a Equação \ref{eq:valor_estado}:
+Define o valor esperado de se estar no estado \(s\) e seguir uma política \(\pi\) a partir desse estado, conforme a Equação 
 
 \begin{equation}
 \label{eq:valor_estado}
-v_\pi(s) = \mathbb{E}_\pi \left[ \sum_{k=0}^{\infty} \gamma^k R_{t+k+1} \mid S_t = s \right]
+v_\pi(s) = \mathbb{E}_\pi \left[ \sum_{k=0}^{\infty} \gamma^k R_{t+k+1} \mid S_t = s \right].
 \end{equation}
 
-Essa função pode ser definida recursivamente pela \textbf{equação de Bellman}, como mostrado na Equação \ref{eq:bellman_estado}:
+Essa função pode ser definida recursivamente pela \textbf{equação de Bellman}, como mostrado na Equação 
 
 \begin{equation}
 \label{eq:bellman_estado}
-v_\pi(s) = \sum_{a \in A} \pi(a|s) \sum_{s' \in S} P(s'|s, a) \left[ R(s, a) + \gamma v_\pi(s') \right]
+v_\pi(s) = \sum_{a \in A} \pi(a|s) \sum_{s' \in S} P(s'|s, a) \left[ R(s, a) + \gamma v_\pi(s') \right];
 \end{equation}
 
 \paragraph{2. Função de valor de ação (\(q_\pi(s, a)\)) \cite{sutton}:}
-Define o valor esperado de se tomar a ação \(a\) no estado \(s\) e seguir a política \(\pi\) posteriormente, como apresentado na Equação \ref{eq:valor_acao}:
+Define o valor esperado de se tomar a ação \(a\) no estado \(s\) e seguir a política \(\pi\) posteriormente, como apresentado na Equação 
 
 \begin{equation}
 \label{eq:valor_acao}
-q_\pi(s, a) = \mathbb{E}_\pi \left[ \sum_{k=0}^{\infty} \gamma^k R_{t+k+1} \mid S_t = s, A_t = a \right]
+q_\pi(s, a) = \mathbb{E}_\pi \left[ \sum_{k=0}^{\infty} \gamma^k R_{t+k+1} \mid S_t = s, A_t = a \right].
 \end{equation}
 
-Também pode ser escrita de forma recursiva, conforme a Equação \ref{eq:bellman_acao}:
+Também pode ser escrita de forma recursiva, conforme a Equação 
 
 \begin{equation}
 \label{eq:bellman_acao}
-q_\pi(s, a) = \sum_{s'} P(s'|s, a) \left[ R(s, a) + \gamma \sum_{a'} \pi(a'|s') q_\pi(s', a') \right]
+q_\pi(s, a) = \sum_{s'} P(s'|s, a) \left[ R(s, a) + \gamma \sum_{a'} \pi(a'|s') q_\pi(s', a') \right].
 \end{equation}
 
 \paragraph{Equação de Bellman para o Ótimo \cite{sutton}:}
-Para políticas ótimas \(\pi^*\), temos as funções de valor ótimo, dada pela Equação \ref{eq:bellman_otimo_estado}:
+Para políticas ótimas \(\pi^*\), temos as funções de valor ótimo, dada pela Equação 
 
 \begin{equation}
 \label{eq:bellman_otimo_estado}
-v^*(s) = \max_a \sum_{s'} P(s'|s, a) \left[ R(s, a) + \gamma v^*(s') \right]
-\end{equation}
-
-E a função de valor de ação ótima, apresentada na Equação \ref{eq:bellman_otimo_acao}:
+v^*(s) = \max_a \sum_{s'} P(s'|s, a) \left[ R(s, a) + \gamma v^*(s') \right], 
+\end{equation} 
+e a função de valor de ação ótima, apresentada na Equação 
 
 \begin{equation}
 \label{eq:bellman_otimo_acao}
-q^*(s, a) = \sum_{s'} P(s'|s, a) \left[ R(s, a) + \gamma \max_{a'} q^*(s', a') \right]
+q^*(s, a) = \sum_{s'} P(s'|s, a) \left[ R(s, a) + \gamma \max_{a'} q^*(s', a') \right].
 \end{equation}
 
 Essas equações de Bellman são fundamentais para algoritmos de planejamento, como \textit{Value Iteration} e \textit{Policy Iteration}, mas quando a dinâmica do ambiente não é conhecida, métodos de aprendizado baseados em interação, como \textit{Q-learning}, se tornam necessários.
