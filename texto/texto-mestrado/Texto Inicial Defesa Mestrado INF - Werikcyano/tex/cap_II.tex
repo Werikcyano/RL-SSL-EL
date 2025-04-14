@@ -1,7 +1,6 @@
 \chapter{Fundamentação Teórica}
 \label{cap:fund}
 
-
 %% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 \section{Aprendizado por Reforço}
 \label{sec:rl}
@@ -215,7 +214,7 @@ No entanto, existem desafios importantes a serem considerados. Como apontado por
 
 Um aspecto particularmente desafiador, conforme destacado por \cite{curml}, é a necessidade de recursos computacionais significativos para a implementação efetiva de currículos adaptativos. O custo de gerar e validar sequências de treinamento personalizadas pode ser proibitivo para algumas aplicações, especialmente em domínios que requerem simulações complexas ou processamento em tempo real.
 
-Apesar destes desafios, na literatura, como evidenciado por \cite{curriculum_learning_a_survey}, a expextativa é que os benefícios do \textit{Curriculum Learning} geralmente superam suas limitações, especialmente em domínios complexos onde abordagens tradicionais de aprendizado por reforço mostram-se inadequadas. A contínua evolução de técnicas automatizadas para \textit{design} de currículos e a crescente disponibilidade de recursos computacionais sugerem um futuro promissor para esta abordagem.
+Apesar destes desafios, na literatura, como evidenciado por \cite{curriculum_learning_a_survey}, a expectativa é que os benefícios do \textit{Curriculum Learning} geralmente superam suas limitações, especialmente em domínios complexos onde abordagens tradicionais de aprendizado por reforço mostram-se inadequadas. A contínua evolução de técnicas automatizadas para \textit{design} de currículos e a crescente disponibilidade de recursos computacionais sugerem um futuro promissor para esta abordagem.
 
 %% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 \section{Futebol de Robôs}
@@ -242,17 +241,21 @@ A SSL-EL apresenta desafios únicos que equilibram complexidade técnica com ace
 O aspecto financeiro representa outro desafio significativo para equipes iniciantes. No entanto, iniciativas como a da equipe \textit{TurtleRabbit} demonstram que é possível desenvolver soluções competitivas com orçamento limitado \cite{turtlerabbit_tdp_2024}. Através do uso de componentes comerciais acessíveis e técnicas de manufatura como impressão 3D, equipes podem construir robôs funcionais mantendo os custos controlados.
 
 O processamento em tempo real das informações do \textit{SSL-Vision} apresenta desafios técnicos específicos \cite{ssl_overview}. As equipes precisam desenvolver sistemas robustos para lidar com:
-- Fusão de dados de múltiplas câmeras
-- Compensação de falhas momentâneas na detecção
-- Filtragem de ruídos e correção de discrepâncias
-- Predição de movimentos para compensar latências
+
+\begin{itemize}
+    \item Fusão de dados de múltiplas câmeras;
+    \item Compensação de falhas momentâneas na detecção;
+    \item Filtragem de ruídos e correção de discrepâncias;
+    \item Predição de movimentos para compensar latências.
+\end{itemize}
+
 
 A implementação de estratégias de jogo efetivas também representa um desafio significativo. Como documentado pela equipe \textit{RoboCIn} \cite{robocin_tdp_2024}, é necessário desenvolver algoritmos sofisticados para navegação, controle de bola e coordenação tática, mesmo no contexto simplificado da SSL-EL.
 
 \subsection{Trabalhos relacionados}
 \label{subsec:futebol_trabalhos}
 
-Diversos trabalhos têm contribuído para o avanço da SSL-EL, focando em diferentes aspectos da competição. As equipes \textit{ITAndroinds} e \textit{OrcaBOT}, por exemplo, desenvolveu uma abordagem inovadora para o \textit{design} de robôs de baixo custo, documentada em seu \textit{TDP} (\textit{Team Description Paper}) \cite{orcabot_tdp_2024, itandroids_tdp_2023}, demonstrando a viabilidade de construir sistemas competitivos com recursos limitados.
+Diversos trabalhos têm contribuído para o avanço da SSL-EL, focando em diferentes aspectos da competição. As equipes \textit{ITAndroids} e \textit{OrcaBOT}, por exemplo, desenvolveu uma abordagem inovadora para o \textit{design} de robôs, documentada em seu \textit{TDP} (\textit{Team Description Paper}) \cite{orcabot_tdp_2024, itandroids_tdp_2023}, demonstrando a viabilidade de construir sistemas competitivos com recursos limitados.
 
 No campo do controle e estratégia, trabalhos significativos têm emergido da comunidade acadêmica \cite{bruno_brandao, robocin_trabalho}. Estas pesquisas demonstram o potencial de algoritmos de aprendizado de máquina para desenvolver estratégias de jogo mais sofisticadas.
 
