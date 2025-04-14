@@ -38,7 +38,7 @@ O ambiente foi configurado para reproduzir um cenário de jogo simplificado, com
     \item Duração dos episódios: 40 segundos de jogo simulado;
     \item Número de agentes por equipe: 3 robôs (configurável conforme o estágio do \textit{curriculum});
     \item Posicionamento inicial: configurável para cada agente e para a bola;
-    \item Limite de passos por episódio: variável conforme o estágio do \textit{curriculum} (300 a 500 passos)
+    \item Limite de passos por episódio: variável conforme o estágio do \textit{curriculum} (300 a 500 passos).
 \end{itemize}
 
 Estas configurações foram ajustadas para oferecer um equilíbrio entre complexidade suficiente para o aprendizado significativo e simplicidade necessária para viabilizar o treinamento eficiente.
@@ -56,7 +56,7 @@ A arquitetura do sistema \textit{self-play} é implementada na classe \texttt{Se
     \item Uma política neural é treinada para os agentes da equipe azul;
     \item Uma cópia desta política é periodicamente transferida para os agentes da equipe amarela;
     \item A atualização ocorre quando a política azul atinge um nível de desempenho superior predefinido;
-    \item A métrica utilizada para decidir sobre a atualização é baseada na diferença de pontuação entre as equipes
+    \item A métrica utilizada para decidir sobre a atualização é baseada na diferença de pontuação entre as equipes.
 \end{enumerate}
 
 Este processo cria um ciclo virtuoso de melhoria contínua, onde os agentes constantemente enfrentam oponentes que representam desafios adequados ao seu nível de habilidade atual.
@@ -407,7 +407,7 @@ Além das métricas específicas descritas anteriormente, também serão utiliza
 \begin{itemize}
     \item \textit{Entropy} - Mede a aleatoriedade das ações selecionadas pela política, indicando o nível de exploração do agente;
     \item \textit{Policy Loss} - Quantifica o erro na política atual em relação à política ótima estimada;
-    \item \textit{VF Explained} - Indica quanto da variância nas recompensas é explicada pelo modelo de valor, medindo a qualidade das estimativas do valor
+    \item \textit{VF Explained} - Indica quanto da variância nas recompensas é explicada pelo modelo de valor, medindo a qualidade das estimativas do valor.
 \end{itemize}
 
 
