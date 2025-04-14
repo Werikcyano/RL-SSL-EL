@@ -7,7 +7,7 @@
 
 O Aprendizado por Reforço (\textit{Reinforcement Learning} - RL) é uma abordagem de aprendizado baseada na interação entre um agente e seu ambiente, onde o objetivo principal é maximizar um sinal de recompensa acumulada ao longo do tempo \cite{sutton}. O agente aprende a tomar decisões através de tentativa e erro, ajustando suas ações com base no \textit{feedback} recebido. Diferentemente do aprendizado supervisionado, que utiliza exemplos rotulados, o aprendizado por reforço explora a recompensa como único sinal de desempenho, lidando com a complexidade de recompensas atrasadas e incertezas na transição de estados. Formalmente, o RL é modelado através de \textbf{processos de decisão de Markov} (\textit{Markov Decision Processes} - MDPs) \cite{sutton}, que definem as interações em termos de estados, ações e recompensas, sendo amplamente aplicável a problemas de decisão sequencial em diversas áreas.
 
-Dentre os métodos avançados de aprendizado por reforço, destaca-se o \textbf{\textit{Proximal Policy Optimization} (PPO)}\cite{PPO}, que é amplamente utilizado devido à sua estabilidade em ambientes complexos. Quando aplicado ao \textbf{aprendizado por reforço multiagente} (\textit{Multi-agent RL}), permite que diversos agentes aprendam simultaneamente, interagindo de maneira colaborativa ou competitiva. Estratégias como o \textit{self-play} têm mostrado grande eficácia ao permitir que agentes aprendam uns com os outros em cenários competitivos, como no futebol de robôs. Além disso, o \textit{curriculum learning}\cite{curriculum} tem sido utilizado para estruturar a aprendizagem progressiva, começando com tarefas simples e avançando para desafios mais complexos\cite{curriculum_task_sequence}, um aspecto crucial em domínios como o \textbf{futebol de robôs}, onde os agentes precisam coordenar habilidades motoras e estratégias de equipe para alcançar um bom desempenho.
+Dentre os métodos avançados de aprendizado por reforço, destaca-se o \textbf{\textit{Proximal Policy Optimization} (PPO)} \cite{PPO}, que é amplamente utilizado devido à sua estabilidade em ambientes complexos. Quando aplicado ao \textbf{aprendizado por reforço multiagente} (\textit{Multi-agent RL}), permite que diversos agentes aprendam simultaneamente, interagindo de maneira colaborativa ou competitiva. Estratégias como o \textit{self-play} têm mostrado grande eficácia ao permitir que agentes aprendam uns com os outros em cenários competitivos, como no futebol de robôs. Além disso, o \textit{curriculum learning} \cite{curriculum} tem sido utilizado para estruturar a aprendizagem progressiva, começando com tarefas simples e avançando para desafios mais complexos \cite{curriculum_task_sequence}, um aspecto crucial em domínios como o \textbf{futebol de robôs}, onde os agentes precisam coordenar habilidades motoras e estratégias de equipe para alcançar um bom desempenho.
 
 \subsection{Conceitos Básicos}
 \label{subsec:rl_conceitos}
@@ -34,7 +34,7 @@ O dilema entre exploração e intensificação é um aspecto fundamental do apre
 
 \subsubsection*{Modelagem por Processos de Decisão de Markov (MDPs)}
 
-O aprendizado por reforço é frequentemente modelado por \textbf{Processos de Decisão de Markov} (\textit{Markov Decision Processes} - MDPs)\cite{sutton}, uma estrutura matemática que captura os aspectos estocásticos e sequenciais da tomada de decisão. Um MDP é definido pelo conjunto quádruplo \((S, A, P, R)\), onde:
+O aprendizado por reforço é frequentemente modelado por \textbf{Processos de Decisão de Markov} (\textit{Markov Decision Processes} - MDPs) \cite{sutton}, uma estrutura matemática que captura os aspectos estocásticos e sequenciais da tomada de decisão. Um MDP é definido pelo conjunto quádruplo \((S, A, P, R)\), onde:
 
 \begin{itemize}
     \item \(S\) é o conjunto de estados possíveis do ambiente.
@@ -43,7 +43,7 @@ O aprendizado por reforço é frequentemente modelado por \textbf{Processos de D
     \item \(R(s, a)\) é a recompensa esperada ao tomar a ação \(a\) no estado \(s\).
 \end{itemize}
 
-O agente busca maximizar a soma esperada das recompensas acumuladas ao longo do tempo, definida pelo \textbf{retorno} \(G_t\)\cite{sutton}. No caso de problemas de horizonte finito, o retorno é dado pela Equação \ref{eq:retorno_finito}:
+O agente busca maximizar a soma esperada das recompensas acumuladas ao longo do tempo, definida pelo \textbf{retorno} \(G_t\) \cite{sutton}. No caso de problemas de horizonte finito, o retorno é dado pela Equação \ref{eq:retorno_finito}:
 
 \begin{equation}
 \label{eq:retorno_finito}
@@ -59,7 +59,7 @@ G_t = R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + \dots = \sum_{k=0}^{\infty} 
 
 A modelagem dos MDPs requer duas funções principais de valor, que capturam a expectativa de recompensas futuras:
 
-\paragraph{1. Função de valor de estado (\(v_\pi(s)\))\cite{sutton}:}
+\paragraph{1. Função de valor de estado (\(v_\pi(s)\)) \cite{sutton}:}
 Define o valor esperado de se estar no estado \(s\) e seguir uma política \(\pi\) a partir desse estado, conforme a Equação \ref{eq:valor_estado}:
 
 \begin{equation}
@@ -74,7 +74,7 @@ Essa função pode ser definida recursivamente pela \textbf{equação de Bellman
 v_\pi(s) = \sum_{a \in A} \pi(a|s) \sum_{s' \in S} P(s'|s, a) \left[ R(s, a) + \gamma v_\pi(s') \right]
 \end{equation}
 
-\paragraph{2. Função de valor de ação (\(q_\pi(s, a)\))\cite{sutton}:}
+\paragraph{2. Função de valor de ação (\(q_\pi(s, a)\)) \cite{sutton}:}
 Define o valor esperado de se tomar a ação \(a\) no estado \(s\) e seguir a política \(\pi\) posteriormente, como apresentado na Equação \ref{eq:valor_acao}:
 
 \begin{equation}
@@ -89,7 +89,7 @@ Também pode ser escrita de forma recursiva, conforme a Equação \ref{eq:bellma
 q_\pi(s, a) = \sum_{s'} P(s'|s, a) \left[ R(s, a) + \gamma \sum_{a'} \pi(a'|s') q_\pi(s', a') \right]
 \end{equation}
 
-\paragraph{Equação de Bellman para o Ótimo\cite{sutton}:}
+\paragraph{Equação de Bellman para o Ótimo \cite{sutton}:}
 Para políticas ótimas \(\pi^*\), temos as funções de valor ótimo, dada pela Equação \ref{eq:bellman_otimo_estado}:
 
 \begin{equation}
@@ -113,13 +113,13 @@ Os MDPs constituem o núcleo matemático de muitos algoritmos de aprendizado por
 
 O \textit{Proximal Policy Optimization} (PPO) representa um marco significativo no desenvolvimento de algoritmos de aprendizado por reforço, destacando-se pela sua combinação única de simplicidade de implementação, eficiência computacional e estabilidade durante o treinamento \cite{PPO}. Desenvolvido pela OpenAI, o PPO surgiu como uma evolução do \textit{Trust Region Policy Optimization} (TRPO), introduzindo mecanismos mais eficientes para controlar a magnitude das atualizações de política \cite{openia_ppo_doc}.
 
-O diferencial do PPO está em sua abordagem para otimização de políticas, que utiliza uma \textit{função objetivo substituta recortada} (\textit{clipped surrogate objective}) \cite{PPO}\cite{openia_ppo_doc}. Esta função limita efetivamente as mudanças na política, prevenindo atualizações muito grandes que poderiam desestabilizar o aprendizado. Matematicamente, a função objetivo do PPO é expressa como:
+O diferencial do PPO está em sua abordagem para otimização de políticas, que utiliza uma \textit{função objetivo substituta recortada} (\textit{clipped surrogate objective}) \cite{PPO} \cite{openia_ppo_doc}. Esta função limita efetivamente as mudanças na política, prevenindo atualizações muito grandes que poderiam desestabilizar o aprendizado. Matematicamente, a função objetivo do PPO é expressa como:
 
 \begin{equation}
 L^{CLIP}(\theta) = \mathbb{E}_t \left[ \min\left( r_t(\theta) A_t, \text{clip}(r_t(\theta), 1-\epsilon, 1+\epsilon) A_t \right) \right]
 \end{equation}
 
-onde $r_t(\theta) = \frac{\pi_\theta(a_t|s_t)}{\pi_{\theta_{old}}(a_t|s_t)}$ representa a razão entre as probabilidades das políticas nova e antiga, $A_t$ é a estimativa da vantagem, e $\epsilon$ é um hiperparâmetro que controla o tamanho máximo da atualização \cite{stable_baselines3}\cite{PPO}.
+onde $r_t(\theta) = \frac{\pi_\theta(a_t|s_t)}{\pi_{\theta_{old}}(a_t|s_t)}$ representa a razão entre as probabilidades das políticas nova e antiga, $A_t$ é a estimativa da vantagem, e $\epsilon$ é um hiperparâmetro que controla o tamanho máximo da atualização \cite{stable_baselines3} \cite{PPO}.
 
 O PPO implementa uma arquitetura \textit{actor-critic}, onde o \textit{actor} é responsável pela política que mapeia estados para ações, enquanto o \textit{critic} estima os valores dos estados para auxiliar no cálculo das vantagens \cite{PPO} \cite{pytorch_ppo}. Esta estrutura dual permite um equilíbrio eficiente entre exploração e aproveitamento do conhecimento adquirido. O processo de treinamento ocorre em episódios, onde experiências são coletadas e utilizadas para atualizar tanto a política quanto a função de valor \cite{PPO}.
 
@@ -127,7 +127,7 @@ Uma característica fundamental do PPO é sua capacidade de lidar com espaços d
 
 O PPO tem demonstrado resultados impressionantes em uma variedade de domínios complexos, desde jogos até tarefas de robótica \cite{ppo_env_gym}. Sua eficácia é particularmente notável em ambientes que requerem aprendizado contínuo e adaptação, como no caso do futebol de robôs, onde os agentes precisam constantemente ajustar suas estratégias em resposta a situações dinâmicas \cite{bruno_brandao}.
 
-No contexto do aprendizado multiagente, o PPO pode ser estendido para treinar múltiplos agentes simultaneamente, permitindo o desenvolvimento de comportamentos cooperativos ou competitivos \cite{pytorch_ppo}. Esta característica é especialmente relevante para cenários de equipe, como o futebol de robôs, onde os agentes precisam coordenar suas ações para alcançar objetivos comuns \cite{ppo_env_gym}\cite{bruno_brandao}.
+No contexto do aprendizado multiagente, o PPO pode ser estendido para treinar múltiplos agentes simultaneamente, permitindo o desenvolvimento de comportamentos cooperativos ou competitivos \cite{pytorch_ppo}. Esta característica é especialmente relevante para cenários de equipe, como o futebol de robôs, onde os agentes precisam coordenar suas ações para alcançar objetivos comuns \cite{ppo_env_gym} \cite{bruno_brandao}.
 
 \subsection{Multi-agent RL}
 \label{subsec:marl}
@@ -159,7 +159,7 @@ A implementação moderna do \textit{self-play} frequentemente incorpora arquite
 
 No entanto, o \textit{self-play} também apresenta desafios significativos. Como observado em \cite{provable_self_play}, existe o risco de convergência para equilíbrios subótimos, especialmente em jogos com múltiplos equilíbrios de Nash. Para mitigar este problema, técnicas como diversificação de oponentes e regularização de entropia têm sido empregadas com sucesso.
 
-Desenvolvimentos recentes, descritos em \cite{survey_self_play}\cite{survey_self_play_2024}, têm explorado a integração do \textit{self-play} com paradigmas emergentes como meta-aprendizado e modelos de linguagem grandes. Esta convergência tem aberto novos caminhos para o desenvolvimento de agentes mais adaptativos e versáteis.
+Desenvolvimentos recentes, descritos em \cite{survey_self_play} \cite{survey_self_play_2024}, têm explorado a integração do \textit{self-play} com paradigmas emergentes como meta-aprendizado e modelos de linguagem grandes. Esta convergência tem aberto novos caminhos para o desenvolvimento de agentes mais adaptativos e versáteis.
 
 A aplicação do \textit{self-play} estende-se além dos jogos tradicionais. Como documentado em \cite{survey_self_play_2024} e \cite{bruno_brandao}, a técnica tem sido aplicada com sucesso em domínios como robótica, simulações financeiras e sistemas de controle autônomo. Em cada caso, o \textit{self-play} permite que os agentes desenvolvam estratégias robustas através da exploração sistemática do espaço de possibilidades.
 
@@ -184,7 +184,7 @@ A transferência de conhecimento, elemento crucial do CL, permite que o aprendiz
 
 Um aspecto fundamental do CL, conforme apresentado por \cite{curriculum}, é a utilização de métricas de dificuldade para calibrar a progressão do currículo. Estas métricas podem incluir a entropia das políticas aprendidas ou a taxa de sucesso em submetas específicas, permitindo um ajuste dinâmico do processo de aprendizagem.
 
-No contexto específico do \textit{Reinforcement Learning}, o CL se integra naturalmente com os Processos de Decisão de Markov (MDPs), onde o agente interage com ambientes parametrizados de forma progressiva\cite{sutton}. Esta integração, como explicado em \cite{curriculum_reinforcement_learning}, permite uma acumulação estruturada de experiência, fundamental para o desenvolvimento de políticas robustas e eficientes.
+No contexto específico do \textit{Reinforcement Learning}, o CL se integra naturalmente com os Processos de Decisão de Markov (MDPs), onde o agente interage com ambientes parametrizados de forma progressiva \cite{sutton}. Esta integração, como explicado em \cite{curriculum_reinforcement_learning}, permite uma acumulação estruturada de experiência, fundamental para o desenvolvimento de políticas robustas e eficientes.
 
 \subsection{Aplicações em RL}
 \label{subsec:curriculum_rl}
@@ -201,7 +201,7 @@ Um aspecto crucial na aplicação do CL em RL, conforme destacado por \cite{vari
 
 A eficácia do CL em RL também se estende a domínios com espaços de estado contínuos e de alta dimensionalidade. \cite{curml} demonstra como currículos bem projetados podem guiar a exploração em espaços complexos, reduzindo significativamente o tempo necessário para encontrar políticas ótimas. Esta abordagem tem se mostrado particularmente valiosa em aplicações industriais, onde o custo de exploração aleatória pode ser proibitivo.
 
-Diversos avanços significativos têm sido feitos na área de \textit{Curriculum Learning}, incluindo automatização do design de currículos, integração com aprendizado profundo, \textit{frameworks} baseados em modelos de difusão para geração automática de tarefas, coordenação de currículos paralelos em sistemas multiagente e desenvolvimento de currículos auto-adaptativos baseados em meta-aprendizado \cite{curriculum_reinforcement_learning}\cite{diffusion_based_curriculum_reinforcement_learning}\cite{curriculum_learning_in_rl}\cite{variational_curriculum_rl}. Estas inovações têm contribuido para melhorar a forma como os currículos são estruturados e aplicados, permitindo uma evolução significativa na área.
+Diversos avanços significativos têm sido feitos na área de \textit{Curriculum Learning}, incluindo automatização do design de currículos, integração com aprendizado profundo, \textit{frameworks} baseados em modelos de difusão para geração automática de tarefas, coordenação de currículos paralelos em sistemas multiagente e desenvolvimento de currículos auto-adaptativos baseados em meta-aprendizado \cite{curriculum_reinforcement_learning} \cite{diffusion_based_curriculum_reinforcement_learning} \cite{curriculum_learning_in_rl} \cite{variational_curriculum_rl}. Estas inovações têm contribuido para melhorar a forma como os currículos são estruturados e aplicados, permitindo uma evolução significativa na área.
 
 \subsection{Vantagens e desafios}
 \label{subsec:curriculum_vantagens_desafios}
@@ -212,7 +212,7 @@ Entre as principais vantagens, \cite{curriculum_reinforcement_learning} destaca 
 
 No entanto, existem desafios importantes a serem considerados. Como apontado por \cite{boosted_curriculum_rl}, um dos principais obstáculos é a definição apropriada de métricas de dificuldade para diferentes tipos de tarefas. A subjetividade inerente à noção de "dificuldade" pode tornar complexa a automatização completa do processo de \textit{design} do currículo.
 
-\cite{curriculum} identifica outro desafio significativo: o balanceamento entre exploração e exploração durante o processo de aprendizagem. Currículos mal calibrados podem levar a uma convergência prematura para soluções subótimas ou, alternativamente, resultar em uma exploração excessiva que compromete a eficiência do treinamento.
+ \cite{curriculum} identifica outro desafio significativo: o balanceamento entre exploração e exploração durante o processo de aprendizagem. Currículos mal calibrados podem levar a uma convergência prematura para soluções subótimas ou, alternativamente, resultar em uma exploração excessiva que compromete a eficiência do treinamento.
 
 Um aspecto particularmente desafiador, conforme destacado por \cite{curml}, é a necessidade de recursos computacionais significativos para a implementação efetiva de currículos adaptativos. O custo de gerar e validar sequências de treinamento personalizadas pode ser proibitivo para algumas aplicações, especialmente em domínios que requerem simulações complexas ou processamento em tempo real.
 
@@ -231,7 +231,7 @@ A SSL-EL foi estabelecida como uma divisão de entrada da \textit{Small Size Lea
 
 O ambiente de jogo é estruturado em torno de um sistema centralizado de visão (\textit{SSL-Vision}), que fornece informações em tempo real sobre as posições dos robôs e da bola através de câmeras suspensas \cite{ssl_overview}. Esta arquitetura permite que as equipes foquem no desenvolvimento de estratégias de controle e coordenação, sem a necessidade inicial de implementar sistemas complexos de percepção local.
 
-Os robôs da SSL-EL, embora sujeitos a restrições dimensionais similares às da divisão principal (diâmetro $\leq 18$ cm, altura $\leq 15$ cm)\cite{regras_ssl_el_2024}, podem ser construídos com soluções mais acessíveis. A equipe \textit{TurtleRabbit}, por exemplo, demonstrou a viabilidade de construir robôs competitivos com orçamento reduzido, utilizando componentes comerciais e estruturas impressas em 3D \cite{turtlerabbit_tdp_2024}.
+Os robôs da SSL-EL, embora sujeitos a restrições dimensionais similares às da divisão principal (diâmetro $\leq 18$ cm, altura $\leq 15$ cm) \cite{regras_ssl_el_2024}, podem ser construídos com soluções mais acessíveis. A equipe \textit{TurtleRabbit}, por exemplo, demonstrou a viabilidade de construir robôs competitivos com orçamento reduzido, utilizando componentes comerciais e estruturas impressas em 3D \cite{turtlerabbit_tdp_2024}.
 
 A competição promove desafios técnicos específicos, como o \textit{Ball Placement Challenge}, que permitem às equipes desenvolverem e testarem capacidades fundamentais de forma isolada \cite{ssl_overview}. Esta abordagem gradual ao desenvolvimento de habilidades tem se mostrado efetiva para a evolução das equipes, como evidenciado pelos resultados de competições recentes \cite{ssl_overview}.
 
@@ -253,9 +253,9 @@ A implementação de estratégias de jogo efetivas também representa um desafio
 \subsection{Trabalhos relacionados}
 \label{subsec:futebol_trabalhos}
 
-Diversos trabalhos têm contribuído para o avanço da SSL-EL, focando em diferentes aspectos da competição. As equipes \textit{ITAndroinds} e \textit{OrcaBOT}, por exemplo, desenvolveu uma abordagem inovadora para o \textit{design} de robôs de baixo custo, documentada em seu \textit{TDP} (\textit{Team Description Paper}) \cite{orcabot_tdp_2024}\cite{itandroids_tdp_2023}, demonstrando a viabilidade de construir sistemas competitivos com recursos limitados.
+Diversos trabalhos têm contribuído para o avanço da SSL-EL, focando em diferentes aspectos da competição. As equipes \textit{ITAndroinds} e \textit{OrcaBOT}, por exemplo, desenvolveu uma abordagem inovadora para o \textit{design} de robôs de baixo custo, documentada em seu \textit{TDP} (\textit{Team Description Paper}) \cite{orcabot_tdp_2024} \cite{itandroids_tdp_2023}, demonstrando a viabilidade de construir sistemas competitivos com recursos limitados.
 
-No campo do controle e estratégia, trabalhos significativos têm emergido da comunidade acadêmica \cite{bruno_brandao}\cite{robocin_trabalho}. Estas pesquisas demonstram o potencial de algoritmos de aprendizado de máquina para desenvolver estratégias de jogo mais sofisticadas.
+No campo do controle e estratégia, trabalhos significativos têm emergido da comunidade acadêmica \cite{bruno_brandao} \cite{robocin_trabalho}. Estas pesquisas demonstram o potencial de algoritmos de aprendizado de máquina para desenvolver estratégias de jogo mais sofisticadas.
 
 A organização da \textit{RoboCup} tem contribuído significativamente através da documentação e padronização de regras e especificações técnicas \cite{regras_ssl_el_2024}. Este trabalho de documentação tem sido fundamental para permitir que novas equipes ingressem na competição com uma compreensão clara dos requisitos e desafios.
 
