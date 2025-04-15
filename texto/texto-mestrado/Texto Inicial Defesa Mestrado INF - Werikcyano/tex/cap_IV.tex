@@ -21,7 +21,7 @@ A utilização de \textit{hardware} especializado foi fundamental para viabiliza
 
 \subsection{Parâmetros de Treinamento}
 
-Os parâmetros de treinamento foram cuidadosamente selecionados para garantir um equilíbrio entre eficiência computacional e qualidade do aprendizado, tentando mater o mais próximo possível do padrão utilizado no artigo original. Os principais parâmetros utilizados incluem:
+Os parâmetros de treinamento foram cuidadosamente selecionados para garantir um equilíbrio entre eficiência computacional e qualidade do aprendizado, tentando mater o mais próximo possível do padrão utilizado no artigo original \cite{bruno_brandao}. Os principais parâmetros utilizados incluem:
 
 \begin{itemize}
     \item \textbf{Algoritmo}: \textit{Proximal Policy Optimization} (PPO) 
@@ -82,7 +82,7 @@ A análise dos tempos de treinamento revela diferenças significativas entre as 
 
 Estas diferenças nos tempos de treinamento refletem a complexidade e a natureza de cada abordagem. O treinamento exclusivo com \textit{curriculum tasks} é significativamente mais rápido, pois envolve ambientes mais simples e objetivos bem definidos. A abordagem combinada (\textit{curriculum} + \textit{self-play}) apresenta um tempo de treinamento aproximadamente 15\% menor em relação ao \textit{full self-play} tradicional.
 
-Esta economia de tempo é uma observação particularmente relevante do ponto de vista prático, especialmente considerando que a abordagem combinada também proporcionou resultados superiores (conforme demonstrado nas seções anteriores). Esta vantagem em termos de eficiência computacional representa um aspecto importante para aplicações práticas, onde os recursos de processamento são frequentemente limitados.
+Esta economia de tempo é uma observação particularmente relevante do ponto de vista prático, especialmente considerando que a abordagem combinada também proporcionou resultados superiores (conforme demonstrado nas seções posteriores). Esta vantagem em termos de eficiência computacional representa um aspecto importante para aplicações práticas, onde os recursos de processamento são frequentemente limitados.
 
 A maior eficiência da abordagem combinada pode ser atribuída ao fato de que as habilidades fundamentais desenvolvidas durante o \textit{curriculum} permitem que o agente aproveite melhor a fase de \textit{self-play}, convergindo mais rapidamente para políticas efetivas. Os agentes que iniciam diretamente no \textit{self-play} gastam mais tempo em fases iniciais de exploração aleatória, necessitando de iterações adicionais para desenvolver as mesmas capacidades que são adquiridas de forma estruturada no \textit{curriculum}.
 
@@ -270,30 +270,28 @@ Esta grande disparidade na capacidade ofensiva pode ser atribuída ao resultado 
 
 \subsection{Análise de Trade-offs entre Abordagens}
 
-Uma observação importante que sruge da análise dos dados dos torneios é o claro \textit{trade-off} entre as diferentes abordagens de treinamento. A Tabela \ref{tab:comparacao_abordagens_detalhada} resume as principais métricas para cada abordagem nos confrontos diretos, facilitando a visualização destes \textit{trade-offs}.
+Uma observação importante que surge da análise dos dados dos torneios é o claro \textit{trade-off} entre as diferentes abordagens de treinamento. A Tabela \ref{tab:comparacao_abordagens_detalhada} resume as principais métricas para cada abordagem nos confrontos diretos, facilitando a visualização destes \textit{trade-offs}.
 
 \begin{table}[H]
     \centering
-    \begin{tabular}{|c|c|c|c|}
+    \begin{tabular}{|c|c|c|}
         \hline
-        \textbf{Métrica} & \textbf{Curriculum} & \textbf{Full Self-play} & \textbf{Curriculum + Self-play} \\
+        \textbf{Métrica} & \textbf{Curriculum} & \textbf{Curriculum + Self-play} \\
         \hline
-        Vitórias vs Full Self-play & 33 (6,6\%) & - & 430 (86\%) \\
+        Vitórias vs Full Self-play & 33 (6,6\%) & 430 (86\%) \\
         \hline
-        Empates vs Full Self-play & 220 (44\%) & - & 63 (12,6\%) \\
+        Empates vs Full Self-play & 220 (44\%) & 63 (12,6\%) \\
         \hline
-        Derrotas vs Full Self-play & 247 (49,4\%) & - & 7 (1,4\%) \\
+        Derrotas vs Full Self-play & 247 (49,4\%) & 7 (1,4\%) \\
         \hline
-        Gols marcados vs Full Self-play & 58 & - & 1.012 \\
+        Gols marcados vs Full Self-play & 58 & 1.012 \\
         \hline
-        Gols sofridos vs Full Self-play & 503 & - & 9 \\
+        Gols sofridos vs Full Self-play & 503 & 9 \\
         \hline
-        Média de gols/partida & 0,116 & 0,512* & 2,024 \\
-        \hline
-        \multicolumn{4}{|l|}{* Média calculada considerando os dois torneios (512 gols em 1000 partidas)} \\
+        Média de gols/partida & 0,116 & 2,024 \\
         \hline
     \end{tabular}
-    \caption{Comparação detalhada entre as três abordagens de treinamento nos torneios}
+    \caption{Comparação detalhada entre as abordagens de treinamento nos torneios}
     \label{tab:comparacao_abordagens_detalhada}
 \end{table}
 
@@ -419,7 +417,7 @@ Os dados apresentam ainda um padrão claro de complementaridade entre as abordag
 
 Os resultados obtidos confirmam consistentemente a hipótese central deste trabalho: o \textit{curriculum learning} como fase preparatória para o \textit{self-play} melhora significativamente as políticas aprendidas, resultando em agentes com desempenho superior.
 
-Esta confirmação apoia-se em evidências estatisticamente significativas observadas em múltiplos cenários de avaliação e métricas diversas. O \textit{curriculum learning} proporciona fundamentos técnicos que permitem ao agente aproveitar melhor a fase competitiva do \textit{self-play}, acelerando e otimizando o desenvolvimento de políticas eficazes.
+Esta confirmação apoia-se em evidências estatísticas, obtidas no torneio proposto neste trabalho, onde foram realizadas 500 partidas entre os diferentes agentes. O \textit{curriculum learning} proporciona fundamentos técnicos que permitem ao agente aproveitar melhor a fase competitiva do \textit{self-play}, acelerando e otimizando o desenvolvimento de políticas eficazes, como demonstrado pela taxa de vitória de 86\% contra o \textit{Full Self-play}.
 
 \subsection{Limitações do Estudo}
 

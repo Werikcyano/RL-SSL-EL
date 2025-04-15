@@ -122,7 +122,7 @@ O fluxo do processo inicia com a definição dos estágios e seus respectivos pa
 
 \subsection{Estrutura dos Estágios}
 
-O \textit{curriculum} implementado neste trabalho é estruturado em três estágios principais, cada um representando um nível distinto de complexidade no aprendizado do futebol de robôs. Estes estágios são designados como tarefas (\textit{tasks}) e numerados de 0 a 1, com cada tarefa apresentando configurações e objetivos específicos.
+O \textit{curriculum} implementado neste trabalho é estruturado em dois estágios principais, cada um representando um nível distinto de complexidade no aprendizado do futebol de robôs. Estes estágios são designados como tarefas (\textit{tasks}) e numerados de 0 a 1, com cada tarefa apresentando configurações e objetivos específicos.
 
 \subsubsection{Estágio 1 (\textit{Task} 0): Fundamentos Básicos}
 \label{subsubsec:estagio1}
@@ -133,7 +133,7 @@ O Estágio 1 representa o nível mais básico do \textit{curriculum}, focado no 
 
 No Estágio 1, o ambiente é configurado com as seguintes características:
 \begin{itemize}
-    \item Um robô da equipe azul, posicionado em local predefinido;
+    \item Um robô da equipe azul, posicionado em local predefinido (com variações aleatórias de até 30cm da posição inicial);
     \item Ausência de robôs oponentes (equipe amarela);
     \item Bola posicionada no centro do campo;
     \item Limite de 300 passos por episódio.
@@ -234,6 +234,8 @@ O monitoramento de desempenho é realizado através de um conjunto de métricas 
     \item Métricas de continuidade (\textit{resets}).
 \end{itemize}
 
+Sendo \textit{resets} o número de vezes que ocorre a reinicialização das posições dos robôs e da bola para suas posições iniciais, sem encerrar a partida ou reiniciar o placar.
+
 Estas métricas são armazenadas em uma janela deslizante de episódios recentes, permitindo a avaliação do desempenho atual com base em um histórico significativo. A implementação utiliza a estrutura \texttt{deque} do \textit{Python} para manter esta janela de forma eficiente, com um tamanho configurável (padrão de 100 episódios).
 
 \subsubsection{Adaptação Dinâmica}
@@ -256,7 +258,7 @@ A integração entre o \textit{curriculum learning} e o \textit{self-play} repre
 
 \subsubsection{Transição para Treinamento Competitivo}
 
-A transição do \textit{curriculum learning} para o \textit{self-play} ocorre após a conclusão do último estágio do \textit{curriculum} (\textit{Task} 2). Neste ponto, os agentes da equipe azul já desenvolveram as habilidades fundamentais necessárias para o jogo e estão preparados para enfrentar oponentes mais desafiadores.
+A transição do \textit{curriculum learning} para o \textit{self-play} ocorre após a conclusão do último estágio do \textit{curriculum} (\textit{Task} 1). Neste ponto, os agentes da equipe azul já desenvolveram as habilidades fundamentais necessárias para o jogo e estão preparados para enfrentar oponentes mais desafiadores.
 
 O processo de transição segue os seguintes passos:
 
