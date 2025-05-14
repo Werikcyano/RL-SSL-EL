@@ -316,19 +316,6 @@ Após a conclusão do último estágio do curriculum, o sistema transita automat
     \item As métricas de desempenho são continuamente monitoradas para avaliar a eficácia da abordagem
 \end{enumerate}
 
-\subsubsection{Resultados e Eficácia do Curriculum}
-
-Os experimentos demonstraram que a abordagem de Curriculum Learning seguida por Self-play apresenta vantagens significativas:
-
-\begin{itemize}
-    \item \textbf{Eficiência de tempo}: Redução de aproximadamente 15\% no tempo total de treinamento (7.4 vs 8.7 horas)
-    \item \textbf{Qualidade superior}: Taxa de vitória de 86\% contra agentes treinados apenas com Self-play
-    \item \textbf{Eficácia ofensiva}: Média de 2.024 gols por partida, comparado a 0.018 da abordagem tradicional
-    \item \textbf{Estabilidade de aprendizado}: Menor variância nas métricas de desempenho durante o treinamento
-\end{itemize}
-
-Estas métricas confirmam que o desenvolvimento estruturado de habilidades fundamentais através do Curriculum Learning potencializa significativamente a eficácia do Self-play subsequente, resultando em agentes com capacidades técnicas e táticas superiores.
-
 \subsection{Implementação do Algoritmo}
 
 Para o treinamento dos agentes, utilizamos o algoritmo Proximal Policy Optimization (PPO), uma abordagem moderna de policy gradient que oferece estabilidade, eficiência e desempenho consistente. A implementação foi realizada utilizando o framework RLlib da biblioteca Ray, que proporciona escalabilidade e distribuição eficiente do processo de treinamento.
@@ -543,11 +530,16 @@ O treinamento distribuído foi configurado com:
 Com esta configuração, o tempo total de treinamento foi aproximadamente:
 
 \begin{itemize}
-    \item \textbf{Curriculum Task 0}: 20 minutos (55 iterações)
-    \item \textbf{Curriculum Task 1}: 22 minutos (60 iterações)
-    \item \textbf{Self-play após Curriculum}: 7 horas (781 iterações)
+    \item \textbf{Curriculum + Self-play (abordagem proposta)}: total de 900 iterações
+    \begin{itemize}
+        \item \textbf{Curriculum Task 0}: 20 minutos (55 iterações)
+        \item \textbf{Curriculum Task 1}: 22 minutos (60 iterações)
+        \item \textbf{Self-play após Curriculum}: 7 horas (785 iterações)
+        \item \textbf{Tempo total}: 7.7 horas (900 iterações)
+    \end{itemize}
     \item \textbf{Full Self-play (baseline)}: 8.7 horas (900 iterações)
 \end{itemize}
 
+É importante ressaltar que ambas as abordagens utilizaram o mesmo critério de parada: 900 iterações totais de treinamento. Esta equivalência garante uma comparação justa entre os métodos, evidenciando que a abordagem de Curriculum + Self-play fez em menos tempo (7.7 horas versus 8.7 horas).
 
 Todas as configurações específicas, scripts auxiliares e documentação detalhada estão disponíveis no repositório do projeto. Para facilitar a reprodução, fornecemos também um container Docker com todas as dependências pré-configuradas.
