@@ -6,7 +6,7 @@ Esta seção detalha os aspectos técnicos necessários para a reprodução dos 
 
 O problema de controle multiagente em futebol de robôs é formulado como um Dec-POMDP, representado pela tupla:
 
-$$G = \langle D, A, S, Z, P, R \rangle$$
+$$G = \langle D, A, S, Z, P, R \rangle.$$
 
 Onde:
 \begin{itemize}
@@ -24,7 +24,7 @@ A formulação Dec-POMDP é particularmente adequada para este domínio, pois os
 
 O conjunto de agentes varia conforme o estágio do curriculum learning e o tipo de experimento. A configuração padrão para o jogo completo é:
 
-$$D_{azul} = \{d_1, d_2, d_3\}$$ para o time azul (time em treinamento) e $$D_{amarelo} = \{d_4, d_5, d_6\}$$ para o time amarelo (oponentes).
+$$D_{azul} = \{d_1, d_2, d_3\}$$ para o time azul e $$D_{amarelo} = \{d_4, d_5, d_6\}$$ para o time amarelo.
 
 O número de agentes é dinamicamente ajustado durante as diferentes fases do curriculum learning:
 
@@ -40,7 +40,7 @@ Todos os agentes de um mesmo time compartilham os mesmos parâmetros de polític
 
 Cada agente possui um espaço de ação contínuo com 4 dimensões:
 
-$$a_d = (v_x, v_y, \omega_{\theta}, k) \in [-1.0, 1.0]^4$$
+$$a_d = (v_x, v_y, \omega_{\theta}, k) \in [-1.0, 1.0]^4.$$
 
 Onde:
 \begin{itemize}
@@ -55,17 +55,17 @@ Estas ações de alto nível são convertidas para comandos de baixo nível das 
 \subsubsection{Transformação de coordenadas}
 
 Primeiro, as velocidades no referencial global são transformadas para o referencial local do robô:
-$$v_x', v_y' = v_x \cdot \cos(\theta) + v_y \cdot \sin(\theta), -v_x \cdot \sin(\theta) + v_y \cdot \cos(\theta)$$
+$$v_x', v_y' = v_x \cdot \cos(\theta) + v_y \cdot \sin(\theta), -v_x \cdot \sin(\theta) + v_y \cdot \cos(\theta).$$
 
 Onde $\theta$ é a orientação atual do robô.
 
 \subsubsection{Cálculo das velocidades angulares das rodas}
 
 Em seguida, as velocidades locais e a velocidade angular são convertidas para comandos de velocidade das quatro rodas omnidirecionais:
-$$\omega_{roda0} = \frac{v_y'}{r} - \frac{L \cdot \omega_{\theta}}{r}$$
-$$\omega_{roda1} = \frac{v_x'}{r} + \frac{L \cdot \omega_{\theta}}{r}$$
-$$\omega_{roda2} = -\frac{v_y'}{r} - \frac{L \cdot \omega_{\theta}}{r}$$
-$$\omega_{roda3} = -\frac{v_x'}{r} + \frac{L \cdot \omega_{\theta}}{r}$$
+$$\omega_{roda0} = \frac{v_y'}{r} - \frac{L \cdot \omega_{\theta}}{r}.$$
+$$\omega_{roda1} = \frac{v_x'}{r} + \frac{L \cdot \omega_{\theta}}{r}.$$
+$$\omega_{roda2} = -\frac{v_y'}{r} - \frac{L \cdot \omega_{\theta}}{r}.$$
+$$\omega_{roda3} = -\frac{v_x'}{r} + \frac{L \cdot \omega_{\theta}}{r}.$$
 
 Onde $r$ é o raio das rodas e $L$ é a distância do centro do robô até as rodas.
 
@@ -84,12 +84,12 @@ Os valores resultantes são limitados às velocidades máximas permitidas pelos 
 O estado completo $S$ do ambiente representa todas as informações físicas do sistema simulado, incluindo:
 
 \begin{itemize}
-    \item Posição $(x, y)$ e orientação $\theta$ de todos os robôs
-    \item Velocidades lineares $(v_x, v_y)$ e angulares $\omega$ de cada robô
-    \item Posição $(x, y)$ e velocidade $(v_x, v_y)$ da bola
-    \item Estado dos atuadores (velocidades das rodas)
-    \item Forças e interações físicas entre todos os objetos do ambiente
-    \item Informações sobre limites do campo, área de gol e outras regiões relevantes
+    \item Posição $(x, y)$ e orientação $\theta$ de todos os robôs;
+    \item Velocidades lineares $(v_x, v_y)$ e angulares $\omega$ de cada robô;
+    \item Posição $(x, y)$ e velocidade $(v_x, v_y)$ da bola;
+    \item Estado dos atuadores (velocidades das rodas);
+    \item Forças e interações físicas entre todos os objetos do ambiente;
+    \item Informações sobre limites do campo, área de gol e outras regiões relevantes.
 \end{itemize}
 
 Este estado completo é gerenciado pelo simulador RL-SSL-EL, que implementa a física do ambiente. No entanto, os agentes não têm acesso direto a todas essas informações, apenas a um conjunto de observações parciais derivadas do estado completo, muitas vezes com ruído adicionado para simular imperfeições sensoriais.
@@ -104,40 +104,40 @@ O vetor de observação é composto pelas seguintes categorias de informação:
 
 \subsubsection{Posições Cartesianas}
 \begin{itemize}
-    \item Posição $(x, y)$ normalizada do próprio robô relativa ao centro do campo
-    \item Posições $(x, y)$ normalizadas dos companheiros de time relativas ao centro do campo
-    \item Posições $(x, y)$ normalizadas dos adversários relativas ao centro do campo
-    \item Posição $(x, y)$ normalizada da bola relativa ao centro do campo
+    \item Posição $(x, y)$ normalizada do próprio robô relativa ao centro do campo;
+    \item Posições $(x, y)$ normalizadas dos companheiros de time relativas ao centro do campo;
+    \item Posições $(x, y)$ normalizadas dos adversários relativas ao centro do campo;
+    \item Posição $(x, y)$ normalizada da bola relativa ao centro do campo.
 \end{itemize}
 
 \subsubsection{Orientações Angulares}
 \begin{itemize}
-    \item Seno e cosseno da orientação do próprio robô para representação contínua sem descontinuidades
-    \item Arcotangente da orientação do próprio robô como informação complementar
-    \item Seno, cosseno e arcotangente dos ângulos formados entre o robô e seus aliados
-    \item Seno, cosseno e arcotangente dos ângulos formados entre o robô e os adversários
-    \item Seno, cosseno e arcotangente dos ângulos formados entre a bola e o centro de cada gol
+    \item Seno e cosseno da orientação do próprio robô para representação contínua sem descontinuidades;
+    \item Arcotangente da orientação do próprio robô como informação complementar;
+    \item Seno, cosseno e arcotangente dos ângulos formados entre o robô e seus aliados;
+    \item Seno, cosseno e arcotangente dos ângulos formados entre o robô e os adversários;
+    \item Seno, cosseno e arcotangente dos ângulos formados entre a bola e o centro de cada gol.
 \end{itemize}
 
 \subsubsection{Distâncias Euclidianas}
 \begin{itemize}
-    \item Entre o robô e cada companheiro de time
-    \item Entre o robô e cada adversário
-    \item Entre o robô e a bola
-    \item Entre a bola e ambos os gols (aliado e adversário)
+    \item Entre o robô e cada companheiro de time;
+    \item Entre o robô e cada adversário;
+    \item Entre o robô e a bola;
+    \item Entre a bola e ambos os gols (aliado e adversário).
 \end{itemize}
 
 \subsubsection{Informações Temporais e Contextuais}
 \begin{itemize}
-    \item Ações anteriores de todos os companheiros de time no tempo $t-1$
-    \item Tempo restante no episódio (normalizado para o intervalo $[0,1]$)
+    \item Ações anteriores de todos os companheiros de time no tempo $t-1$;
+    \item Tempo restante no episódio (normalizado para o intervalo $[0,1]$).
 \end{itemize}
 
 Todas as observações são normalizadas para o intervalo $[-1.0, 1.0]$ para facilitar o treinamento da rede neural. A normalização é realizada dividindo os valores brutos por constantes específicas para cada tipo de dado:
 \begin{itemize}
-    \item Posições: divididas pelo tamanho máximo do campo
-    \item Distâncias: divididas pela diagonal do campo
-    \item Velocidades: divididas pelas velocidades máximas permitidas
+    \item Posições: divididas pelo tamanho máximo do campo;
+    \item Distâncias: divididas pela diagonal do campo;
+    \item Velocidades: divididas pelas velocidades máximas permitidas.
 \end{itemize}
 
 O empilhamento temporal de 8 frames a 10Hz (correspondendo a 0.8 segundos de jogo) permite que o agente infira informações sobre velocidades e trajetórias, mesmo sem acesso direto a estes dados. Esta representação do estado foi cuidadosamente projetada para fornecer ao agente informações suficientes para tomar decisões tático-estratégicas eficazes.
@@ -151,10 +151,10 @@ A função de transição $P(s' | s, a)$ representa a dinâmica do ambiente, det
 A simulação inclui todos os aspectos físicos relevantes:
 
 \begin{itemize}
-    \item \textbf{Robôs}: Modelados como corpos rígidos com quatro rodas independentes, massa e momento de inércia realistas.
-    \item \textbf{Bola}: Modelada como uma esfera com propriedades físicas apropriadas para simulação de deslizamento, rolamento e colisões.
-    \item \textbf{Colisões}: Detecção de colisões entre robôs, bola e limites do campo.
-    \item \textbf{Atrito}: Implementação de atrito entre diferentes superfícies, tanto estático quanto dinâmico.
+    \item \textbf{Robôs}: Modelados como corpos rígidos com quatro rodas independentes, massa e momento de inércia realistas;
+    \item \textbf{Bola}: Modelada como uma esfera com propriedades físicas apropriadas para simulação de deslizamento, rolamento e colisões;
+    \item \textbf{Colisões}: Detecção de colisões entre robôs, bola e limites do campo;
+    \item \textbf{Atrito}: Implementação de atrito entre diferentes superfícies, tanto estático quanto dinâmico;
     \item \textbf{Mecanismo de chute}: Simulação da força aplicada à bola quando a ação de chute é ativada.
 \end{itemize}
 
@@ -163,9 +163,9 @@ A simulação inclui todos os aspectos físicos relevantes:
 Além da física pura, a função de transição também implementa as regras específicas do jogo de futebol de robôs:
 
 \begin{itemize}
-    \item \textbf{Resets após gol}: Quando um gol é marcado, todos os robôs e a bola são reposicionados para as suas posições iniciais.
-    \item \textbf{Resets laterais}: Quando a bola sai pelos limites laterais do campo, os robôs e a bola são reposicionados, mas o episódio continua.
-    \item \textbf{Resets de linha de fundo}: Quando a bola sai pelos limites de fundo do campo, os robôs e a bola são reposicionados, mas o episódio continua.
+    \item \textbf{Resets após gol}: Quando um gol é marcado, todos os robôs e a bola são reposicionados para as suas posições iniciais;
+    \item \textbf{Resets laterais}: Quando a bola sai pelos limites laterais do campo, os robôs e a bola são reposicionados, mas o episódio continua;
+    \item \textbf{Resets de linha de fundo}: Quando a bola sai pelos limites de fundo do campo, os robôs e a bola são reposicionados, mas o episódio continua;
     \item \textbf{Faltas}: Implementação de regras básicas para identificação e penalização de faltas.
 \end{itemize}
 
@@ -174,9 +174,9 @@ Além da física pura, a função de transição também implementa as regras es
 A simulação opera com os seguintes parâmetros:
 
 \begin{itemize}
-    \item \textbf{Frequência de simulação física}: 30 FPS (frames por segundo) para garantir estabilidade e precisão
-    \item \textbf{Frequência de observação e ação}: 10 Hz para os agentes
-    \item \textbf{Duração dos episódios}: 40 segundos de jogo simulado
+    \item \textbf{Frequência de simulação física}: 30 FPS (frames por segundo) para garantir estabilidade e precisão;
+    \item \textbf{Frequência de observação e ação}: 10 Hz para os agentes;
+    \item \textbf{Duração dos episódios}: 40 segundos de jogo simulado;
     \item \textbf{Limite de passos por episódio}: Variável conforme o estágio do curriculum (300 a 500 passos)
 \end{itemize}
 
@@ -190,36 +190,28 @@ A função de recompensa é um componente crítico do sistema de aprendizado por
 
 No estágio final de Self-play, a recompensa combina elementos contínuos e discretos. A componente contínua $r$ é formada pela soma ponderada de quatro termos:
 
-$$r = 0.7 \cdot r_{speed} + 0.1 \cdot r_{dist} + 0.1 \cdot r_{off} + 0.1 \cdot r_{def}$$
+$$r = 0.7 \cdot r_{speed} + 0.1 \cdot r_{dist} + 0.1 \cdot r_{off} + 0.1 \cdot r_{def}.$$
 
 Onde:
 
 \begin{itemize}
-    \item $r_{speed}$: Recompensa pela velocidade da bola em direção ao gol adversário
-    
-    $$r_{speed} = \text{clip}\left(\frac{\text{dist}(b_{t-1}, G) - \text{dist}(b_t, G) - 0.05}{0.14}, -1.0, 1.0\right)$$
+    \item $r_{speed} = \text{clip}\left(\frac{\text{dist}(b_{t-1}, G) - \text{dist}(b_t, G) - 0.05}{0.14}, -1.0, 1.0\right).$
     
     Onde $b_t$ é a posição da bola no tempo $t$, $G$ é a posição do gol adversário, e $\text{dist}()$ é a distância euclidiana. Os fatores $0.05$ e $0.14$ são parâmetros de calibração que estabelecem o limiar mínimo de movimento necessário e a escala de normalização, respectivamente.
     
-    \item $r_{dist}$: Recompensa pela proximidade do jogador mais próximo à bola
-    
-    $$r_{dist} = 
+    \item $r_{dist} = 
     \begin{cases}
       -1, & \text{se } \min(P) \geq 1 \\
       -\min(P), & \text{se } \min(P) < 1
-    \end{cases}$$
+    \end{cases}.$
     
     Onde $P$ é o conjunto das distâncias normalizadas entre cada robô do time e a bola. Esta recompensa incentiva que pelo menos um jogador esteja próximo da bola, penalizando situações onde todos os agentes estão distantes da bola.
     
-    \item $r_{off}$: Recompensa por posicionamento ofensivo estratégico
-    
-    $$r_{off} = \frac{\theta_{RBG}}{\pi} - 1$$
+    \item $r_{off} = \frac{\theta_{RBG}}{\pi} - 1.$
     
     Onde $\theta_{RBG}$ é o ângulo formado pelo robô (R), a bola (B) e o gol adversário (G). Este ângulo é normalizado para o intervalo $[-1.0, 0.0]$, onde valores mais próximos de zero representam posições ofensivas mais vantajosas.
     
-    \item $r_{def}$: Recompensa por posicionamento defensivo estratégico
-    
-    $$r_{def} = \frac{\theta_{GRB}}{\pi} - 1$$
+    \item $r_{def} = \frac{\theta_{GRB}}{\pi} - 1.$
     
     Onde $\theta_{GRB}$ é o ângulo formado pelo gol aliado (G), o robô (R) e a bola (B). Similar ao $r_{off}$, esta recompensa incentiva posições defensivas eficazes para bloquear possíveis ataques adversários.
 \end{itemize}
@@ -229,9 +221,9 @@ Onde:
 Além da recompensa contínua, eventos discretos importantes geram recompensas significativas:
 
 \begin{itemize}
-    \item \textbf{Gol marcado}: $+10$
-    \item \textbf{Gol sofrido}: $-10$
-    \item \textbf{Bola fora do campo}: $-1$
+    \item \textbf{Gol marcado}: $+10$;
+    \item \textbf{Gol sofrido}: $-10$;
+    \item \textbf{Bola fora do campo}: $-1$.
 \end{itemize}
 
 Estes valores sobrepõem-se à recompensa contínua quando ocorrem, criando sinais fortes para guiar o aprendizado em momentos críticos.
@@ -243,21 +235,21 @@ Cada estágio do curriculum possui ajustes específicos na função de recompens
 \begin{itemize}
     \item \textbf{Curriculum Task 0 (Fundamentos Básicos):}
     \begin{itemize}
-        \item \textbf{Recompensa principal}: $+10.0$ quando o robô toca na bola pela primeira vez
-        \item \textbf{Recompensa de aproximação}: $-dist(robô, bola)$, incentivando a aproximação contínua à bola
-        \item \textbf{Penalidade por tempo}: $-0.01$ por passo, incentivando ações rápidas
-        \item \textbf{Critério de sucesso}: Tocar na bola pelo menos uma vez durante o episódio
+        \item \textbf{Recompensa principal}: $+10.0$ quando o robô toca na bola pela primeira vez;
+        \item \textbf{Recompensa de aproximação}: $-dist(robô, bola)$, incentivando a aproximação contínua à bola;
+        \item \textbf{Penalidade por tempo}: $-0.01$ por passo, incentivando ações rápidas;
+        \item \textbf{Critério de sucesso}: Tocar na bola pelo menos uma vez durante o episódio.
     \end{itemize}
     
     \item \textbf{Curriculum Task 1 (Interação com Oponentes Estáticos):}
     \begin{itemize}
-        \item \textbf{Proximidade da bola}: $-0.1 \times dist(robô\_mais\_próximo, bola)$
-        \item \textbf{Posse de bola}: $+0.05 \times \min(frames\_com\_posse / 30, 1.0)$, recompensando o controle contínuo da bola
-        \item \textbf{Aproximação do gol}: $+0.3 \times (1 - dist\_normalizada(bola, gol\_adversário))$
-        \item \textbf{Gol marcado}: $+10.0$
-        \item \textbf{Gol sofrido}: $-10.0$
-        \item \textbf{Penalidade por sair do campo}: $-1.0$ (robô), $-0.5$ (bola)
-        \item \textbf{Critério de sucesso}: Marcar pelo menos um gol durante o episódio
+        \item \textbf{Proximidade da bola}: $-0.1 \times dist(robô\_mais\_próximo, bola)$;  
+        \item \textbf{Posse de bola}: $+0.05 \times \min(frames\_com\_posse / 30, 1.0)$, recompensando o controle contínuo da bola;
+        \item \textbf{Aproximação do gol}: $+0.3 \times (1 - dist\_normalizada(bola, gol\_adversário))$;
+        \item \textbf{Gol marcado}: $+10.0$;
+        \item \textbf{Gol sofrido}: $-10.0$;
+        \item \textbf{Penalidade por sair do campo}: $-1.0$ (robô), $-0.5$ (bola);
+        \item \textbf{Critério de sucesso}: Marcar pelo menos um gol durante o episódio.
     \end{itemize}
 \end{itemize}
 
@@ -274,22 +266,22 @@ Nosso curriculum foi cuidadosamente projetado com dois estágios principais, cad
 \begin{enumerate}
     \item \textbf{Curriculum Task 0 (Fundamentos Básicos)}: 
     \begin{itemize}
-        \item \textbf{Objetivo}: Desenvolver habilidades básicas de navegação e interação com a bola
-        \item \textbf{Configuração}: 1 agente azul sem oponentes em campo
-        \item \textbf{Ambiente}: Campo simplificado com a bola posicionada no centro
-        \item \textbf{Posições iniciais}: Fixas com pequenas variações aleatórias (±0.3 metros)
-        \item \textbf{Critério de promoção}: 80\% de sucesso (tocar na bola) em 100 episódios consecutivos
-        \item \textbf{Duração típica}: 55 iterações de treinamento (aproximadamente 20 minutos)
+        \item \textbf{Objetivo}: Desenvolver habilidades básicas de navegação e interação com a bola;
+        \item \textbf{Configuração}: 1 agente azul sem oponentes em campo;
+        \item \textbf{Ambiente}: Campo simplificado com a bola posicionada no centro;
+        \item \textbf{Posições iniciais}: Fixas com pequenas variações aleatórias (±0.3 metros);
+        \item \textbf{Critério de promoção}: 80\% de sucesso (tocar na bola) em 100 episódios consecutivos;
+        \item \textbf{Duração típica}: 55 iterações de treinamento (aproximadamente 20 minutos).
     \end{itemize}
     
     \item \textbf{Curriculum Task 1 (Interação com Oponentes Estáticos)}:
     \begin{itemize}
-        \item \textbf{Objetivo}: Desenvolver habilidades de coordenação entre agentes e estratégias ofensivas
-        \item \textbf{Configuração}: 3 agentes azuis contra 1 oponente amarelo estático
-        \item \textbf{Ambiente}: Campo completo com posicionamento tático dos agentes
-        \item \textbf{Posições iniciais}: Semi-aleatórias em configurações taticamente relevantes
-        \item \textbf{Critério de promoção}: 80\% de sucesso (marcar gol) em 100 episódios consecutivos
-        \item \textbf{Duração típica}: 60 iterações de treinamento (aproximadamente 22 minutos)
+        \item \textbf{Objetivo}: Desenvolver habilidades de coordenação entre agentes e estratégias ofensivas;
+        \item \textbf{Configuração}: 3 agentes azuis contra 1 oponente amarelo estático;
+        \item \textbf{Ambiente}: Campo completo com posicionamento tático dos agentes;
+        \item \textbf{Posições iniciais}: Semi-aleatórias em configurações taticamente relevantes;
+        \item \textbf{Critério de promoção}: 80\% de sucesso (marcar gol) em 100 episódios consecutivos;
+        \item \textbf{Duração típica}: 60 iterações de treinamento (aproximadamente 22 minutos).
     \end{itemize}
 \end{enumerate}
 
@@ -298,11 +290,11 @@ Nosso curriculum foi cuidadosamente projetado com dois estágios principais, cad
 A transição entre os estágios do curriculum é controlada por um sistema de promoção adaptativa implementado na classe \texttt{CurriculumCallback}. Este mecanismo opera da seguinte forma:
 
 \begin{itemize}
-    \item Mantém uma janela deslizante dos últimos 100 episódios
-    \item Calcula continuamente a taxa de sucesso com base nos critérios específicos de cada estágio
-    \item Monitora o desempenho dos agentes em todos os ambientes paralelos
-    \item Promove automaticamente para o próximo estágio quando a taxa de sucesso atinge 80\%
-    \item Preserva os pesos da política durante a transição, permitindo transferência de conhecimento
+    \item Mantém uma janela deslizante dos últimos 100 episódios;
+    \item Calcula continuamente a taxa de sucesso com base nos critérios específicos de cada estágio;
+    \item Monitora o desempenho dos agentes em todos os ambientes paralelos;
+    \item Promove automaticamente para o próximo estágio quando a taxa de sucesso atinge 80%;
+    \item Preserva os pesos da política durante a transição, permitindo transferência de conhecimento.
 \end{itemize}
 
 \subsubsection{Integração com Self-play}
@@ -310,10 +302,10 @@ A transição entre os estágios do curriculum é controlada por um sistema de p
 Após a conclusão do último estágio do curriculum, o sistema transita automaticamente para o treinamento com Self-play, onde os agentes continuam seu desenvolvimento enfrentando versões cada vez mais competentes de si mesmos. Esta integração segue o seguinte processo:
 
 \begin{enumerate}
-    \item Os pesos da política treinada com curriculum são utilizados para inicializar tanto a política dos agentes azuis quanto dos agentes amarelos
-    \item O sistema de Self-play é ativado, com atualizações periódicas da política dos agentes amarelos quando os agentes azuis atingem um desempenho superior (diferença de gols ≥ 0.6)
-    \item O treinamento continua por 781 iterações adicionais (aproximadamente 7 horas)
-    \item As métricas de desempenho são continuamente monitoradas para avaliar a eficácia da abordagem
+    \item Os pesos da política treinada com curriculum são utilizados para inicializar tanto a política dos agentes azuis quanto dos agentes amarelos;
+    \item O sistema de Self-play é ativado, com atualizações periódicas da política dos agentes amarelos quando os agentes azuis atingem um desempenho superior (diferença de gols ≥ 0.6);
+    \item O treinamento continua por 781 iterações adicionais (aproximadamente 7 horas);
+    \item As métricas de desempenho são continuamente monitoradas para avaliar a eficácia da abordagem.
 \end{enumerate}
 
 \subsection{Implementação do Algoritmo}
@@ -325,11 +317,11 @@ Para o treinamento dos agentes, utilizamos o algoritmo Proximal Policy Optimizat
 A arquitetura neural utilizada consiste em:
 
 \begin{itemize}
-    \item \textbf{Rede de política (actor)}: Rede MLP (Multi-Layer Perceptron) com camadas ocultas [300, 200, 100]
-    \item \textbf{Função de ativação}: ReLU (Rectified Linear Unit) para todas as camadas ocultas
-    \item \textbf{Rede de valor (critic)}: Rede MLP com mesma estrutura, mas parâmetros independentes
-    \item \textbf{Camada de saída da política}: Parâmetros de distribuição Beta para cada componente da ação, proporcionando ações contínuas limitadas
-    \item \textbf{Camada de saída do valor}: Valor escalar representando a estimativa de retorno
+    \item \textbf{Rede de política (actor)}: Rede MLP (Multi-Layer Perceptron) com camadas ocultas [300, 200, 100];
+    \item \textbf{Função de ativação}: ReLU (Rectified Linear Unit) para todas as camadas ocultas;
+    \item \textbf{Rede de valor (critic)}: Rede MLP com mesma estrutura, mas parâmetros independentes;
+    \item \textbf{Camada de saída da política}: Parâmetros de distribuição Beta para cada componente da ação, proporcionando ações contínuas limitadas;
+    \item \textbf{Camada de saída do valor}: Valor escalar representando a estimativa de retorno.
 \end{itemize}
 
 A distribuição Beta foi escolhida para modelar as ações contínuas porque naturalmente limita os valores ao intervalo [0, 1], que são posteriormente remapeados para [-1, 1] para controle dos robôs. Isso proporciona maior estabilidade durante o treinamento, comparado a outras distribuições como a Gaussiana.
@@ -339,9 +331,9 @@ A distribuição Beta foi escolhida para modelar as ações contínuas porque na
 Uma característica importante da implementação é o compartilhamento de parâmetros entre todos os agentes do mesmo time (policy sharing). Isto significa que:
 
 \begin{itemize}
-    \item Todos os robôs do time azul compartilham os mesmos parâmetros de rede neural
-    \item O time amarelo, no estágio de self-play, utiliza uma cópia (potencialmente desatualizada) da política do time azul
-    \item Cada agente recebe observações específicas à sua posição, mas processa-as através da mesma política
+    \item Todos os robôs do time azul compartilham os mesmos parâmetros de rede neural;
+    \item O time amarelo, no estágio de self-play, utiliza uma cópia (potencialmente desatualizada) da política do time azul;
+    \item Cada agente recebe observações específicas à sua posição, mas processa-as através da mesma política.
 \end{itemize}
 
 Este compartilhamento reduz o número de parâmetros a serem aprendidos, acelera o treinamento e facilita a emergência de comportamentos coordenados.
@@ -351,16 +343,16 @@ Este compartilhamento reduz o número de parâmetros a serem aprendidos, acelera
 Os principais hiperparâmetros utilizados no treinamento foram:
 
 \begin{itemize}
-    \item \textbf{Taxa de aprendizado}: 0.0004
-    \item \textbf{Fator de desconto (gamma)}: 0.99
-    \item \textbf{Parâmetro lambda para GAE (Generalized Advantage Estimation)}: 0.95
-    \item \textbf{Coeficiente de entropia}: 0.01 (incentiva exploração)
-    \item \textbf{Parâmetro de clipping}: 0.2 (limita mudanças abruptas na política)
-    \item \textbf{Batch size}: 96000 amostras (calculado como workers × envs × fragment)
-    \item \textbf{Mini-batch size}: 24000 amostras (batch/4)
-    \item \textbf{Épocas por atualização}: 5
-    \item \textbf{Workers}: 12 processos paralelos
-    \item \textbf{Ambientes por worker}: 4
+    \item \textbf{Taxa de aprendizado}: 0.0004;
+    \item \textbf{Fator de desconto (gamma)}: 0.99;
+    \item \textbf{Parâmetro lambda para GAE (Generalized Advantage Estimation)}: 0.95;
+    \item \textbf{Coeficiente de entropia}: 0.01 (incentiva exploração);
+    \item \textbf{Parâmetro de clipping}: 0.2 (limita mudanças abruptas na política);
+    \item \textbf{Batch size}: 96000 amostras (calculado como workers $\times$ envs $\times$ fragment);
+    \item \textbf{Mini-batch size}: 24000 amostras (batch/4);
+    \item \textbf{Épocas por atualização}: 5;
+    \item \textbf{Workers}: 12 processos paralelos;
+    \item \textbf{Ambientes por worker}: 4.
 \end{itemize}
 
 \subsubsection{Paralelização e Distribuição}
@@ -368,10 +360,10 @@ Os principais hiperparâmetros utilizados no treinamento foram:
 O treinamento foi distribuído para maximizar a eficiência computacional:
 
 \begin{itemize}
-    \item Utilização de 12 trabalhadores paralelos, cada um gerenciando 4 ambientes
-    \item Coleta simultânea de experiências em 48 ambientes (12 × 4)
-    \item Processamento em lote de experiências para atualização da política
-    \item Implementação de buffers de experiência para reduzir a correlação entre amostras
+    \item Utilização de 12 trabalhadores paralelos, cada um gerenciando 4 ambientes;
+    \item Coleta simultânea de experiências em 48 ambientes (12 $\times$ 4);
+    \item Processamento em lote de experiências para atualização da política;
+    \item Implementação de buffers de experiência para reduzir a correlação entre amostras.
 \end{itemize}
 
 \subsubsection{Avaliação Durante Treinamento}
@@ -379,10 +371,10 @@ O treinamento foi distribuído para maximizar a eficiência computacional:
 Durante o treinamento, realizamos avaliações periódicas para monitorar o progresso:
 
 \begin{itemize}
-    \item A cada 10 iterações, executamos 50 episódios de avaliação
-    \item Durante a avaliação, desativamos a exploração para medir o desempenho da política aprendida
-    \item Registramos métricas como taxa de vitória, número de gols e duração dos episódios
-    \item Estas métricas são visualizadas em tempo real via TensorBoard
+    \item A cada 10 iterações, executamos 50 episódios de avaliação;
+    \item Durante a avaliação, desativamos a exploração para medir o desempenho da política aprendida;
+    \item Registramos métricas como taxa de vitória, número de gols e duração dos episódios;
+    \item Estas métricas são visualizadas em tempo real via TensorBoard.
 \end{itemize}
 
 A implementação do algoritmo foi cuidadosamente otimizada para garantir eficiência computacional sem sacrificar a qualidade do aprendizado, permitindo treinamento efetivo mesmo com os recursos computacionais disponíveis (CPU AMD Ryzen 7 7700x com 16 núcleos virtuais, 32GB RAM, e GPU NVIDIA GeForce RTX 3090).
@@ -396,10 +388,10 @@ O treinamento por Self-play é uma técnica fundamental para desenvolver agentes
 Nossa implementação do Self-play segue os seguintes princípios:
 
 \begin{itemize}
-    \item O time azul (agentes em treinamento ativo) enfrenta o time amarelo (oponentes)
-    \item Os oponentes utilizam uma cópia congelada da política do time azul de uma versão anterior
-    \item A política do time azul é atualizada continuamente através do algoritmo PPO
-    \item A política do time amarelo é atualizada discretamente, apenas quando determinados critérios são atingidos
+    \item O time azul (agentes em treinamento ativo) enfrenta o time amarelo (oponentes);
+    \item Os oponentes utilizam uma cópia congelada da política do time azul de uma versão anterior;
+    \item A política do time azul é atualizada continuamente através do algoritmo PPO;
+    \item A política do time amarelo é atualizada discretamente, apenas quando determinados critérios são atingidos.
 \end{itemize}
 
 Esta configuração cria um equilíbrio entre estabilidade e desafio: os oponentes são suficientemente estáveis para permitir aprendizado consistente, mas periodicamente atualizados para apresentar novos desafios.
@@ -409,11 +401,11 @@ Esta configuração cria um equilíbrio entre estabilidade e desafio: os oponent
 A decisão sobre quando atualizar a política dos oponentes é crucial para o sucesso do Self-play. Utilizamos um mecanismo baseado em desempenho:
 
 \begin{itemize}
-    \item Mantemos um contador de pontuação (ScoreCounter) que monitora os resultados das últimas 100 partidas
-    \item Calculamos o escore médio como $(gols\_marcados - gols\_sofridos) / número\_de\_jogos$
-    \item Quando o escore médio atinge ou ultrapassa 0.6, consideramos que a política atual é suficientemente superior
-    \item Neste momento, copiamos os pesos da política do time azul para o time amarelo
-    \item Após a atualização, resetamos o contador para reiniciar a avaliação
+    \item Mantemos um contador de pontuação (ScoreCounter) que monitora os resultados das últimas 100 partidas;
+    \item Calculamos o escore médio como $(gols\_marcados - gols\_sofridos) / número\_de\_jogos;
+    \item Quando o escore médio atinge ou ultrapassa 0.6, consideramos que a política atual é suficientemente superior;
+    \item Neste momento, copiamos os pesos da política do time azul para o time amarelo;
+    \item Após a atualização, resetamos o contador para reiniciar a avaliação.
 \end{itemize}
 
 O limiar de 0.6 foi cuidadosamente escolhido para garantir melhorias significativas antes da atualização, evitando oscilações prematuras que poderiam desestabilizar o treinamento.
@@ -423,10 +415,10 @@ O limiar de 0.6 foi cuidadosamente escolhido para garantir melhorias significati
 A lógica de Self-play foi implementada na classe \texttt{SelfPlayUpdateCallback}, que herda de \texttt{DefaultCallbacks} do RLlib. Esta classe realiza as seguintes funções:
 
 \begin{itemize}
-    \item Rastreia o desempenho do time azul contra o time amarelo
-    \item Gerencia o contador de pontuação e calcula métricas relevantes
-    \item Executa a transferência de pesos quando os critérios são atendidos
-    \item Registra estatísticas para análise posterior
+    \item Rastreia o desempenho do time azul contra o time amarelo;
+    \item Gerencia o contador de pontuação e calcula métricas relevantes;
+    \item Executa a transferência de pesos quando os critérios são atendidos;
+    \item Registra estatísticas para análise posterior.
 \end{itemize}
 
 A cada episódio, a callback atualiza suas estatísticas internas e verifica se os critérios de atualização foram atingidos. Todo este processo é automatizado e ocorre durante o treinamento, sem necessidade de intervenção manual.
@@ -436,10 +428,10 @@ A cada episódio, a callback atualiza suas estatísticas internas e verifica se 
 Na abordagem combinada proposta neste trabalho, a fase de Self-play inicia após a conclusão do curriculum. Esta integração apresenta características específicas:
 
 \begin{itemize}
-    \item A política inicial para ambos os times (azul e amarelo) é derivada do modelo treinado no curriculum
-    \item O contador de pontuação é inicializado do zero no início da fase de Self-play
-    \item As primeiras atualizações tendem a ocorrer rapidamente, uma vez que o time azul continua melhorando sobre a base estabelecida pelo curriculum
-    \item À medida que o treinamento avança, as atualizações tornam-se menos frequentes, indicando convergência gradual
+    \item A política inicial para ambos os times (azul e amarelo) é derivada do modelo treinado no curriculum;
+    \item O contador de pontuação é inicializado do zero no início da fase de Self-play;
+    \item As primeiras atualizações tendem a ocorrer rapidamente, uma vez que o time azul continua melhorando sobre a base estabelecida pelo curriculum;
+    \item À medida que o treinamento avança, as atualizações tornam-se menos frequentes, indicando convergência gradual.
 \end{itemize}
 
 \subsubsection{Vantagens Observadas}
@@ -447,9 +439,9 @@ Na abordagem combinada proposta neste trabalho, a fase de Self-play inicia após
 Os experimentos demonstraram diversas vantagens do Self-play como mecanismo de refinamento após o Curriculum Learning:
 
 \begin{itemize}
-    \item \textbf{Currículo automático}: Cria naturalmente uma progressão de desafios adaptados ao nível do agente
-    \item \textbf{Exploração eficiente}: Incentiva a descoberta de estratégias inovadoras para superar oponentes cada vez mais sofisticados
-    \item \textbf{Robustez aumentada}: Desenvolve políticas que funcionam contra diversas estratégias adversárias
+    \item \textbf{Currículo automático}: Cria naturalmente uma progressão de desafios adaptados ao nível do agente;
+    \item \textbf{Exploração eficiente}: Incentiva a descoberta de estratégias inovadoras para superar oponentes cada vez mais sofisticados;
+    \item \textbf{Robustez aumentada}: Desenvolve políticas que funcionam contra diversas estratégias adversárias;
     \item \textbf{Emergência de comportamentos avançados}: Táticas complexas como passes, posicionamento defensivo e coordenação emergem naturalmente
 \end{itemize}
 
@@ -460,8 +452,8 @@ As métricas coletadas durante os experimentos comprovam a eficácia desta abord
 A definição de quando um episódio termina é crucial para o aprendizado eficiente, pois determina o horizonte temporal com que os agentes lidam. Em nosso trabalho, um episódio é encerrado quando uma das seguintes condições é satisfeita:
 
 \begin{itemize}
-    \item \textbf{Gol marcado}: Um gol é marcado por qualquer uma das equipes
-    \item \textbf{Tempo máximo}: O limite de 40 segundos (1200 passos de simulação a 30 fps) é atingido
+    \item \textbf{Gol marcado}: Um gol é marcado por qualquer uma das equipes;
+    \item \textbf{Tempo máximo}: O limite de 40 segundos (1200 passos de simulação a 30 fps) é atingido.
 \end{itemize}
 
 É importante distinguir entre a finalização de um episódio e os "resets" durante o episódio. Quando a bola sai do campo (pelas laterais ou linhas de fundo), ocorre um reset das posições dos jogadores e da bola para configurações pré-definidas, mas o episódio continua em andamento, mantendo-se o placar e o tempo decorrido. O sistema registra estas ocorrências como "resets laterais" ou "resets de linha de fundo".
@@ -473,12 +465,12 @@ O ambiente de simulação utilizado neste trabalho é o \textit{RL-SSL-EL}\footn
 \subsubsection{Características Técnicas}
 
 \begin{itemize}
-    \item \textbf{Integração com RLlib}: Compatibilidade total com o \textit{framework RLlib} para treinamento distribuído
-    \item \textbf{Frequência de simulação}: 30 FPS (frames por segundo)
-    \item \textbf{Frequência de observação/ação}: 10 Hz para os agentes, representando o ciclo de percepção-ação
-    \item \textbf{Duração máxima do episódio}: 40 segundos (1200 passos de simulação)
-    \item \textbf{Dimensões do campo}: Conforme especificações oficiais da categoria SSL-EL
-    \item \textbf{Modelagem dos robôs}: Baseada nas especificações físicas do Pequi Mecânico (massa, dimensões, limites de velocidade)
+    \item \textbf{Integração com RLlib}: Compatibilidade total com o \textit{framework RLlib} para treinamento distribuído;
+    \item \textbf{Frequência de simulação}: 30 FPS (frames por segundo);
+    \item \textbf{Frequência de observação/ação}: 10 Hz para os agentes, representando o ciclo de percepção-ação;
+    \item \textbf{Duração máxima do episódio}: 40 segundos (1200 passos de simulação);
+    \item \textbf{Dimensões do campo}: Conforme especificações oficiais da categoria SSL-EL;
+    \item \textbf{Modelagem dos robôs}: Baseada nas especificações físicas do Pequi Mecânico (massa, dimensões, limites de velocidade).
 \end{itemize}
 
 \subsubsection{Modificações para Curriculum Learning}
@@ -486,10 +478,10 @@ O ambiente de simulação utilizado neste trabalho é o \textit{RL-SSL-EL}\footn
 O ambiente base foi estendido para suportar os diferentes estágios do curriculum learning, com implementações específicas:
 
 \begin{itemize}
-    \item \textbf{Classe SSLCurriculumEnv}: Estende o ambiente base com funcionalidades necessárias para o curriculum
-    \item \textbf{Configuração dinâmica}: Permite alteração do número de agentes, posicionamento e regras durante o treinamento
-    \item \textbf{Funções de recompensa adaptativas}: Diferentes sinais de recompensa para cada estágio do curriculum
-    \item \textbf{Sistema de monitoramento}: Métricas específicas para avaliar o progresso em cada estágio
+    \item \textbf{Classe SSLCurriculumEnv}: Estende o ambiente base com funcionalidades necessárias para o curriculum;
+    \item \textbf{Configuração dinâmica}: Permite alteração do número de agentes, posicionamento e regras durante o treinamento;
+    \item \textbf{Funções de recompensa adaptativas}: Diferentes sinais de recompensa para cada estágio do curriculum;
+    \item \textbf{Sistema de monitoramento}: Métricas específicas para avaliar o progresso em cada estágio.
 \end{itemize}
 
 \subsubsection{Visualização}
@@ -501,20 +493,20 @@ O ambiente inclui um módulo de visualização baseado em OpenGL que permite a r
 Os experimentos foram realizados em uma máquina com a seguinte configuração:
 
 \begin{itemize}
-    \item \textbf{CPU}: AMD Ryzen 7 7700x com 16 núcleos virtuais
-    \item \textbf{RAM}: 32GB DDR5
-    \item \textbf{GPU}: NVIDIA GeForce RTX 3090 com 24GB de VRAM
-    \item \textbf{Armazenamento}: SSD NVMe de 2TB
-    \item \textbf{Sistema Operacional}: Ubuntu 22.04 LTS
+    \item \textbf{CPU}: AMD Ryzen 7 7700x com 16 núcleos virtuais;
+    \item \textbf{RAM}: 32GB DDR5;
+    \item \textbf{GPU}: NVIDIA GeForce RTX 3090 com 24GB de VRAM;
+    \item \textbf{Armazenamento}: SSD NVMe de 2TB;
+    \item \textbf{Sistema Operacional}: Ubuntu 22.04 LTS.
 \end{itemize}
 
 Para reprodução dos experimentos, recomenda-se uma configuração mínima de:
 
 \begin{itemize}
-    \item CPU com pelo menos 8 núcleos lógicos
-    \item 16GB de RAM
-    \item GPU com suporte a CUDA e pelo menos 8GB de VRAM
-    \item 100GB de espaço em disco para armazenar checkpoints e logs
+    \item CPU com pelo menos 8 núcleos lógicos;
+    \item 16GB de RAM;
+    \item GPU com suporte a CUDA e pelo menos 8GB de VRAM;
+    \item 100GB de espaço em disco para armazenar checkpoints e logs.
 \end{itemize}
 
 \subsubsection{Paralelização e Tempo de Treinamento}
@@ -522,9 +514,9 @@ Para reprodução dos experimentos, recomenda-se uma configuração mínima de:
 O treinamento distribuído foi configurado com:
 
 \begin{itemize}
-    \item 12 workers em paralelo
-    \item 4 ambientes por worker
-    \item Total de 48 ambientes simultâneos
+    \item 12 workers em paralelo;
+    \item 4 ambientes por worker;
+    \item Total de 48 ambientes simultâneos.
 \end{itemize}
 
 Com esta configuração, o tempo total de treinamento foi aproximadamente:
@@ -532,10 +524,10 @@ Com esta configuração, o tempo total de treinamento foi aproximadamente:
 \begin{itemize}
     \item \textbf{Curriculum + Self-play (abordagem proposta)}: total de 900 iterações
     \begin{itemize}
-        \item \textbf{Curriculum Task 0}: 20 minutos (55 iterações)
-        \item \textbf{Curriculum Task 1}: 22 minutos (60 iterações)
-        \item \textbf{Self-play após Curriculum}: 7 horas (785 iterações)
-        \item \textbf{Tempo total}: 7.7 horas (900 iterações)
+        \item \textbf{Curriculum Task 0}: 20 minutos (55 iterações);
+        \item \textbf{Curriculum Task 1}: 22 minutos (60 iterações);
+        \item \textbf{Self-play após Curriculum}: 7 horas (785 iterações);
+        \item \textbf{Tempo total}: 7.7 horas (900 iterações).
     \end{itemize}
     \item \textbf{Full Self-play (baseline)}: 8.7 horas (900 iterações)
 \end{itemize}
