@@ -50,7 +50,7 @@ Onde:
     \item $k$: Ação de chute (contínua, onde valores > 0 executam o chute)
 \end{itemize}
 
-Estas ações de alto nível são convertidas para comandos de baixo nível das rodas (esquerda e direita) usando a cinemática do robô diferencial. A conversão segue o seguinte processo:
+Estas ações de alto nível são convertidas para comandos de baixo nível das quatro rodas do robô usando a cinemática do robô omnidirecional. A conversão segue o seguinte processo:
 
 \subsubsection{Transformação de coordenadas}
 
@@ -61,11 +61,13 @@ Onde $\theta$ é a orientação atual do robô.
 
 \subsubsection{Cálculo das velocidades angulares das rodas}
 
-Em seguida, as velocidades locais e a velocidade angular são convertidas para comandos de velocidade das rodas:
-$$\omega_{esquerda} = \frac{v_y'}{r} - \frac{L \cdot \omega_{\theta}}{2r}$$
-$$\omega_{direita} = \frac{v_y'}{r} + \frac{L \cdot \omega_{\theta}}{2r}$$
+Em seguida, as velocidades locais e a velocidade angular são convertidas para comandos de velocidade das quatro rodas omnidirecionais:
+$$\omega_{roda0} = \frac{v_y'}{r} - \frac{L \cdot \omega_{\theta}}{r}$$
+$$\omega_{roda1} = \frac{v_x'}{r} + \frac{L \cdot \omega_{\theta}}{r}$$
+$$\omega_{roda2} = -\frac{v_y'}{r} - \frac{L \cdot \omega_{\theta}}{r}$$
+$$\omega_{roda3} = -\frac{v_x'}{r} + \frac{L \cdot \omega_{\theta}}{r}$$
 
-Onde $r$ é o raio das rodas e $L$ é a distância entre elas.
+Onde $r$ é o raio das rodas e $L$ é a distância do centro do robô até as rodas.
 
 \subsubsection{Desnormalização e limitação}
 
@@ -149,7 +151,7 @@ A função de transição $P(s' | s, a)$ representa a dinâmica do ambiente, det
 A simulação inclui todos os aspectos físicos relevantes:
 
 \begin{itemize}
-    \item \textbf{Robôs}: Modelados como corpos rígidos com duas rodas independentes, massa e momento de inércia realistas.
+    \item \textbf{Robôs}: Modelados como corpos rígidos com quatro rodas independentes, massa e momento de inércia realistas.
     \item \textbf{Bola}: Modelada como uma esfera com propriedades físicas apropriadas para simulação de deslizamento, rolamento e colisões.
     \item \textbf{Colisões}: Detecção de colisões entre robôs, bola e limites do campo.
     \item \textbf{Atrito}: Implementação de atrito entre diferentes superfícies, tanto estático quanto dinâmico.
@@ -475,15 +477,7 @@ A definição de quando um episódio termina é crucial para o aprendizado efici
     \item \textbf{Tempo máximo}: O limite de 40 segundos (1200 passos de simulação a 30 fps) é atingido
 \end{itemize}
 
-É importante distinguir entre a finalização de um episódio e os "resets" durante o episódio. Quando a bola sai do campo (pelas laterais ou linhas de fundo), ocorre um reset das posições dos jogadores e da bola para configurações pré-definidas, mas o episódio continua em andamento, mantendo-se o placar e o tempo decorrido. O sistema registra estas ocorrências como "resets laterais" ou "resets de linha de fundo", e calcula métricas importantes como:
-
-\begin{itemize}
-    \item Número médio de resets por episódio
-    \item Tempo médio entre resets consecutivos
-    \item Sequência máxima de jogo sem interrupções
-\end{itemize}
-
-Estas métricas de continuidade são indicadores importantes da qualidade do jogo produzido pelos agentes, com menos resets geralmente indicando um jogo mais fluido e tecnicamente refinado.
+É importante distinguir entre a finalização de um episódio e os "resets" durante o episódio. Quando a bola sai do campo (pelas laterais ou linhas de fundo), ocorre um reset das posições dos jogadores e da bola para configurações pré-definidas, mas o episódio continua em andamento, mantendo-se o placar e o tempo decorrido. O sistema registra estas ocorrências como "resets laterais" ou "resets de linha de fundo".
 
 \subsection{Ambiente de Simulação}
 
@@ -536,16 +530,6 @@ Para reprodução dos experimentos, recomenda-se uma configuração mínima de:
     \item 100GB de espaço em disco para armazenar checkpoints e logs
 \end{itemize}
 
-\subsubsection{Requisitos de Software}
-
-\begin{itemize}
-    \item \textbf{Python}: 3.8 ou superior
-    \item \textbf{Ray}: v2.0.0 ou superior
-    \item \textbf{PyTorch}: 1.13.0 ou superior
-    \item \textbf{Simulador RL-SSL-EL}: Versão mais recente do repositório
-    \item \textbf{Outras dependências}: Especificadas no arquivo requirements.txt do repositório
-\end{itemize}
-
 \subsubsection{Paralelização e Tempo de Treinamento}
 
 O treinamento distribuído foi configurado com:
@@ -565,81 +549,5 @@ Com esta configuração, o tempo total de treinamento foi aproximadamente:
     \item \textbf{Full Self-play (baseline)}: 8.7 horas (900 iterações)
 \end{itemize}
 
-\subsection{Métricas de Avaliação}
-
-Para a avaliação abrangente do desempenho dos agentes, implementamos um conjunto diversificado de métricas, coletadas tanto durante o treinamento quanto na fase de avaliação em torneios controlados.
-
-\subsubsection{Métricas de Aprendizado}
-
-\begin{itemize}
-    \item \textbf{Recompensa média}: Média da recompensa acumulada por episódio
-    \item \textbf{Entropia da política}: Grau de aleatoriedade nas decisões do agente
-    \item \textbf{Perda da política}: Divergência entre a política atual e a considerada ótima
-    \item \textbf{Variância explicada da função valor}: Precisão das estimativas de valor
-\end{itemize}
-
-\subsubsection{Métricas de Desempenho no Jogo}
-
-\begin{itemize}
-    \item \textbf{Score}: Média de (gols marcados - gols sofridos) / número de jogos
-    \item \textbf{Win rate}: Percentual de vitórias em relação ao total de jogos
-    \item \textbf{Draw rate}: Percentual de empates
-    \item \textbf{Loss rate}: Percentual de derrotas
-    \item \textbf{Gols marcados}: Total e média por partida
-    \item \textbf{Gols sofridos}: Total e média por partida
-    \item \textbf{Duração média dos episódios}: Tempo até conclusão (gol ou tempo máximo)
-\end{itemize}
-
-\subsubsection{Métricas de Continuidade}
-
-\begin{itemize}
-    \item \textbf{Resets por episódio}: Média de vezes que a bola sai do campo
-    \item \textbf{Tempo entre resets}: Duração média das sequências de jogo contínuo
-    \item \textbf{Sequência máxima}: Maior período sem interrupções do jogo
-\end{itemize}
-
-\subsubsection{Métricas de Torneio}
-
-Para avaliar definitivamente a qualidade das políticas aprendidas, realizamos torneios controlados com 500 partidas cada, comparando os diferentes modelos. Estas avaliações foram realizadas no sistema "Arena Serra Dourada", desenvolvido especificamente para este trabalho.
-
-\subsection{Reprodução dos Experimentos}
-
-Para reproduzir os experimentos realizados, recomenda-se seguir os seguintes passos:
-
-\begin{enumerate}
-    \item \textbf{Preparação do ambiente}:
-    \begin{itemize}
-        \item Clonar o repositório do código-fonte: \texttt{git clone https://github.com/Werikcyano/RL-SSL-EL.git}
-        \item Preparar o ambiente Python: \texttt{pip install -r requirements.txt}
-        \item Configurar o simulador RL-SSL-EL conforme instruções no repositório
-    \end{itemize}
-    
-    \item \textbf{Configuração dos parâmetros}:
-    \begin{itemize}
-        \item Editar o arquivo \texttt{config.yaml} conforme necessário
-        \item Ajustar hiperparâmetros de acordo com os recursos computacionais disponíveis
-        \item Configurar as opções de curriculum no arquivo \texttt{curriculum\_config.yaml}
-    \end{itemize}
-    
-    \item \textbf{Execução do treinamento}:
-    \begin{itemize}
-        \item Para treinamento apenas com self-play: \texttt{python rllib\_multiagent.py}
-        \item Para treinamento com curriculum: \texttt{python rllib\_multiagent.py --curriculum}
-        \item Para visualizar o treinamento: \texttt{python rllib\_multiagent.py --curriculum --evaluation}
-    \end{itemize}
-    
-    \item \textbf{Monitoramento e análise}:
-    \begin{itemize}
-        \item Iniciar TensorBoard: \texttt{tensorboard --logdir=./results}
-        \item Verificar logs e métricas em tempo real
-        \item Avaliar checkpoints salvos com o script \texttt{evaluate\_policy.py}
-    \end{itemize}
-    
-    \item \textbf{Execução de torneios}:
-    \begin{itemize}
-        \item Utilizar o sistema Arena Serra Dourada: \texttt{python arena\_serra\_dourada.py --model1=path\_to\_checkpoint1 --model2=path\_to\_checkpoint2 --games=500}
-        \item Analisar os resultados através do script \texttt{analyze\_tournament.py}
-    \end{itemize}
-\end{enumerate}
 
 Todas as configurações específicas, scripts auxiliares e documentação detalhada estão disponíveis no repositório do projeto. Para facilitar a reprodução, fornecemos também um container Docker com todas as dependências pré-configuradas.
