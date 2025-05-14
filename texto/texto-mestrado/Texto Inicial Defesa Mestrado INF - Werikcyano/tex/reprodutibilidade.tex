@@ -10,12 +10,12 @@ $$G = \langle D, A, S, Z, P, R \rangle.$$
 
 Onde:
 \begin{itemize}
-    \item $D$: Conjunto de agentes robóticos que participam do jogo
-    \item $A$: Espaço de ações disponíveis para cada agente
-    \item $S$: Espaço de estados do ambiente (não completamente observável pelos agentes)
-    \item $Z$: Espaço de observações parciais que cada agente recebe
-    \item $P$: Função de transição que determina a dinâmica do ambiente
-    \item $R$: Função de recompensa que guia o aprendizado dos agentes
+    \item $D$: Conjunto de agentes robóticos que participam do jogo;
+    \item $A$: Espaço de ações disponíveis para cada agente;
+    \item $S$: Espaço de estados do ambiente (não completamente observável pelos agentes);
+    \item $Z$: Espaço de observações parciais que cada agente recebe;
+    \item $P$: Função de transição que determina a dinâmica do ambiente;
+    \item $R$: Função de recompensa que guia o aprendizado dos agentes.
 \end{itemize}
 
 A formulação Dec-POMDP é particularmente adequada para este domínio, pois os agentes precisam tomar decisões baseadas em observações locais parciais, enquanto colaboram para alcançar objetivos comuns, como marcar gols e evitar que o adversário marque.
@@ -29,9 +29,9 @@ $$D_{azul} = \{d_1, d_2, d_3\}$$ para o time azul e $$D_{amarelo} = \{d_4, d_5, 
 O número de agentes é dinamicamente ajustado durante as diferentes fases do curriculum learning:
 
 \begin{itemize}
-    \item \textbf{Curriculum Task 0 (Fundamentos Básicos)}: $D_{azul} = \{d_1\}$ e $D_{amarelo} = \{\emptyset\}$ (nenhum agente adversário)
-    \item \textbf{Curriculum Task 1 (Interação com Oponentes Estáticos)}: $D_{azul} = \{d_1, d_2, d_3\}$ e $D_{amarelo} = \{d_4\}$ (apenas um agente adversário estático)
-    \item \textbf{Self-play}: $D_{azul} = \{d_1, d_2, d_3\}$ e $D_{amarelo} = \{d_4, d_5, d_6\}$ (configuração completa)
+    \item \textbf{Curriculum Task 0 (Fundamentos Básicos)}: $D_{azul} = \{d_1\}$ e $D_{amarelo} = \{\emptyset\}$ (nenhum agente adversário);
+    \item \textbf{Curriculum Task 1 (Interação com Oponentes Estáticos)}: $D_{azul} = \{d_1, d_2, d_3\}$ e $D_{amarelo} = \{d_4\}$ (apenas um agente adversário estático);
+    \item \textbf{Self-play}: $D_{azul} = \{d_1, d_2, d_3\}$ e $D_{amarelo} = \{d_4, d_5, d_6\}$ (configuração completa).
 \end{itemize}
 
 Todos os agentes de um mesmo time compartilham os mesmos parâmetros de política (policy sharing), o que facilita o aprendizado coletivo e reduz a dimensionalidade do problema. Essa abordagem de compartilhamento de política permite que comportamentos emergentes de coordenação surjam naturalmente durante o treinamento.
@@ -44,10 +44,10 @@ $$a_d = (v_x, v_y, \omega_{\theta}, k) \in [-1.0, 1.0]^4.$$
 
 Onde:
 \begin{itemize}
-    \item $v_x$: Velocidade normalizada no eixo x (movimento lateral)
-    \item $v_y$: Velocidade normalizada no eixo y (movimento frontal)
-    \item $\omega_{\theta}$: Velocidade angular normalizada (rotação)
-    \item $k$: Ação de chute (contínua, onde valores > 0 executam o chute)
+    \item $v_x$: Velocidade normalizada no eixo x (movimento lateral);
+    \item $v_y$: Velocidade normalizada no eixo y (movimento frontal);
+    \item $\omega_{\theta}$: Velocidade angular normalizada (rotação);
+    \item $k$: Ação de chute (contínua, onde valores > 0 executam o chute).
 \end{itemize}
 
 Estas ações de alto nível são convertidas para comandos de baixo nível das quatro rodas do robô usando a cinemática do robô omnidirecional. A conversão segue o seguinte processo:
