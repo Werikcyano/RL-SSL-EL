@@ -1,8 +1,11 @@
-
 \chapter{Introdução}
 \label{cap:intro}
 
 O futebol de robôs representa um domínio desafiador para a aplicação de técnicas de Inteligência Artificial, combinando aspectos complexos de percepção, tomada de decisão e controle em tempo real. Neste contexto, o Aprendizado por Reforço (\textit{Reinforcement Learning} - RL) emergiu como uma abordagem promissora, permitindo que agentes desenvolvam comportamentos sofisticados através da interação direta com o ambiente \cite{sutton}. No entanto, a complexidade inerente ao domínio do futebol de robôs apresenta desafios significativos para o aprendizado efetivo.
+
+O futebol de robôs surgiu como um desafio-problema na RoboCup, uma iniciativa internacional dedicada à promoção da pesquisa em robótica e inteligência artificial. Dentre as várias categorias da competição, a \textit{Small Size League - Entry Level} (SSL-EL) representa uma versão simplificada da liga SSL tradicional, projetada para facilitar a entrada de novas equipes. Na SSL-EL, cada equipe opera até três robôs autônomos em um campo de 5,5m × 4m, sendo um dos robôs designado como goleiro. Os robôs possuem formato cilíndrico padronizado (0,18m de diâmetro por 0,15m de altura) e são identificados por padrões visuais no topo, que permitem sua detecção por um sistema de visão computacional centralizado. A partida é estruturada em dois tempos de 5 minutos, com regras específicas para faltas, penalidades e situações de jogo. Este ambiente controlado oferece um excelente campo de testes para algoritmos de IA, combinando problemas de percepção (através do sistema de visão), planejamento (estratégias de jogo) e ação (controle dos robôs) em um cenário dinâmico multiagente \cite{regras_ssl_el_2024}.
+
+As características específicas da categoria SSL-EL introduzem desafios técnicos particulares que influenciam diretamente o desenvolvimento de soluções baseadas em aprendizado de máquina. O tamanho reduzido do campo (comparado à categoria SSL completa) e o número limitado de robôs (três por equipe) simplificam alguns aspectos, mas também impõem restrições específicas. Por exemplo, as regras severas sobre velocidade máxima dos robôs (1,5m/s) e da bola (3m/s), as limitações nas áreas de atuação, e as penalidades acumulativas exigem que os agentes desenvolvam não apenas habilidades técnicas, mas também observem as regras do jogo durante suas ações. Adicionalmente, a necessidade de especialização dos papéis (goleiro e jogadores de linha) impõe uma dimensão extra de complexidade na coordenação da equipe. Estes fatores tornam a aplicação de \textit{Curriculum Learning} particularmente relevante, pois permite que os agentes primeiro dominem habilidades básicas dentro das restrições das regras, antes de progredirem para comportamentos táticos e estratégicos mais sofisticados.
 
 Um dos obstáculos no desenvolvimento de agentes para futebol de robôs através de RL é a necessidade de aprender múltiplas habilidades interdependentes simultaneamente \cite{ssl_skills}. Os agentes precisam dominar desde capacidades básicas, como navegação e controle da bola \cite{soccer_skills_bipedal_robot}, até comportamentos táticos complexos que envolvem coordenação multiagente \cite{bruno_brandao}. Esta multiplicidade de habilidades, combinada com a natureza contínua do espaço de estados e ações, torna o processo de aprendizagem particularmente desafiador \cite{soccer_skills_bipedal_robot}.
 
@@ -17,5 +20,24 @@ O objetivo geral deste trabalho é desenvolver e avaliar uma metodologia baseada
 2. Implementar um sistema de transição adaptativo entre níveis do \textit{curriculum}, garantindo que os agentes desenvolvam uma base sólida antes de progredir para tarefas mais desafiadoras;
 
 3. Avaliar comparativamente o desempenho de agentes treinados com e sem \textit{Curriculum Learning}, considerando métricas como eficiência no aprendizado e qualidade final do comportamento aprendido.
+
+\section{Organização do Trabalho}
+\label{sec:organizacao}
+
+Este trabalho está organizado em cinco capítulos, estruturados de forma a apresentar progressivamente os conceitos, metodologias, experimentos e resultados da pesquisa:
+
+\begin{enumerate}
+    \item \textbf{Introdução} (Capítulo \ref{cap:intro}): Apresenta o contexto do futebol de robôs, com foco na categoria SSL-EL, introduz os conceitos fundamentais de \textit{Curriculum Learning} e \textit{Self-play}, e estabelece os objetivos e motivações da pesquisa.
+    
+    \item \textbf{Fundamentação Teórica} (Capítulo \ref{cap:fund}): Aprofunda os conceitos teóricos essenciais para a compreensão do trabalho, abordando Aprendizado por Reforço, o algoritmo PPO, \textit{Multi-agent RL}, \textit{Self-play}, \textit{Curriculum Learning} e aspectos específicos do futebol de robôs.
+    
+    \item \textbf{Metodologia} (Capítulo \ref{cap:metodologia}): Detalha o ambiente de simulação utilizado, a arquitetura do sistema proposto, a implementação do \textit{Curriculum Learning} com seus estágios progressivos, o mecanismo de transição entre estágios, a integração com \textit{Self-play} e as métricas de avaliação empregadas.
+    
+    \item \textbf{Experimentos e Resultados} (Capítulo \ref{cap:resultados}): Apresenta a configuração experimental, as análises comparativas entre as diferentes abordagens de treinamento, os resultados dos torneios realizados e a discussão dos achados principais, evidenciando a eficácia da abordagem proposta.
+    
+    \item \textbf{Conclusão} (Capítulo \ref{cap:conclusao}): Sintetiza as principais descobertas e contribuições do trabalho, discute suas implicações para o campo do aprendizado por reforço em ambientes multiagentes, apresenta as limitações identificadas e sugere direções para trabalhos futuros.
+\end{enumerate}
+
+O trabalho inclui ainda uma seção dedicada à reprodutibilidade dos experimentos, garantindo que os resultados apresentados possam ser verificados e expandidos em pesquisas futuras. Ao longo do texto, são apresentados gráficos, tabelas e figuras que auxiliam na compreensão dos conceitos e na visualização dos resultados obtidos, complementados por referências a vídeos demonstrativos disponíveis online.
 
 As principais contribuições esperadas deste trabalho incluem uma metodologia estruturada para aplicação de \textit{Curriculum Learning} em futebol de robôs, um \textit{framework} adaptativo para progressão entre níveis de complexidade e evidências empíricas sobre a efetividade do \textit{Curriculum Learning} em melhorar o processo de aprendizagem em ambientes complexos multiagente. Este trabalho utiliza como base a implementação \cite{framework_pequi_rSoccer} do trabalho \textit{Multiagent Reinforcement Learning for Strategic Decision Making and Control in Robotic Soccer Through Self-Play} \cite{bruno_brandao} realizada pela equipe Pequi Mecânico \cite{pequi_mecanico}, que por sua vez foi desenvolvida utilizando o \textit{framework} RSoccer \cite{rSoccer} da equipe RobôCIn \cite{robocin}. O código fonte completo desta solução está disponível em \url{https://github.com/Werikcyano/RL-SSL-EL}.
