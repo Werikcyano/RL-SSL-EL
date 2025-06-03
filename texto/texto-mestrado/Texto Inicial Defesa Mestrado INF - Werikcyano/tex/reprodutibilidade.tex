@@ -4,6 +4,13 @@ Esta seção detalha os aspectos técnicos necessários para a reprodução dos 
 
 A Figura \ref{fig:fluxograma_treino} apresenta uma visão geral do pipeline de treinamento implementado, destacando a integração entre as abordagens de Curriculum Learning e Self-play, que serão detalhadas ao longo desta seção.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{fig/fluxograma_treino_mestrado.png}
+    \caption{Fluxograma do \textit{pipeline} de treinamento, destacando a integração entre \textit{Curriculum Learning} e \textit{Self-play}. O processo inicia com a inicialização e configuração dos componentes, seguido pela divisão entre as abordagens de \textit{Curriculum Learning} e \textit{Self-play} direto. A fase de \textit{Curriculum Learning} inclui tarefas progressivas (\textit{Task} 0 ou 1) seguidas por ciclos de tentativas até conclusão do critério de promoção, resultando em um modelo treinado que serve como base para o \textit{Self-play} subsequente. Fonte: Elaborado pelo autor.}
+    \label{fig:fluxograma_treino}
+\end{figure}
+
 \subsection{Formulação Dec-POMDP}
 
 O problema de controle multiagente em futebol de robôs é formulado como um Dec-POMDP, representado pela tupla:
@@ -463,6 +470,15 @@ A definição de quando um episódio termina é crucial para o aprendizado efici
 \subsection{Ambiente de Simulação}
 
 O ambiente de simulação utilizado neste trabalho é o \textit{RL-SSL-EL}\footnote{\url{https://github.com/Werikcyano/RL-SSL-EL}} na versão de implementação da equipe de robótica Pequi Mecânico, conforme ilustrado na Figura \ref{fig:campo_simulacao}. Esta plataforma foi projetada especificamente para o futebol de robôs na categoria \textit{Small Size League - Entry League (SSL-EL)}, simplificando o processo de aprendizado por reforço aplicado ao futebol de robôs.
+
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{fig/campo}
+    \caption{Visualização do ambiente de simulação \textit{RL-SSL-EL} mostrando o campo de jogo com os robôs e a bola}
+    \label{fig:campo_simulacao}
+\end{figure}
+
 
 \subsubsection{Características Técnicas}
 

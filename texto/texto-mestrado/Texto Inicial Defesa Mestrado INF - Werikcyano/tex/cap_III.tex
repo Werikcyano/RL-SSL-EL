@@ -3,23 +3,6 @@
 
 \input{./tex/reprodutibilidade}
 
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.8\textwidth]{fig/campo}
-    \caption{Visualização do ambiente de simulação \textit{RL-SSL-EL} mostrando o campo de jogo com os robôs e a bola}
-    \label{fig:campo_simulacao}
-\end{figure}
-
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.85\textwidth]{fig/fluxograma_treino_mestrado.png}
-    \caption{Fluxograma do \textit{pipeline} de treinamento, destacando a integração entre \textit{Curriculum Learning} e \textit{Self-play}. O processo inicia com a inicialização e configuração dos componentes, seguido pela divisão entre as abordagens de \textit{Curriculum Learning} e \textit{Self-play} direto. A fase de \textit{Curriculum Learning} inclui tarefas progressivas (\textit{Task} 0 ou 1) seguidas por ciclos de tentativas até conclusão do critério de promoção, resultando em um modelo treinado que serve como base para o \textit{Self-play} subsequente. Fonte: Elaborado pelo autor.}
-    \label{fig:fluxograma_treino}
-\end{figure}
-
-
 \subsection{Visão Geral da Arquitetura do \textit{Curriculum}}
 
 A arquitetura do \textit{curriculum learning} implementada neste trabalho segue uma estrutura de estágios progressivos, onde cada estágio representa um nível de complexidade específico no aprendizado do futebol de robôs. A progressão entre estes estágios é controlada por critérios de desempenho predefinidos, garantindo que os agentes desenvolvam as habilidades necessárias antes de avançar para desafios mais complexos.
