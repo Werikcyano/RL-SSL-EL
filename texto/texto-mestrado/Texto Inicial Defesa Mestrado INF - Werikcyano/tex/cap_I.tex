@@ -21,23 +21,8 @@ O objetivo geral deste trabalho é desenvolver e avaliar uma metodologia baseada
 
 3. Avaliar comparativamente o desempenho de agentes treinados com e sem \textit{Curriculum Learning}, considerando métricas como eficiência no aprendizado e qualidade final do comportamento aprendido.
 
-\section{Organização do Trabalho}
-\label{sec:organizacao}
+Este trabalho está estruturado de forma a apresentar progressivamente os conceitos, metodologias e resultados da pesquisa. No Capítulo \ref{cap:fund}, são aprofundados os conceitos teóricos essenciais para a compreensão do trabalho, abordando Aprendizado por Reforço, o algoritmo PPO, \textit{Multi-agent RL}, \textit{Self-play}, \textit{Curriculum Learning} e aspectos específicos do futebol de robôs. O Capítulo \ref{cap:metodologia} detalha o ambiente de simulação utilizado, a arquitetura do sistema proposto e a implementação do \textit{Curriculum Learning}, incluindo seus estágios progressivos e mecanismos de transição.
 
-Este trabalho está organizado em cinco capítulos, estruturados de forma a apresentar progressivamente os conceitos, metodologias, experimentos e resultados da pesquisa:
-
-\begin{enumerate}
-    \item \textbf{Introdução} (Capítulo \ref{cap:intro}): Apresenta o contexto do futebol de robôs, com foco na categoria SSL-EL, introduz os conceitos fundamentais de \textit{Curriculum Learning} e \textit{Self-play}, e estabelece os objetivos e motivações da pesquisa.
-    
-    \item \textbf{Fundamentação Teórica} (Capítulo \ref{cap:fund}): Aprofunda os conceitos teóricos essenciais para a compreensão do trabalho, abordando Aprendizado por Reforço, o algoritmo PPO, \textit{Multi-agent RL}, \textit{Self-play}, \textit{Curriculum Learning} e aspectos específicos do futebol de robôs.
-    
-    \item \textbf{Metodologia} (Capítulo \ref{cap:metodologia}): Detalha o ambiente de simulação utilizado, a arquitetura do sistema proposto, a implementação do \textit{Curriculum Learning} com seus estágios progressivos, o mecanismo de transição entre estágios, a integração com \textit{Self-play} e as métricas de avaliação empregadas.
-    
-    \item \textbf{Experimentos e Resultados} (Capítulo \ref{cap:resultados}): Apresenta a configuração experimental, as análises comparativas entre as diferentes abordagens de treinamento, os resultados dos torneios realizados e a discussão dos achados principais, evidenciando a eficácia da abordagem proposta.
-    
-    \item \textbf{Conclusão} (Capítulo \ref{cap:conclusao}): Sintetiza as principais descobertas e contribuições do trabalho, discute suas implicações para o campo do aprendizado por reforço em ambientes multiagentes, apresenta as limitações identificadas e sugere direções para trabalhos futuros.
-\end{enumerate}
-
-O trabalho inclui ainda uma seção dedicada à reprodutibilidade dos experimentos, garantindo que os resultados apresentados possam ser verificados e expandidos em pesquisas futuras. Ao longo do texto, são apresentados gráficos, tabelas e figuras que auxiliam na compreensão dos conceitos e na visualização dos resultados obtidos, complementados por referências a vídeos demonstrativos disponíveis online.
+No Capítulo \ref{cap:resultados}, são apresentados os experimentos realizados, incluindo análises comparativas entre diferentes abordagens de treinamento e os resultados dos torneios, evidenciando a eficácia da metodologia proposta. Por fim, o Capítulo \ref{cap:conclusao} sintetiza as principais descobertas e contribuições do trabalho, discutindo suas implicações para o campo do aprendizado por reforço em ambientes multiagentes, apresentando limitações identificadas e sugerindo direções para trabalhos futuros. O trabalho inclui ainda uma subseção dedicada à reprodutibilidade dos experimentos, sendo complementado por gráficos, tabelas e referências a vídeos demonstrativos disponíveis online.
 
 As principais contribuições esperadas deste trabalho incluem uma metodologia estruturada para aplicação de \textit{Curriculum Learning} em futebol de robôs, um \textit{framework} adaptativo para progressão entre níveis de complexidade e evidências empíricas sobre a efetividade do \textit{Curriculum Learning} em melhorar o processo de aprendizagem em ambientes complexos multiagente. Este trabalho utiliza como base a implementação \cite{framework_pequi_rSoccer} do trabalho \textit{Multiagent Reinforcement Learning for Strategic Decision Making and Control in Robotic Soccer Through Self-Play} \cite{bruno_brandao} realizada pela equipe Pequi Mecânico \cite{pequi_mecanico}, que por sua vez foi desenvolvida utilizando o \textit{framework} RSoccer \cite{rSoccer} da equipe RobôCIn \cite{robocin}. O código fonte completo desta solução está disponível em \url{https://github.com/Werikcyano/RL-SSL-EL}.
