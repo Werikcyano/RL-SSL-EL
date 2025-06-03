@@ -411,7 +411,7 @@ A decisão sobre quando atualizar a política dos oponentes é crucial para o su
 
 \begin{itemize}
     \item Mantemos um contador de pontuação (ScoreCounter) que monitora os resultados das últimas 100 partidas;
-    \item Calculamos o escore médio como $(gols\_marcados - gols\_sofridos) / número\_de\_jogos;
+    \item Calculamos o escore médio como: $\frac{gols\_marcados - gols\_sofridos}{número\_de\_jogos}$;
     \item Quando o escore médio atinge ou ultrapassa 0.6, consideramos que a política atual é suficientemente superior;
     \item Neste momento, copiamos os pesos da política do time azul para o time amarelo;
     \item Após a atualização, resetamos o contador para reiniciar a avaliação.
